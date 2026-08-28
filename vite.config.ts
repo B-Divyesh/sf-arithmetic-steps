@@ -1,5 +1,8 @@
 import { defineConfig } from "vite";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   build: {
@@ -7,9 +10,9 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"),
-        privacy: resolve(__dirname, "privacy/index.html"),
-        terms: resolve(__dirname, "terms/index.html")
+        main: resolve(projectRoot, "index.html"),
+        privacy: resolve(projectRoot, "privacy/index.html"),
+        terms: resolve(projectRoot, "terms/index.html")
       }
     }
   }

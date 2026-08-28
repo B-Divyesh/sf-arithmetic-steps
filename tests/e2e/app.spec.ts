@@ -19,7 +19,7 @@ test("has a clear, accessible route planner", async ({ page }) => {
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("See the route");
   await expect(page.getByAltText(/counter trains/)).toBeVisible();
-  const results = await new AxeBuilder({ page }).analyze();
+  const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
 });
 
@@ -92,4 +92,13 @@ test("fits the phone viewport and retains keyboard-sized controls", async ({ pag
   const begin = page.getByRole("button", { name: /Begin the route/ });
   const box = await begin.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
+});
+
+test("legal pages keep the same accessible shell", async ({ page }) => {
+  for (const path of ["/privacy/", "/terms/"]) {
+    await page.goto(path);
+    await expect(page.locator("h1")).toHaveCount(1);
+    const results = await new AxeBuilder({ page: page as never }).analyze();
+    expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
+  }
 });

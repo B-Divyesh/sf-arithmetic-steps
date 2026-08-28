@@ -26,10 +26,15 @@ import {
   saveAttempt
 } from "./storage";
 
-const app = document.querySelector<HTMLDivElement>("#app");
-const toast = document.querySelector<HTMLDivElement>("#toast");
-const networkBanner = document.querySelector<HTMLDivElement>("#network-banner");
-if (!app || !toast || !networkBanner) throw new Error("The page shell could not start.");
+function requiredElement<T extends Element>(selector: string): T {
+  const element = document.querySelector<T>(selector);
+  if (!element) throw new Error(`The page shell is missing ${selector}.`);
+  return element;
+}
+
+const app = requiredElement<HTMLDivElement>("#app");
+const toast = requiredElement<HTMLDivElement>("#toast");
+const networkBanner = requiredElement<HTMLDivElement>("#network-banner");
 
 type View = "setup" | "work" | "complete" | "history";
 
@@ -104,12 +109,14 @@ function setupTemplate(): string {
   return `<section class="hero" aria-labelledby="page-title">
     <div class="hero-copy">
       <p class="eyebrow"><span>Line A</span> Slow mathematics</p>
-      <h1 id="page-title">See the route.<br><em>Not just the answer.</em></h1>
+      <h1 id="page-title" tabindex="-1">See the route.<br><em>Not just the answer.</em></h1>
       <p class="lede">Move numbers in useful chunks, say what changed, and replay the path together. No timer. No score. Just reasoning you can see.</p>
       <a class="text-link" href="#route-planner">Plan a number route <span aria-hidden="true">↓</span></a>
     </div>
     <picture class="hero-art">
+      <source media="(max-width: 700px)" srcset="/assets/number-line-limited-720.avif" type="image/avif" />
       <source media="(max-width: 700px)" srcset="/assets/number-line-limited-720.webp" type="image/webp" />
+      <source srcset="/assets/number-line-limited-1200.avif" type="image/avif" />
       <source srcset="/assets/number-line-limited-1200.webp" type="image/webp" />
       <img src="/assets/number-line-limited-1200.jpg" width="1200" height="800" fetchpriority="high" alt="Two counter trains travel on separate tracks and meet at a ten-frame station." />
     </picture>
@@ -215,7 +222,7 @@ function workTemplate(): string {
   const opWord = route.operation === "add" ? "Addition" : "Subtraction";
   return `<section class="work-page" aria-labelledby="page-title">
     <div class="route-masthead">
-      <div><p class="eyebrow">${opWord} line · numbers to 100</p><h1 id="page-title">${equationLabel(route)}</h1><p>One useful move at a time.</p></div>
+      <div><p class="eyebrow">${opWord} line · numbers to 100</p><h1 id="page-title" tabindex="-1">${equationLabel(route)}</h1><p>One useful move at a time.</p></div>
       <button class="quiet-button" type="button" id="new-route">Choose a different route</button>
     </div>
     <div class="work-layout">
@@ -240,7 +247,7 @@ function completionTemplate(): string {
   const frame = route.frames[state.replayIndex] ?? route.frames[0]!;
   const finalEquation = `${equationLabel(route)} = ${route.result}`;
   return `<section class="complete-page" aria-labelledby="page-title">
-    <div class="arrival-heading"><p class="eyebrow">Route complete</p><h1 id="page-title">You arrived at ${route.result}.</h1><p>The answer is one stop. Your reasoning is the whole journey.</p></div>
+    <div class="arrival-heading"><p class="eyebrow">Route complete</p><h1 id="page-title" tabindex="-1">You arrived at ${route.result}.</h1><p>The answer is one stop. Your reasoning is the whole journey.</p></div>
     <div class="replay-layout">
       <div class="replay-stage">
         <div class="platform-label"><span>Replay station ${state.replayIndex + 1} of ${route.frames.length}</span><strong>${escapeHtml(frame.equation)}</strong></div>
@@ -274,7 +281,7 @@ function completionTemplate(): string {
 
 function historyTemplate(attempts: Attempt[], error = ""): string {
   return `<section class="history-page" aria-labelledby="page-title">
-    <div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title">Saved routes</h1><p>Finished reasoning trails stay only in this browser. Replay one for a conversation, or take your data with you.</p></div>
+    <div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title" tabindex="-1">Saved routes</h1><p>Finished reasoning trails stay only in this browser. Replay one for a conversation, or take your data with you.</p></div>
     <div class="history-tools">
       <a class="primary-button" href="/#learn">Start a new route</a>
       <button class="secondary-button" id="export-history" type="button" ${attempts.length ? "" : "disabled"}>Export JSON</button>
@@ -310,7 +317,7 @@ function bindSetup(): void {
     const error = validateProblem(state.operation, first, second);
     if (error) { state.error = error; render(); document.querySelector<HTMLInputElement>("#first-number")?.focus(); return; }
     state.route = createRoute(state.operation, first, second);
-    state.direction = "right-to-left";
+    state.direction = state.operation === "add" && second === 0 ? "left-to-right" : "right-to-left";
     const frame = currentFrame(state.route);
     state.amount = state.operation === "add" ? (additionSuggestions(frame.left, frame.right, state.direction)[0] ?? 1) : (subtractionSuggestions(frame.left, frame.right)[0] ?? 1);
     state.error = ""; state.view = "work";
@@ -408,6 +415,7 @@ function bindCompletion(): void {
 
 async function renderHistory(error = ""): Promise<void> {
   state.view = "history"; stopReplay();
+  app.innerHTML = `<section class="history-page" aria-labelledby="page-title"><div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title" tabindex="-1">Saved routes</h1></div><div class="empty-state" role="status"><span class="empty-rails" aria-hidden="true"></span><h2>Opening the route archive…</h2><p>Reading the finished trails stored in this browser.</p></div></section>`;
   let attempts: Attempt[] = [];
   try { attempts = await listAttempts(); }
   catch { error = "Saved routes could not be opened in this browser. You can still practice a new route."; }
@@ -488,11 +496,18 @@ async function registerServiceWorker(): Promise<void> {
 
 async function bootstrap(): Promise<void> {
   if (location.hash === "#history") { await renderHistory(); void registerServiceWorker(); return; }
+  render();
   try {
     const active = await loadActive();
-    if (active && !active.completed) { state.route = active; state.view = "work"; state.first = active.first; state.second = active.second; state.operation = active.operation; }
+    if (active && !active.completed) {
+      state.route = active;
+      state.view = "work";
+      state.first = active.first;
+      state.second = active.second;
+      state.operation = active.operation;
+      render();
+    }
   } catch { showToast("A previous unfinished route could not be restored."); }
-  render();
   void registerServiceWorker();
 }
 
