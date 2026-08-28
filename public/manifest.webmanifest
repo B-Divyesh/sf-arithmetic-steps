@@ -1,0 +1,22 @@
+{
+  "name": "Arithmetic Steps",
+  "short_name": "Math Steps",
+  "description": "Move, explain, and replay the hidden steps in addition and subtraction to 100.",
+  "id": "/?app=arithmetic-steps",
+  "start_url": "/?source=pwa&v=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5ebd5",
+  "theme_color": "#173b3f",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "categories": ["education", "games"],
+  "shortcuts": [
+    { "name": "Start a route", "url": "/#learn", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Saved routes", "url": "/#history", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Arithmetic Steps station mark</title>
+  <rect width="512" height="512" rx="72" fill="#173b3f"/>
+  <path d="M52 308h408v30H52z" fill="#f5ebd5"/>
+  <path d="M52 356h408v12H52z" fill="#d69a2d"/>
+  <rect x="74" y="112" width="284" height="170" fill="#fff9eb" stroke="#f5ebd5" stroke-width="10"/>
+  <g fill="#c74332">
+    <circle cx="114" cy="154" r="22"/><circle cx="166" cy="154" r="22"/><circle cx="218" cy="154" r="22"/><circle cx="270" cy="154" r="22"/><circle cx="322" cy="154" r="22"/>
+    <circle cx="114" cy="226" r="22"/><circle cx="166" cy="226" r="22"/><circle cx="218" cy="226" r="22"/>
+  </g>
+  <path d="M337 266l50-50 21 21-50 50z" fill="#d69a2d"/>
+  <circle cx="390" cy="331" r="64" fill="#16766f" stroke="#f5ebd5" stroke-width="14"/>
+  <circle cx="390" cy="331" r="18" fill="#fff9eb"/>
+</svg>
