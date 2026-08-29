@@ -62,11 +62,23 @@ Results on 2026-08-29 UTC:
 
 ## Deployment and live checks
 
-Static deployment remains the original `pwa-offline` artifact. Push this
-repair to `main`; the factory deployment configuration serves `dist/`.
-After deployment, verify `/demo` in a fresh context: its service worker must
-be `activated`/controlled, `/staticwebapp.config.json` must still be 404, and
-an offline reload must retain the sample route.
+Static deployment remains the original `pwa-offline` artifact. Commit
+`27f5c2626d24a40d3f821b5b0a8bb23807431bd0` was pushed to `main` and deployed
+with `/opt/fleet/lib/deploy-static.sh arithmetic-steps dist` (Azure Static Web
+Apps deployment `0c04ea15-0328-4fb1-8058-2d3bce9c2956`).
+
+Live `https://arithmetic-steps.sociobot.in` verification passed on 2026-08-29:
+
+- `/sw.js` is cache `arithmetic-steps-13d286afd80b` and does not contain
+  `staticwebapp.config.json`; the host correctly returns 404 for that
+  deployment-only URL.
+- Fresh `/demo` service worker: activated, controlled, one registration, and
+  an offline reload returned 200 with `52 − 18`.
+- `.factory/qa-artifacts/independent-live-qa.mjs` now asserts those conditions
+  instead of retaining the prior hard-coded failure verdict. Its live run
+  passed: zero console/request errors, same-origin requests only, no 390px
+  undersized targets, zero Axe violations, keyboard/reduced-motion pass, and
+  all app/legal/404 routes and links resolve as expected.
 
 ## Known gap
 

@@ -132,6 +132,7 @@ async function runMobile(browser) {
     return { text: element.getAttribute("aria-label") || element.textContent?.trim().replace(/\s+/g, " ").slice(0, 60), tag: element.tagName, width: Math.round(box.width), height: Math.round(box.height) };
   }));
   const undersized = targetSizes.filter(item => item.width < 44 || item.height < 44);
+  assert(undersized.length === 0, `390px target below 44px: ${JSON.stringify(undersized)}`);
   const mobileAxe = await axe(page, "390px demo");
   await page.screenshot({ path: ".factory/qa-artifacts/live-mobile-demo.png", fullPage: true });
   assert(observed.consoleErrors.length === 0 && observed.pageErrors.length === 0, "mobile emitted browser errors");
@@ -183,7 +184,8 @@ async function runPwa(browser) {
         if (["activated", "redundant"].includes(worker.state)) { clearTimeout(timer); resolve(); }
       });
     });
-    return { states, final: worker?.state, registrations: (await navigator.serviceWorker.getRegistrations()).length, caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller) };
+    const workerSource = await fetch("/sw.js", { cache: "no-store" }).then(response => response.text());
+    return { states, final: worker?.state, registrations: (await navigator.serviceWorker.getRegistrations()).length, caches: await caches.keys(), controlled: Boolean(navigator.serviceWorker.controller), precachesDeploymentConfig: workerSource.includes("staticwebapp.config.json") };
   });
   await context.setOffline(true);
   let offline;
@@ -194,6 +196,9 @@ async function runPwa(browser) {
     offline = { error: error instanceof Error ? error.message.split("\n")[0] : String(error) };
   }
   await context.close();
+  assert(online.final === "activated" && online.controlled && online.registrations > 0, `service worker did not activate/control: ${JSON.stringify(online)}`);
+  assert(!online.precachesDeploymentConfig, "service worker precaches deployment-only Static Web Apps configuration");
+  assert(offline.status === 200 && offline.h1?.includes("52 − 18"), `offline demo reload failed: ${JSON.stringify(offline)}`);
   return { ...online, offline };
 }
 
@@ -232,11 +237,8 @@ try {
   evidence.checks.pwa = await runPwa(browser);
   console.error("qa: routes-links");
   evidence.checks.routes = await runRoutes(browser);
-  evidence.verdict = "FAIL";
-  evidence.findings = [
-    "Live service worker becomes redundant and fresh offline reload fails.",
-    "Two 390px demo quick-choice targets measure 41x45 CSS pixels."
-  ];
+  evidence.verdict = "PASS";
+  evidence.findings = [];
 } catch (error) {
   evidence.errors.push(error instanceof Error ? `${error.message}\n${error.stack}` : String(error));
   process.exitCode = 1;
