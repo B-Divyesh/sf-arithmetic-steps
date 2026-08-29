@@ -510,7 +510,18 @@ async function renderHistory(error = ""): Promise<void> {
   }));
   document.querySelector("#export-history")?.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify({ product: "arithmetic-steps", exportedAt: new Date().toISOString(), attempts }, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `arithmetic-steps-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `arithmetic-steps-${new Date().toISOString().slice(0, 10)}.json`;
+    link.hidden = true;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    // Let the browser begin consuming the object URL before releasing it.
+    // Revoking in the same turn can cancel a programmatic download in some
+    // browsers, particularly when storage has just finished rendering.
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   });
   document.querySelector<HTMLInputElement>("#import-history")?.addEventListener("change", async (event) => {
     const file = (event.target as HTMLInputElement).files?.[0]; if (!file) return;

@@ -95,11 +95,21 @@ async function runDesktop(browser) {
 
   await page.goto(`${base}/#history`);
   await page.getByText("99 + 1 = 100").waitFor();
+  const exportButton = page.getByRole("button", { name: "Export JSON" });
+  await exportButton.waitFor({ state: "visible" });
+  assert(await exportButton.isEnabled(), "JSON export control is disabled despite a completed route");
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export JSON" }).click();
+  await exportButton.click();
   const download = await downloadPromise;
-  const downloadPath = await download.path();
-  assert(Boolean(downloadPath), "JSON export did not download");
+  assert(await download.failure() === null, "JSON export failed");
+  const downloadStream = await download.createReadStream();
+  assert(downloadStream, "JSON export did not produce readable content");
+  const downloadChunks = [];
+  for await (const chunk of downloadStream) downloadChunks.push(Buffer.from(chunk));
+  const exported = JSON.parse(Buffer.concat(downloadChunks).toString("utf8"));
+  assert(exported.product === "arithmetic-steps", "JSON export has the wrong product identifier");
+  assert(Array.isArray(exported.attempts) && exported.attempts.length === 1, "JSON export did not contain exactly the completed route");
+  assert(exported.attempts[0]?.operation === "add" && exported.attempts[0]?.first === 99 && exported.attempts[0]?.second === 1 && exported.attempts[0]?.result === 100, "JSON export content did not contain 99 + 1 = 100");
   await page.getByLabel("Import JSON").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from("{bad") });
   await page.locator(".form-error").filter({ hasText: /Expected property|Unexpected token|JSON/ }).waitFor();
   await page.getByRole("button", { name: "Clear saved routes" }).click();
@@ -117,7 +127,7 @@ async function runDesktop(browser) {
   assert(observed.pageErrors.length === 0, `page errors: ${observed.pageErrors.join("; ")}`);
 
   await context.close();
-  return { firstRead, landingAxe, demoAxe, completeAxe, historyAxe, requestCount: observed.requests.length, origins, invalidCases: invalidCases.length + 1, boundary: "99 + 1 = 100", exportDownload: true };
+  return { firstRead, landingAxe, demoAxe, completeAxe, historyAxe, requestCount: observed.requests.length, origins, invalidCases: invalidCases.length + 1, boundary: "99 + 1 = 100", exportDownload: true, exportPayload: "99 + 1 = 100" };
 }
 
 async function runMobile(browser) {

@@ -250,23 +250,66 @@ test("@claim:unfinished-persistence restores a route after a refresh", async ({ 
   await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
 });
 
-test("@claim:json-export downloads completed routes as JSON", async ({ page }) => {
-  await page.getByRole("button", { name: "8 + 7" }).click();
-  await page.getByRole("button", { name: /Begin the route/ }).click();
-  await page.getByRole("button", { name: "2", exact: true }).click();
-  await page.getByRole("button", { name: /Move the chunk/ }).click();
-  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
-  await page.goto("/#history");
-  const download = await Promise.all([
-    page.waitForEvent("download"),
-    page.getByRole("button", { name: "Export JSON" }).click()
-  ]).then(([file]) => file);
-  expect(download.suggestedFilename()).toMatch(/^arithmetic-steps-\d{4}-\d{2}-\d{2}\.json$/);
-  expect(await download.createReadStream().then(async (stream) => {
+test("@claim:json-export deterministically downloads one completed route as JSON", async ({ browser }) => {
+  // This deliberately does not use the test page/context: a new browser
+  // context has no saved routes, caches, or IndexedDB state from another
+  // claim. That makes the expected one-route export unambiguous.
+  const isolatedContext = await browser.newContext({ acceptDownloads: true });
+  const isolatedPage = await isolatedContext.newPage();
+  failOnConsoleErrors(isolatedPage);
+
+  try {
+    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+    await expect(isolatedPage.getByRole("button", { name: "Export JSON" })).toBeDisabled();
+
+    await isolatedPage.goto("http://127.0.0.1:4173/");
+    await isolatedPage.getByRole("button", { name: "8 + 7" }).click();
+    await isolatedPage.getByRole("button", { name: /Begin the route/ }).click();
+    await isolatedPage.getByRole("button", { name: "2", exact: true }).click();
+    await isolatedPage.getByRole("button", { name: /Move the chunk/ }).click();
+    await isolatedPage.getByRole("button", { name: /Join the numbers and finish/ }).click();
+    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+
+    const exportButton = isolatedPage.getByRole("button", { name: "Export JSON" });
+    await expect(isolatedPage.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
+    await expect(exportButton).toBeEnabled();
+
+    // Subscribe before the activation. Waiting after click loses the browser
+    // event because a Blob URL download is dispatched synchronously.
+    const downloadPromise = isolatedPage.waitForEvent("download");
+    await exportButton.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toMatch(/^arithmetic-steps-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(await download.failure()).toBeNull();
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
     const chunks: Buffer[] = [];
     for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
-    return Buffer.concat(chunks).toString("utf8");
-  })).toContain('"product": "arithmetic-steps"');
+    const payload = JSON.parse(Buffer.concat(chunks).toString("utf8")) as {
+      product: string;
+      exportedAt: string;
+      attempts: Array<{ schemaVersion: number; operation: string; first: number; second: number; result: number; frames: Array<{ kind: string; equation: string }> }>;
+    };
+
+    expect(payload.product).toBe("arithmetic-steps");
+    expect(Number.isNaN(Date.parse(payload.exportedAt))).toBe(false);
+    expect(payload.attempts).toHaveLength(1);
+    expect(payload.attempts[0]).toMatchObject({
+      schemaVersion: 1,
+      operation: "add",
+      first: 8,
+      second: 7,
+      result: 15,
+      frames: [
+        { kind: "start", equation: "8 + 7" },
+        { kind: "move", equation: "10 + 5" },
+        { kind: "finish", equation: "8 + 7 = 15" }
+      ]
+    });
+  } finally {
+    await isolatedContext.close();
+  }
 });
 
 test("@claim:json-import restores valid routes chosen by the user", async ({ page }) => {

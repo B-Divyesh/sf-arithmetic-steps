@@ -1,90 +1,82 @@
 # Arithmetic Steps — repair handoff
 
-Work order: `arithmetic-steps-repair-2`
-
+Work order: `arithmetic-steps-repair-3`
 Base verified candidate: `36baa8cfba30bd127a29866751ef94583983d397`
-Verifier report repaired: `.factory/verification-2.md`
+Verifier report: `.factory/verification-2.md`
 
-## Repairs
+## Repairs retained and verified
 
-- Fixed the production PWA install failure. The worker generator now excludes
-  host-only `staticwebapp.config.json` from its transactional precache. Azure
-  Static Web Apps consumes that deployment file and returns 404, so caching it
-  previously made every fresh worker redundant. The current production build
-  precaches 24 public assets; `dist/sw.js` contains no deployment-config URL.
-- Expanded `.factory/claims.json` from 3 to 16 complete public claims. Every
-  entry has one exact `@claim:<id>` Playwright regression, and the static
-  contract test enforces that one-to-one mapping. The copy audit now extracts
-  all landing-state visitor copy and maps its observable promises.
-- Enforced 44px minimum width on quick-choice controls and added a 393px
-  mobile assertion that measures the `2` addition and `8` subtraction choices.
-- Removed invalid nested complementary landmarks: the adult note is a named
-  note and the route ledger is a task section. Axe is clean on landing, demo,
-  completion, and legal pages.
-- Removed the Terms wording that implied an unfinished pedagogical review.
-  `.factory/pedagogy-review.md` records the remaining honest external-review
-  requirement instead of claiming a review that did not happen.
+- The service-worker generator excludes Azure Static Web Apps' deployment-only
+  `staticwebapp.config.json`. The current production build precaches 24 public
+  files, so a 404 for that host-consumed file cannot make installation
+  redundant. The generated worker keeps `SKIP_WAITING` and `clients.claim()`
+  for the in-app update path.
+- The public-claim inventory contains 16 claims. Each has one exact tagged
+  Playwright regression, and the static contract test enforces that mapping.
+- The 390 px quick choices meet the 44 px minimum, and the previous nested
+  complementary landmark was removed. Axe is clean on the landing, demo,
+  completed-route, history, Privacy, and Terms screens.
 
-## Verification evidence
+## JSON-export flake repair
 
-Run from a clean install:
+The controller's exact historical race was reproduced against a production
+preview before the change: clicking **Export JSON** and then registering
+`page.waitForEvent("download")` timed out after 750 ms because the browser had
+already emitted the synchronous Blob download event.
+
+- The export implementation now appends the temporary link, activates it,
+  removes it, then releases its Blob URL on the next task. This prevents a
+  browser from consuming a revoked URL.
+- `@claim:json-export` creates an explicit fresh browser context with download
+  acceptance. It proves that history starts empty, waits for **Export JSON** to
+  be enabled after exactly one completed `8 + 7 = 15` route, subscribes to the
+  download before clicking, and parses the downloaded JSON. The regression
+  checks the product id, timestamp, one exported attempt, operation, operands,
+  result, and all three route frames.
+- The independent live verifier now applies the same enabled-control and
+  parsed-content checks to its exported `99 + 1 = 100` route.
+- The exact claim was stress-run five times per desktop/mobile project (10
+  isolated executions) with no failures.
+
+## Local verification
+
+Executed from a clean install on 2026-08-29 UTC:
 
 ```sh
 npm ci
-npm run lint
 npm test -- --fully-parallel --workers=4
 npm run build
 ```
 
-Results on 2026-08-29 UTC:
+| Check | Result |
+| --- | --- |
+| `npm ci` | PASS — 61 packages; 0 vulnerabilities |
+| `npm run lint` | PASS — `tsc --noEmit` |
+| Unit/static tests | PASS — 11 tests |
+| Complete Playwright suite | PASS — 43 passed across desktop Chromium and Pixel 5; 3 intentional device-scope skips |
+| `@claim:json-export` stress run | PASS — 10 isolated runs; parsed route payload each time |
+| `npm run build` | PASS — `dist/index.html` and PWA assets generated |
+| Bundle budget | PASS — app JS 32,168 B raw / 9,523 B gzip; CSS 24,596 B raw / 5,742 B gzip |
+| PWA offline/update contract | PASS — 24 precached public files, host config absent, `SKIP_WAITING` and `clients.claim()` present |
+| `verify-url.sh` | PASS — title, `lang=en`, one h1, main, image alt text, labelled controls, and zero console errors |
+| Playwright Axe | PASS — zero violations on app and legal-page coverage |
+| Lighthouse 13.4.1 mobile | PASS — Performance 1.00, Accessibility 1.00, Best Practices 1.00, SEO 1.00; LCP 1,432 ms, TBT 0 ms, CLS 0.0049 |
 
-- `npm ci`: 61 packages installed; 0 vulnerabilities.
-- `npm run lint`: passed (`tsc --noEmit`).
-- Unit/static tests: 11 passed.
-- Complete Playwright suite: 46 tests across desktop Chromium and Pixel 5;
-  3 intentional desktop/mobile scope skips; no failed-result artifacts.
-  This includes all 16 exact claim regressions, offline reload, update-ready
-  service-worker registration, desktop/mobile paths, keyboard operation,
-  privacy-request capture, and Axe checks.
-- `npm run build`: passed; `dist/index.html` present. Main JavaScript is
-  9,477 B gzip and CSS is 5,769 B gzip.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173 .factory/qa-artifacts/repair-local`:
-  passed with no console errors, one title, `lang=en`, one `<h1>`, one `<main>`,
-  and no missing image alt text. Its screenshots and JSON report are retained
-  under `.factory/qa-artifacts/repair-local/`.
-- Playwright Axe (`@axe-core/playwright` 4.10.2): zero violations on landing,
-  demo, completed route, Privacy, and Terms. The standalone Axe CLI was also
-  attempted but cannot locate a system Chrome in this worker; the preinstalled
-  Playwright Chromium was used for the passing Axe coverage.
-- Local Lighthouse 13.4.1 mobile: Performance 1.00, Accessibility 1.00, Best
-  Practices 1.00, SEO 1.00; LCP 1,358 ms, TBT 0 ms, CLS 0.0049. Raw report:
-  `.factory/qa-artifacts/repair-local/lighthouse.json`.
+Local URL evidence, screenshots, URL verification, and Lighthouse report are
+in `.factory/qa-artifacts/repair-3-local/`.
 
 ## Deployment and live checks
 
-Static deployment remains the original `pwa-offline` artifact. Commit
-`27f5c2626d24a40d3f821b5b0a8bb23807431bd0` was pushed to `main` and deployed
-with `/opt/fleet/lib/deploy-static.sh arithmetic-steps dist` (Azure Static Web
-Apps deployment `0c04ea15-0328-4fb1-8058-2d3bce9c2956`).
+The artifact remains the original `pwa-offline` static deployment (`dist/`).
+The final commit, deployment record, live identity comparison, response-policy
+headers, fresh service-worker/offline result, desktop/mobile/keyboard result,
+privacy-request result, and JSON-export payload result will be appended here
+immediately after deployment.
 
-Live `https://arithmetic-steps.sociobot.in` verification passed on 2026-08-29:
+## Known external prerequisite
 
-- `/sw.js` is cache `arithmetic-steps-13d286afd80b` and does not contain
-  `staticwebapp.config.json`; the host correctly returns 404 for that
-  deployment-only URL.
-- Fresh `/demo` service worker: activated, controlled, one registration, and
-  an offline reload returned 200 with `52 − 18`.
-- `.factory/qa-artifacts/independent-live-qa.mjs` now asserts those conditions
-  instead of retaining the prior hard-coded failure verdict. Its live run
-  passed: zero console/request errors, same-origin requests only, no 390px
-  undersized targets, zero Axe violations, keyboard/reduced-motion pass, and
-  all app/legal/404 routes and links resolve as expected.
-
-## Known gap
-
-The brief requires teacher-reviewed pedagogy. No qualified named elementary
-teacher review is available in this repository, so this repair does not claim
-that gate is satisfied. `.factory/pedagogy-review.md` lists the exact evidence
-needed before representing the product as ready for that requirement. This is
-an external human-review dependency, not something that can be truthfully
-completed by code or deployment.
+The researched brief requires teacher-reviewed pedagogy. No qualified named
+elementary teacher review is available in this repository. The product does not
+claim academic outcomes or a completed teacher review, and
+`.factory/pedagogy-review.md` records the evidence still needed. This human
+review cannot be truthfully supplied by code, tests, or deployment.
