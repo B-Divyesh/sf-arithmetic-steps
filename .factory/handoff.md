@@ -1,42 +1,55 @@
 # Arithmetic Steps — repair handoff
 
-Work order: `arithmetic-steps-repair-3`
-Base verified candidate: `36baa8cfba30bd127a29866751ef94583983d397`
-Verifier report: `.factory/verification-2.md`
+Work order: `arithmetic-steps-repair-4`
+Base candidate: `d4036d4d4001662997220559450810eae8ca37fe`
+Independent verifier report: `7ff781f15ff59a2486e46c352cd1cefc56ec64aa` (`.factory/verification.md`)
 
-## Repairs retained and verified
+## Release-blocker repair
 
-- The service-worker generator excludes Azure Static Web Apps' deployment-only
-  `staticwebapp.config.json`. The current production build precaches 24 public
-  files, so a 404 for that host-consumed file cannot make installation
-  redundant. The generated worker keeps `SKIP_WAITING` and `clients.claim()`
-  for the in-app update path.
-- The public-claim inventory contains 16 claims. Each has one exact tagged
-  Playwright regression, and the static contract test enforces that mapping.
-- The 390 px quick choices meet the 44 px minimum, and the previous nested
-  complementary landmark was removed. Axe is clean on the landing, demo,
-  completed-route, history, Privacy, and Terms screens.
+The report’s original P0 findings remain repaired in the candidate: the public
+claim inventory, plain-language first screen, `/demo` sample route, isolated
+`demo:arithmetic-steps` namespace, demo documentation, 404, metadata,
+response policy, and offline precache were retained without changing the
+researched scope or the passed arithmetic flows.
 
-## JSON-export flake repair
+This repair closes the controller’s remaining demo-sandbox gap.
 
-The controller's exact historical race was reproduced against a production
-preview before the change: clicking **Export JSON** and then registering
-`page.waitForEvent("download")` timed out after 750 ms because the browser had
-already emitted the synchronous Blob download event.
+### Exact reproduced failure
 
-- The export implementation now appends the temporary link, activates it,
-  removes it, then releases its Blob URL on the next task. This prevents a
-  browser from consuming a revoked URL.
-- `@claim:json-export` creates an explicit fresh browser context with download
-  acceptance. It proves that history starts empty, waits for **Export JSON** to
-  be enabled after exactly one completed `8 + 7 = 15` route, subscribes to the
-  download before clicking, and parses the downloaded JSON. The regression
-  checks the product id, timestamp, one exported attempt, operation, operands,
-  result, and all three route frames.
-- The independent live verifier now applies the same enabled-control and
-  parsed-content checks to its exported `99 + 1 = 100` route.
-- The exact claim was stress-run five times per desktop/mobile project (10
-  isolated executions) with no failures.
+Before changing code, against `d4036d4`, a fresh Chromium context opened
+`/demo` and then followed the regular **Arithmetic Steps home** link. The
+observed IndexedDB names were:
+
+```json
+{
+  "before": ["demo:arithmetic-steps"],
+  "url": "http://127.0.0.1:4173/#learn",
+  "after": ["arithmetic-steps", "demo:arithmetic-steps"]
+}
+```
+
+The existing **Start for real** path deleted sample data, but an ordinary
+document navigation did not. That meant demo data could remain after leaving
+the sandbox.
+
+### Fix and regression coverage
+
+- `src/main.ts` now centralizes disposal in `discardDemoStorage()`, restoring
+  the real namespace even if IndexedDB deletion reports an error.
+- **Start for real**, browser back/forward transitions, and normal primary
+  link navigation out of demo await removal of `demo:arithmetic-steps` before
+  entering the real app or following the link. A normal real-app bootstrap
+  also removes an orphaned demo namespace before reading real routes.
+- `@claim:demo-sandbox` now first proves the landing action, then opens direct
+  `/demo`, reads the demo active route from IndexedDB, advances it, resets it,
+  preserves a sentinel in `arithmetic-steps`, and follows the actual home
+  link. It waits for the completed reset toast rather than racing IndexedDB.
+- `@claim:json-export` now runs the same completed `8 + 7` export in two new
+  browser contexts. Each starts with disabled export/history, exports exactly
+  one attempt, and the normalized payloads are identical apart from deliberate
+  route IDs and timestamps.
+- `.factory/claims.json`, `.factory/demo.md`, and `README.md` record the
+  expanded navigation-disposal behavior.
 
 ## Local verification
 
@@ -46,70 +59,72 @@ Executed from a clean install on 2026-08-29 UTC:
 npm ci
 npm test -- --fully-parallel --workers=4
 npm run build
+VERIFY_NODE_MODULES=/work/repo/node_modules /opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/ .factory/qa-artifacts/repair-4-local
 ```
 
 | Check | Result |
 | --- | --- |
-| `npm ci` | PASS — 61 packages; 0 vulnerabilities |
-| `npm run lint` | PASS — `tsc --noEmit` |
-| Unit/static tests | PASS — 11 tests |
-| Complete Playwright suite | PASS — 43 passed across desktop Chromium and Pixel 5; 3 intentional device-scope skips |
-| `@claim:json-export` stress run | PASS — 10 isolated runs; parsed route payload each time |
-| `npm run build` | PASS — `dist/index.html` and PWA assets generated |
-| Bundle budget | PASS — app JS 32,168 B raw / 9,523 B gzip; CSS 24,596 B raw / 5,742 B gzip |
-| PWA offline/update contract | PASS — 24 precached public files, host config absent, `SKIP_WAITING` and `clients.claim()` present |
-| `verify-url.sh` | PASS — title, `lang=en`, one h1, main, image alt text, labelled controls, and zero console errors |
-| Playwright Axe | PASS — zero violations on app and legal-page coverage |
-| Lighthouse 13.4.1 mobile | PASS — Performance 1.00, Accessibility 1.00, Best Practices 1.00, SEO 1.00; LCP 1,432 ms, TBT 0 ms, CLS 0.0049 |
+| Clean install | PASS — 61 packages installed; `npm audit` reported 0 vulnerabilities. |
+| Type/lint | PASS — `tsc --noEmit`. |
+| Unit/static contract | PASS — 11 Vitest tests. |
+| Desktop + mobile browser suite | PASS — 46 Playwright tests across Chromium and Pixel 5, including every registered `@claim:` case; keyboard, 390 px controls, privacy-request, import/export, offline reload, reduced motion, and Axe coverage passed. |
+| Demo-storage regression | PASS — direct `/demo` creates and updates `demo:arithmetic-steps`; a real sentinel remains untouched; the normal home link leaves only `arithmetic-steps`. |
+| Fresh-context JSON regression | PASS — two isolated contexts each emitted one complete `8 + 7 = 15` payload with equal normalized JSON. |
+| Production build | PASS — `dist/` emitted; app JS `32,941 B` raw / `9,740 B` gzip, CSS `24,596 B` raw / `5,742 B` gzip; generated worker `arithmetic-steps-c63b43b34415` precaches 24 public files and excludes `staticwebapp.config.json`. |
+| URL/accessibility smoke | PASS — no console errors; title, `lang=en`, one h1, main landmark, image alt text, and labelled controls. Evidence: `.factory/qa-artifacts/repair-4-local/verify.json`. |
+| Lighthouse 13.4.1 mobile | PASS — Performance 1.00, Accessibility 1.00, Best Practices 1.00, SEO 1.00; LCP 1,443 ms, TBT 0 ms, CLS 0.0049. The report skips only `full-page-screenshot`, which is unstable in this container; all scored audits completed. Evidence: `.factory/qa-artifacts/repair-4-local/lighthouse.json`. |
 
-Local URL evidence, screenshots, URL verification, and Lighthouse report are
-in `.factory/qa-artifacts/repair-3-local/`.
+The product is a static PWA, not a package, CLI, backend, payment, or identity
+service; package-consumer, 429, backend response-policy, and live identity
+flows are not applicable.
 
-## Deployment and live checks
+## Deployment and live verification
 
-The artifact remains the original `pwa-offline` static deployment (`dist/`).
-Commit `ff70fb9d95bc491d197e130c31bc367330bb46bb` was pushed to `main` and
-deployed with:
+Committed and pushed repair: `d9ecbd6 fix: isolate demo storage on navigation`.
+
+Deployed the unchanged static artifact with:
 
 ```sh
 /opt/fleet/lib/deploy-static.sh arithmetic-steps dist
 ```
 
-Azure Static Web Apps deployment: `c6ac386d-1122-4977-8d98-927f5a8f956f`.
-The existing Central US static site was reused and
-`https://arithmetic-steps.sociobot.in` returned 200 after deployment.
+Azure Static Web Apps deployment: `471af56f-82a3-448d-ba9f-180c1d019b6b`.
+The existing Central US site was reused and
+`https://arithmetic-steps.sociobot.in` returned 200.
 
-Independent live verification passed at 2026-08-29T20:09:54Z:
+Live checks completed at 2026-08-29T20:41:56Z:
 
-- The live `index.html`, all five referenced app assets, and `sw.js` are
-  byte-identical to `dist/`. Index SHA-256:
-  `1306d023d4b37ca2e9ceeb359185c05c48dbcc19223f1c208698d4f3cc419405`.
-  Worker SHA-256:
-  `0b5aae1ad7583e3502cb0ee9e3851cbfa02652862bcaffba8355e9ab35224b20`.
-- Response policy passes: CSP includes `frame-ancestors 'none'`,
-  `X-Frame-Options: DENY`, `Permissions-Policy`,
-  `Referrer-Policy: strict-origin-when-cross-origin`, and
-  `X-Content-Type-Options: nosniff`. `sw.js` returns
-  `Cache-Control: no-cache, no-store, must-revalidate`. The consumed
-  deployment config and an unknown route both return HTTP 404.
-- A fresh `/demo` worker is activated and controls the page (one registration,
-  cache `arithmetic-steps-02a0a6aecc7e`); it has no deployment-config URL in
-  its precache. With networking disabled, reload returns 200 and `52 − 18`.
-- Desktop and 390 px mobile exercise passed. Mobile width is 390/390 with no
-  undersized visible target. Keyboard starts at the skip link; focus uses a
-  3 px brass outline and 3 px offset. Reduced-motion replay advances one
-  station and reports that state.
-- Axe reported zero violations on landing, demo, completion, history, Privacy,
-  Terms, and the real 404. The live flow made six requests, all to the product
-  origin; it recorded no failed requests, console errors, or uncaught errors.
-- The hardened export check waited for the enabled control and parsed exactly
-  one live `99 + 1 = 100` JSON route. All rendered internal and repository
-  links returned 2xx/3xx.
+- `/opt/fleet/lib/verify-url.sh` passed with no console errors. Evidence:
+  `.factory/qa-artifacts/repair-4-live/verify.json` and its desktop/mobile
+  screenshots.
+- The independent browser exercise passed desktop flow, mobile 390 px layout,
+  keyboard skip/focus, reduced motion, 404/links, JSON import/export, privacy
+  request origins, and offline PWA reload. Axe found zero violations on
+  landing, demo, completion, history, legal pages, and 404. The mobile page
+  measured `390/390` with no target below 44 px.
+- Fresh live demo lifecycle: during demo, databases were
+  `["arithmetic-steps", "demo:arithmetic-steps"]`, demo active route was
+  `52 − 18` with two frames, and real sentinel value was `preserved`; after
+  clicking the ordinary home link, databases were `["arithmetic-steps"]` and
+  the real sentinel was still `preserved`.
+- Live PWA: worker is activated, controls the demo, has one registration and
+  cache `arithmetic-steps-c63b43b34415`; it does not precache deployment-only
+  config; offline `/demo` reload returned 200 with `52 − 18`.
+- Live response policy: CSP includes `frame-ancestors 'none'`,
+  `X-Frame-Options: DENY`, `Permissions-Policy`, `Referrer-Policy`, and
+  `X-Content-Type-Options: nosniff`; hashed JS is immutable, `sw.js` is
+  `no-cache, no-store, must-revalidate`, and an unknown path returns HTTP 404.
+- Live identity hashes match `dist/`: index
+  `271119513c8b81cce3e08f0eb63757876c49e260d38f62f9317522561639fa7b`,
+  main JS `d01e1e9f16aeb007015ef42e277195e8bc374b894edbf11c82381a67639fd865`,
+  service worker
+  `84a4da81e450c3a73ab17d3b0309e42cdf97b5c862a3bb04c4c22d85594445a0`.
 
 ## Known external prerequisite
 
-The researched brief requires teacher-reviewed pedagogy. No qualified named
-elementary teacher review is available in this repository. The product does not
-claim academic outcomes or a completed teacher review, and
-`.factory/pedagogy-review.md` records the evidence still needed. This human
-review cannot be truthfully supplied by code, tests, or deployment.
+The researched brief requires a qualified, named elementary-teacher pedagogy
+review. No such human review is available in this repository, and it has not
+been fabricated. `.factory/pedagogy-review.md` accurately records the needed
+name, date, scope, feedback, and resulting changes before any claim that the
+activity is teacher-reviewed. There are no known code, deployment, privacy, or
+test gaps from this repair.
