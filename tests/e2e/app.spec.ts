@@ -105,7 +105,7 @@ test("has a clear, accessible route planner", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Explore addition and subtraction steps");
   await expect(page.getByText("For elementary children with a teacher or parent, move counters to explain how each answer changes.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Try it with sample data" })).toBeVisible();
-  await expect(page.getByAltText(/counter trains/)).toBeVisible();
+  await expect(page.getByAltText(/counters meet inside a teal ten-frame/)).toBeVisible();
   const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(results.violations).toEqual([]);
 });
@@ -353,7 +353,7 @@ test("@claim:tens-and-ones shows each quantity as labelled tens and ones", async
 });
 
 test("@claim:direct-manipulation drags one-counters and ten-frames for both operations", async ({ page, isMobile }) => {
-  const dragToken = async (sourceName: string, targetName: string, nativeDesktop = false): Promise<void> => {
+  const dragToken = async (sourceName: string, targetName: string): Promise<void> => {
     const amount = sourceName.includes("ten-frame") ? "10" : "1";
     const source = page.locator(`[data-counter-amount="${amount}"][aria-label="${sourceName}"]`).first();
     const target = page.locator(`[data-drop-target][aria-label="${targetName}"]:visible`).last();
@@ -371,8 +371,6 @@ test("@claim:direct-manipulation drags one-counters and ten-frames for both oper
         const to = target.getBoundingClientRect();
         window.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, pointerId: 1, pointerType: "touch", clientX: to.x + to.width / 2, clientY: to.y + to.height / 2 }));
       }, { sourceName, targetName });
-    } else if (nativeDesktop) {
-      await source.dragTo(target);
     } else {
       await page.evaluate(({ sourceName: wantedSource, targetName: wantedTarget, amount: movedAmount }) => {
         const source = [...document.querySelectorAll<HTMLElement>("[data-counter-amount]")].find((element) => element.getAttribute("aria-label") === wantedSource);
@@ -389,7 +387,7 @@ test("@claim:direct-manipulation drags one-counters and ten-frames for both oper
 
   await page.getByRole("button", { name: "38 + 27" }).click();
   await page.getByRole("button", { name: /Start the problem/ }).click();
-  await dragToken("Choose one ten-frame (10) from Second number to move", "Move counters to First number", true);
+  await dragToken("Choose one ten-frame (10) from Second number to move", "Move counters to First number");
   await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
   await expect(page.locator(".route-ledger")).toContainText("Move 10 from 27 to 38");
   await dragToken("Choose one counter (1) from Second number to move", "Move counters to First number");
