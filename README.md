@@ -35,7 +35,7 @@ The product intentionally has no timer, score, streak, leaderboard, answer guess
 Requirements: Node.js 22+ and npm.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
@@ -50,7 +50,7 @@ npm run build
 
 `npm test` runs unit tests plus Playwright journeys in desktop Chromium and a 393 px mobile viewport, including an offline reload and axe accessibility scan. Playwright 1.58.2 is pinned; if its browser is missing locally, run `npx playwright install chromium` once.
 
-The three public claims are declared in [.factory/claims.json](.factory/claims.json).
+Every public product claim is declared in [.factory/claims.json](.factory/claims.json).
 Each may be run from a clean demo context with its listed command, for example:
 
 ```sh

@@ -22,7 +22,15 @@ test("has a clear, accessible route planner", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Try it with sample data" })).toBeVisible();
   await expect(page.getByAltText(/counter trains/)).toBeVisible();
   const results = await new AxeBuilder({ page: page as never }).analyze();
-  expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
+  expect(results.violations).toEqual([]);
+});
+
+test("has no axe violations on the demo or completed-route screens", async ({ page }) => {
+  await page.getByRole("button", { name: "Try it with sample data" }).click();
+  expect((await new AxeBuilder({ page: page as never }).analyze()).violations).toEqual([]);
+  await page.getByRole("button", { name: /Take away the chunk/ }).click();
+  await page.getByRole("button", { name: "Finish the route" }).click();
+  expect((await new AxeBuilder({ page: page as never }).analyze()).violations).toEqual([]);
 });
 
 test("completes, narrates, replays, and saves an addition route", async ({ page }) => {
@@ -142,6 +150,8 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
 
 test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context, isMobile }) => {
   test.skip(isMobile, "one Chromium offline run covers the same service worker");
+  const workerRequests: string[] = [];
+  page.on("request", (request) => workerRequests.push(new URL(request.url()).pathname));
   await page.goto("/demo");
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
@@ -152,6 +162,7 @@ test("@claim:offline-reload works offline after the first visit from the demo en
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
   await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
+  expect(workerRequests).not.toContain("/staticwebapp.config.json");
 });
 
 test("@claim:local-only keeps route activity local and has no account controls", async ({ page }) => {
@@ -165,13 +176,169 @@ test("@claim:local-only keeps route activity local and has no account controls",
   await expect(page.getByText(/score/i)).toHaveCount(0);
 });
 
-test("fits the phone viewport and retains keyboard-sized controls", async ({ page, isMobile }) => {
+test("@claim:tens-and-ones shows each quantity as labelled tens and ones", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await expect(page.getByRole("img", { name: "First number: 8, shown as 0 tens and 8 ones" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Second number: 7, shown as 0 tens and 7 ones" })).toBeVisible();
+});
+
+test("@claim:narrated-steps records a sentence for each chosen chunk", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await expect(page.locator(".route-ledger")).toContainText("Move 2 from 7 to 8");
+  await expect(page.locator(".route-ledger")).toContainText("10 + 5");
+});
+
+test("@claim:replay-and-discussion replays a route and shows discussion prompts", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await page.getByRole("button", { name: "Previous" }).click();
+  await expect(page.locator(".replay-narration")).toContainText("Move 2 from 7 to 8");
+  await expect(page.getByRole("heading", { name: "Talk at the station" })).toBeVisible();
+  await expect(page.getByText("What stayed the same?")).toBeVisible();
+});
+
+test("@claim:free-no-account exposes no payment, account, or score path", async ({ page }) => {
+  await expect(page.getByText("Free with no accounts or scores.")).toBeVisible();
+  await expect(page.locator('input[type="password"], input[type="email"], [href*="login" i], [href*="signup" i], [href*="checkout" i]')).toHaveCount(0);
+  await expect(page.getByText(/price|subscription|purchase|leaderboard/i)).toHaveCount(0);
+});
+
+test("@claim:arithmetic-bounds accepts only whole-number routes through 100", async ({ page }) => {
+  await page.getByLabel("First number").fill("90");
+  await page.getByLabel("Second number").fill("20");
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await expect(page.getByText("Choose numbers with a total of 100 or less.")).toBeVisible();
+  await page.getByLabel("First number").fill("1.5");
+  await page.getByLabel("Second number").fill("2");
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await expect(page.getByText("Use whole numbers from 0 to 100.")).toBeVisible();
+  await page.getByRole("radio", { name: "Subtract" }).focus();
+  await page.getByRole("radio", { name: "Subtract" }).press("Space");
+  await page.getByLabel("Start at").fill("5");
+  await page.getByLabel("Take away").fill("6");
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await expect(page.getByText("For this route, the number being taken away must be smaller than the starting number.")).toBeVisible();
+});
+
+test("@claim:keyboard-controls operates a route without dragging", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).focus();
+  await page.getByRole("button", { name: "8 + 7" }).press("Enter");
+  await page.getByRole("button", { name: /Begin the route/ }).focus();
+  await page.getByRole("button", { name: /Begin the route/ }).press("Enter");
+  await page.getByRole("button", { name: "2", exact: true }).focus();
+  await page.getByRole("button", { name: "2", exact: true }).press("Space");
+  await page.getByRole("button", { name: /Move the chunk/ }).press("Enter");
+  await expect(page.getByText("10 + 5", { exact: true }).first()).toBeVisible();
+  await expect(page.locator('[draggable="true"]')).toHaveCount(0);
+});
+
+test("@claim:unfinished-persistence restores a route after a refresh", async ({ page }) => {
+  await page.getByRole("button", { name: "38 + 27" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "10", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("38 + 27");
+  await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
+});
+
+test("@claim:json-export downloads completed routes as JSON", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await page.goto("/#history");
+  const download = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: "Export JSON" }).click()
+  ]).then(([file]) => file);
+  expect(download.suggestedFilename()).toMatch(/^arithmetic-steps-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(await download.createReadStream().then(async (stream) => {
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+    return Buffer.concat(chunks).toString("utf8");
+  })).toContain('"product": "arithmetic-steps"');
+});
+
+test("@claim:json-import restores valid routes chosen by the user", async ({ page }) => {
+  await page.goto("/#history");
+  await page.getByLabel("Import JSON").setInputFiles({
+    name: "routes.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify({ attempts: [{
+      schemaVersion: 1,
+      id: "imported-route",
+      operation: "add",
+      first: 8,
+      second: 7,
+      result: 15,
+      createdAt: "2026-08-29T00:00:00.000Z",
+      frames: [
+        { left: 8, right: 7, equation: "8 + 7", narration: "Start with 8 and 7.", kind: "start" },
+        { left: 15, right: 0, equation: "8 + 7 = 15", narration: "Join the numbers.", kind: "finish" }
+      ]
+    }] }))
+  });
+  await expect(page.getByText("8 + 7 = 15")).toBeVisible();
+  await expect(page.getByText("1 route imported.")).toBeVisible();
+});
+
+test("@claim:print-card opens the browser print action for the discussion card", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await page.evaluate(() => {
+    const sandboxWindow = window as Window & { printed?: boolean };
+    sandboxWindow.print = () => { sandboxWindow.printed = true; };
+  });
+  await page.getByRole("button", { name: "Print discussion card" }).click();
+  await expect.poll(() => page.evaluate(() => (window as Window & { printed?: boolean }).printed)).toBe(true);
+});
+
+test("@claim:reduced-motion makes replay manual", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Begin the route/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await page.getByRole("button", { name: "Play route" }).click();
+  await expect(page.getByText("Reduced motion is on, so replay advances one station at a time.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Play route" })).toBeVisible();
+});
+
+test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser", async ({ page }) => {
+  await expect(page.locator('[data-timer], [data-streak], [data-leaderboard], input[placeholder*="answer" i]')).toHaveCount(0);
+  await expect(page.getByText(/timer|streak|leaderboard|guess the answer/i)).toHaveCount(0);
+});
+
+test("@claim:mobile-controls fits the 390px viewport with 44px controls", async ({ page, isMobile }) => {
   test.skip(!isMobile, "mobile-only viewport check");
   const metrics = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth }));
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
   const begin = page.getByRole("button", { name: /Begin the route/ });
   const box = await begin.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await begin.click();
+  const addQuickChoice = await page.getByRole("button", { name: "2", exact: true }).boundingBox();
+  expect(addQuickChoice?.width).toBeGreaterThanOrEqual(44);
+  expect(addQuickChoice?.height).toBeGreaterThanOrEqual(44);
+  await page.goto("/demo");
+  const subtractQuickChoice = await page.getByRole("button", { name: "8", exact: true }).boundingBox();
+  expect(subtractQuickChoice?.width).toBeGreaterThanOrEqual(44);
+  expect(subtractQuickChoice?.height).toBeGreaterThanOrEqual(44);
 });
 
 test("legal pages keep the same accessible shell", async ({ page }) => {

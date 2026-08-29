@@ -13,7 +13,16 @@ async function filesInside(directory) {
   return nested.flat();
 }
 
-const paths = (await filesInside(root)).filter((path) => !path.endsWith("sw.js") && !path.endsWith(".map"));
+// Azure Static Web Apps consumes this deployment-only file rather than serving
+// it. Including it in cache.addAll makes the whole install transactional and
+// therefore fail on the live host. Keep host configuration out of the app
+// shell; everything left here is a public runtime asset.
+const deploymentOnlyFiles = new Set(["staticwebapp.config.json"]);
+const paths = (await filesInside(root)).filter((path) =>
+  !path.endsWith("sw.js") &&
+  !path.endsWith(".map") &&
+  !deploymentOnlyFiles.has(path.split(sep).at(-1) ?? "")
+);
 const urls = paths.map((path) => `/${relative(root.pathname, path).split(sep).join("/")}`);
 urls.push("/");
 const digest = createHash("sha256");

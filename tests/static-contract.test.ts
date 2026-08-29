@@ -36,4 +36,25 @@ describe("static hosting contract", () => {
     const source = await readFile(resolve(root, "src/main.ts"), "utf8");
     expect(source).not.toContain('style="--i:');
   });
+
+  it("keeps deployment-only metadata out of the production precache", async () => {
+    const generator = await readFile(resolve(root, "scripts/generate-sw.mjs"), "utf8");
+    expect(generator).toContain('deploymentOnlyFiles');
+    expect(generator).toContain('staticwebapp.config.json');
+
+    expect(generator).toContain('!deploymentOnlyFiles.has');
+  });
+
+  it("gives every registered public claim one exactly tagged browser regression", async () => {
+    const [claimsText, browserTests] = await Promise.all([
+      readFile(resolve(root, ".factory/claims.json"), "utf8"),
+      readFile(resolve(root, "tests/e2e/app.spec.ts"), "utf8")
+    ]);
+    const claims = JSON.parse(claimsText) as { id: string; test: string }[];
+    expect(claims.length).toBeGreaterThan(3);
+    for (const claim of claims) {
+      expect(claim.test).toBe(`npm test -- --grep @claim:${claim.id}`);
+      expect(browserTests.match(new RegExp(`@claim:${claim.id}`, "g"))).toHaveLength(1);
+    }
+  });
 });

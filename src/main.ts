@@ -226,10 +226,10 @@ function setupTemplate(): string {
       <p class="form-error" id="form-error" aria-live="assertive">${escapeHtml(state.error)}</p>
       <button class="primary-button" type="submit">Begin the route <span aria-hidden="true">→</span></button>
     </form>
-    <aside class="grownup-note">
+    <div class="grownup-note" role="note" aria-labelledby="grownup-note-title">
       <span class="station-dot" aria-hidden="true"></span>
-      <div><h3>For the grown-up nearby</h3><p>Let the child choose the chunk, even when it is not the shortest path. Ask “What stayed the same?” before offering a strategy.</p></div>
-    </aside>
+      <div><h3 id="grownup-note-title">For the grown-up nearby</h3><p>Let the child choose the chunk, even when it is not the shortest path. Ask “What stayed the same?” before offering a strategy.</p></div>
+    </div>
   </section>
   <section class="three-stops" aria-labelledby="how-title">
     <p class="eyebrow">How it works</p><h2 id="how-title">A thought becomes a route</h2>
@@ -287,13 +287,13 @@ function controlsTemplate(route: ActiveRoute, frame: RouteFrame): string {
 }
 
 function ledgerTemplate(route: ActiveRoute, activeIndex = route.frames.length - 1): string {
-  return `<aside class="route-ledger" aria-labelledby="ledger-title">
+  return `<section class="route-ledger" aria-labelledby="ledger-title">
     <div class="ledger-heading"><span class="route-line" aria-hidden="true"></span><div><p>Reasoning trail</p><h2 id="ledger-title">Route stations</h2></div></div>
     <ol>${route.frames.map((frame, index) => `<li class="${index === activeIndex ? "is-current" : ""} ${frame.kind === "finish" ? "is-finish" : ""}">
       <span class="ledger-marker" aria-hidden="true">${index + 1}</span>
       <div><strong>${escapeHtml(frame.equation)}</strong><p>${escapeHtml(frame.narration)}</p></div>
     </li>`).join("")}</ol>
-  </aside>`;
+  </section>`;
 }
 
 function workTemplate(): string {

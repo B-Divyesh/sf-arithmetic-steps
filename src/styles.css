@@ -241,6 +241,7 @@ legend, .chunk-picker > label, .reason-picker { display: block; margin-bottom: 1
 .example-row { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .example-row > span { margin-right: 4px; color: var(--muted); font-weight: 800; }
 .route-chip, .suggestion {
+  min-width: 44px;
   min-height: 44px;
   padding: 8px 14px;
   color: var(--ink);

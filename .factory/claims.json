@@ -1,23 +1,18 @@
 [
-  {
-    "id": "demo-sandbox",
-    "claim": "Try it with sample data opens an isolated 52 − 18 route.",
-    "where": "Landing page primary action and Demo banner",
-    "test": "npm test -- --grep @claim:demo-sandbox",
-    "sandbox": "Fresh browser context; opens the landing action, asserts /demo, sample route, demo namespace, reset-on-leave behavior."
-  },
-  {
-    "id": "offline-reload",
-    "claim": "Works offline after the first visit.",
-    "where": "Landing page fact and README",
-    "test": "npm test -- --grep @claim:offline-reload",
-    "sandbox": "Fresh browser context at /demo; waits for the service worker, sets the context offline, reloads, and asserts the sample route remains available."
-  },
-  {
-    "id": "local-only",
-    "claim": "Routes stay only on this device; there are no account or score controls, or third-party requests.",
-    "where": "Landing page fact, footer, Privacy page, and README",
-    "test": "npm test -- --grep @claim:local-only",
-    "sandbox": "Fresh browser context; records every request while opening and advancing the demo route, then asserts same-origin traffic only and no account or embedded-frame controls."
-  }
+  {"id":"demo-sandbox","claim":"Try it with sample data opens an isolated 52 − 18 route.","where":"Landing page primary action, Demo banner, README","test":"npm test -- --grep @claim:demo-sandbox","sandbox":"Fresh browser context; opens the landing action, asserts /demo, sample route, demo namespace, reset-on-leave behavior."},
+  {"id":"offline-reload","claim":"Works offline after the first visit.","where":"Landing page fact, README, Terms","test":"npm test -- --grep @claim:offline-reload","sandbox":"Fresh browser context at /demo; waits for an installed controller, asserts the worker never requests host-only Static Web Apps metadata, goes offline, reloads, and asserts the sample route remains available."},
+  {"id":"local-only","claim":"Routes stay only on this device; there are no account controls or third-party runtime requests.","where":"Landing page fact, footer, Privacy page, README","test":"npm test -- --grep @claim:local-only","sandbox":"Fresh browser context; records every request while opening and advancing the demo route, then asserts same-origin traffic only and no account or embedded-frame controls."},
+  {"id":"tens-and-ones","claim":"Counters show each quantity as tens and ones.","where":"Landing page How it works, README","test":"npm test -- --grep @claim:tens-and-ones","sandbox":"Fresh route for 8 + 7; asserts both visible quantities have exact tens-and-ones screen-reader labels."},
+  {"id":"narrated-steps","claim":"Each chosen chunk becomes a plain-language route sentence.","where":"Landing page How it works, README","test":"npm test -- --grep @claim:narrated-steps","sandbox":"Fresh 8 + 7 route; moves 2 and asserts its equation and narration in the reasoning trail."},
+  {"id":"replay-and-discussion","claim":"A finished route can be replayed and used with discussion prompts.","where":"Landing page How it works, README","test":"npm test -- --grep @claim:replay-and-discussion","sandbox":"Fresh completed 8 + 7 route; steps backward through replay and asserts the discussion card prompts."},
+  {"id":"free-no-account","claim":"The product is free and has no account, payment, or score path.","where":"Landing page fact, README","test":"npm test -- --grep @claim:free-no-account","sandbox":"Fresh landing page; asserts the free statement and absence of payment, account, subscription, and leaderboard controls."},
+  {"id":"arithmetic-bounds","claim":"Addition and subtraction routes use whole numbers with results from 0 to 100.","where":"README","test":"npm test -- --grep @claim:arithmetic-bounds","sandbox":"Fresh planner; asserts specific recovery errors for sum over 100, decimal input, and subtraction below zero."},
+  {"id":"keyboard-controls","claim":"Route controls work by keyboard and do not require dragging.","where":"README","test":"npm test -- --grep @claim:keyboard-controls","sandbox":"Fresh 8 + 7 route; uses Enter and Space to choose, begin, select a chunk, and move it; asserts no draggable control exists."},
+  {"id":"unfinished-persistence","claim":"An unfinished route survives a refresh in this browser.","where":"README, Privacy page","test":"npm test -- --grep @claim:unfinished-persistence","sandbox":"Fresh 38 + 27 route; makes a move, reloads, and asserts the same intermediate equation returns."},
+  {"id":"json-export","claim":"Completed routes export as JSON.","where":"README, Saved routes","test":"npm test -- --grep @claim:json-export","sandbox":"Fresh completed route; downloads the export and asserts its dated filename and product identifier."},
+  {"id":"json-import","claim":"A chosen JSON route file imports into Saved routes.","where":"README, Saved routes, Privacy page","test":"npm test -- --grep @claim:json-import","sandbox":"Fresh Saved routes page; uploads a valid fixture and asserts the imported equation and confirmation."},
+  {"id":"print-card","claim":"A finished route has a print-ready discussion card.","where":"README, completion actions","test":"npm test -- --grep @claim:print-card","sandbox":"Fresh completed route; replaces browser print in the sandbox, presses Print discussion card, and asserts that print is invoked."},
+  {"id":"reduced-motion","claim":"With reduced motion enabled, replay advances one station at a time.","where":"README","test":"npm test -- --grep @claim:reduced-motion","sandbox":"Fresh completed route with prefers-reduced-motion; presses Play route and asserts the manual-replay notice and unchanged play control."},
+  {"id":"mobile-controls","claim":"The 390 px layout has no horizontal overflow and keeps controls at least 44 px tall and wide.","where":"README","test":"npm test -- --grep @claim:mobile-controls","sandbox":"Pixel 5 browser project (393 CSS px); asserts no horizontal overflow and measures the primary and 2/8 quick-choice controls."},
+  {"id":"no-game-mechanics","claim":"The product has no timer, streak, leaderboard, or answer-guessing control.","where":"README","test":"npm test -- --grep @claim:no-game-mechanics","sandbox":"Fresh landing page; asserts no timer, streak, leaderboard, or answer-entry control or text."}
 ]
