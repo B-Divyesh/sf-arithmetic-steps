@@ -68,10 +68,43 @@ in `.factory/qa-artifacts/repair-3-local/`.
 ## Deployment and live checks
 
 The artifact remains the original `pwa-offline` static deployment (`dist/`).
-The final commit, deployment record, live identity comparison, response-policy
-headers, fresh service-worker/offline result, desktop/mobile/keyboard result,
-privacy-request result, and JSON-export payload result will be appended here
-immediately after deployment.
+Commit `ff70fb9d95bc491d197e130c31bc367330bb46bb` was pushed to `main` and
+deployed with:
+
+```sh
+/opt/fleet/lib/deploy-static.sh arithmetic-steps dist
+```
+
+Azure Static Web Apps deployment: `c6ac386d-1122-4977-8d98-927f5a8f956f`.
+The existing Central US static site was reused and
+`https://arithmetic-steps.sociobot.in` returned 200 after deployment.
+
+Independent live verification passed at 2026-08-29T20:09:54Z:
+
+- The live `index.html`, all five referenced app assets, and `sw.js` are
+  byte-identical to `dist/`. Index SHA-256:
+  `1306d023d4b37ca2e9ceeb359185c05c48dbcc19223f1c208698d4f3cc419405`.
+  Worker SHA-256:
+  `0b5aae1ad7583e3502cb0ee9e3851cbfa02652862bcaffba8355e9ab35224b20`.
+- Response policy passes: CSP includes `frame-ancestors 'none'`,
+  `X-Frame-Options: DENY`, `Permissions-Policy`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, and
+  `X-Content-Type-Options: nosniff`. `sw.js` returns
+  `Cache-Control: no-cache, no-store, must-revalidate`. The consumed
+  deployment config and an unknown route both return HTTP 404.
+- A fresh `/demo` worker is activated and controls the page (one registration,
+  cache `arithmetic-steps-02a0a6aecc7e`); it has no deployment-config URL in
+  its precache. With networking disabled, reload returns 200 and `52 − 18`.
+- Desktop and 390 px mobile exercise passed. Mobile width is 390/390 with no
+  undersized visible target. Keyboard starts at the skip link; focus uses a
+  3 px brass outline and 3 px offset. Reduced-motion replay advances one
+  station and reports that state.
+- Axe reported zero violations on landing, demo, completion, history, Privacy,
+  Terms, and the real 404. The live flow made six requests, all to the product
+  origin; it recorded no failed requests, console errors, or uncaught errors.
+- The hardened export check waited for the enabled control and parsed exactly
+  one live `99 + 1 = 100` JSON route. All rendered internal and repository
+  links returned 2xx/3xx.
 
 ## Known external prerequisite
 
