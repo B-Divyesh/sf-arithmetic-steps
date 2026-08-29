@@ -283,7 +283,7 @@ test("@claim:local-only keeps the complete cold-load and worker flow first-party
     expect(requests.some((request) => request.fromWorker)).toBe(true);
     expect(requests.every((request) => request.origin === "http://127.0.0.1:4173")).toBe(true);
     expect(requests.every((request) => request.method === "GET" && request.postData === null)).toBe(true);
-    await expect(isolatedPage.locator('input[type="password"], input[name*="email" i], iframe')).toHaveCount(0);
+    await expect(isolatedPage.locator('input[type="text"], input[type="email"], input[type="password"], input[name*="name" i], input[name*="age" i], input[name*="school" i], iframe')).toHaveCount(0);
     await expect(isolatedPage.getByText(/score/i)).toHaveCount(0);
   } finally {
     await isolatedContext.close();
@@ -321,7 +321,7 @@ test("@claim:installable-pwa ships a valid manifest and controlling offline work
 
 test("@claim:visible-focus shows a designed focus ring during keyboard use", async ({ page }) => {
   await page.keyboard.press("Tab");
-  const skipLink = page.getByRole("link", { name: "Skip to the number workshop" });
+  const skipLink = page.getByRole("link", { name: "Skip to main content" });
   await expect(skipLink).toBeFocused();
   await expect(skipLink).toBeVisible();
   const focusStyle = await skipLink.evaluate((element) => {
