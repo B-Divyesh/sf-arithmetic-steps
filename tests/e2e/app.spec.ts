@@ -1,10 +1,95 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Browser, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
     if (message.type() === "error") throw new Error(`Browser console error: ${message.text()}`);
   });
+}
+
+async function readSetting(page: Page, databaseName: string, key: string): Promise<unknown> {
+  return page.evaluate(async ({ databaseName: name, settingKey }) => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open(name);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const value = await new Promise<{ key: string; value: unknown } | undefined>((resolve, reject) => {
+      const request = database.transaction("settings").objectStore("settings").get(settingKey);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    database.close();
+    return value?.value;
+  }, { databaseName, settingKey: key });
+}
+
+type ExportedAttempt = {
+  id: string;
+  createdAt: string;
+  schemaVersion: number;
+  operation: string;
+  first: number;
+  second: number;
+  result: number;
+  frames: Array<{ kind: string; equation: string }>;
+};
+
+type ExportPayload = {
+  product: string;
+  exportedAt: string;
+  attempts: ExportedAttempt[];
+};
+
+async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<ExportPayload> {
+  const isolatedContext = await browser.newContext({ acceptDownloads: true });
+  const isolatedPage = await isolatedContext.newPage();
+  failOnConsoleErrors(isolatedPage);
+
+  try {
+    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+    await expect(isolatedPage.getByRole("button", { name: "Export JSON" })).toBeDisabled();
+
+    await isolatedPage.goto("http://127.0.0.1:4173/");
+    await isolatedPage.getByRole("button", { name: "8 + 7" }).click();
+    await isolatedPage.getByRole("button", { name: /Begin the route/ }).click();
+    await isolatedPage.getByRole("button", { name: "2", exact: true }).click();
+    await isolatedPage.getByRole("button", { name: /Move the chunk/ }).click();
+    await isolatedPage.getByRole("button", { name: /Join the numbers and finish/ }).click();
+    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+
+    const exportButton = isolatedPage.getByRole("button", { name: "Export JSON" });
+    await expect(isolatedPage.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
+    await expect(exportButton).toBeEnabled();
+
+    // Subscribe before the activation. Waiting after click loses the browser
+    // event because a Blob URL download is dispatched synchronously.
+    const downloadPromise = isolatedPage.waitForEvent("download");
+    await exportButton.click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toMatch(/^arithmetic-steps-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(await download.failure()).toBeNull();
+    const stream = await download.createReadStream();
+    expect(stream).not.toBeNull();
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+    return JSON.parse(Buffer.concat(chunks).toString("utf8")) as ExportPayload;
+  } finally {
+    await isolatedContext.close();
+  }
+}
+
+function stableExport(payload: ExportPayload): object {
+  return {
+    product: payload.product,
+    exportedAt: "timestamp",
+    attempts: payload.attempts.map(({ id: _id, createdAt: _createdAt, ...attempt }) => ({
+      id: "route-id",
+      createdAt: "timestamp",
+      ...attempt
+    }))
+  };
 }
 
 test.beforeEach(async ({ page }) => {
@@ -112,40 +197,47 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   });
   await page.getByRole("button", { name: "Try it with sample data" }).click();
   await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
+  await page.getByRole("button", { name: "Start for real" }).click();
+  await expect(page).toHaveURL(/\/#learn$/);
+
+  // Regression: this used to pass only through the Start for real button.
+  // Going directly to /demo, then following the normal home link, left the
+  // demo database behind even though the visible demo had been exited.
+  await page.goto("/demo");
+  await expect(page).toHaveURL(/\/demo$/);
   await expect(page).toHaveTitle("Demo — Arithmetic Steps");
   await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
   await expect(page.getByText("42 − 8", { exact: true }).first()).toBeVisible();
+
+  const initialDemoRoute = await readSetting(page, "demo:arithmetic-steps", "active-route") as { first: number; second: number; frames: unknown[] };
+  expect(initialDemoRoute).toMatchObject({ first: 52, second: 18 });
+  expect(initialDemoRoute.frames).toHaveLength(2);
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
+  expect(await readSetting(page, "arithmetic-steps", "active-route")).toBeUndefined();
+
   await page.getByRole("button", { name: /Take away the chunk/ }).click();
   await expect(page.getByText(/Nothing is left to take away/)).toBeVisible();
+  const changedDemoRoute = await readSetting(page, "demo:arithmetic-steps", "active-route") as { frames: Array<{ equation: string }> };
+  expect(changedDemoRoute.frames.at(-1)).toMatchObject({ left: 34, right: 0, equation: "34" });
   await page.getByRole("button", { name: "Reset demo" }).click();
-  await expect(page.getByText("42 − 8", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("The 52 − 18 sample route is ready again.")).toBeVisible();
+  const resetDemoRoute = await readSetting(page, "demo:arithmetic-steps", "active-route") as { frames: unknown[] };
+  expect(resetDemoRoute.frames).toHaveLength(2);
 
   const names = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(names).toContain("demo:arithmetic-steps");
   expect(names).toContain("arithmetic-steps");
-  const realSentinel = await page.evaluate(async () => {
-    const database = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open("arithmetic-steps");
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-    const value = await new Promise<{ key: string; value: string } | undefined>((resolve, reject) => {
-      const request = database.transaction("settings").objectStore("settings").get("real-sentinel");
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-    database.close();
-    return value?.value;
-  });
-  expect(realSentinel).toBe("keep-real-data");
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
 
-  await page.getByRole("button", { name: "Start for real" }).click();
+  await page.getByRole("link", { name: "Arithmetic Steps home" }).click();
   await expect(page).toHaveURL(/\/#learn$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Explore addition and subtraction steps");
   const namesAfterLeaving = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(namesAfterLeaving).not.toContain("demo:arithmetic-steps");
   expect(namesAfterLeaving).toContain("arithmetic-steps");
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
 });
 
 test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context, isMobile }) => {
@@ -251,47 +343,15 @@ test("@claim:unfinished-persistence restores a route after a refresh", async ({ 
 });
 
 test("@claim:json-export deterministically downloads one completed route as JSON", async ({ browser }) => {
-  // This deliberately does not use the test page/context: a new browser
-  // context has no saved routes, caches, or IndexedDB state from another
-  // claim. That makes the expected one-route export unambiguous.
-  const isolatedContext = await browser.newContext({ acceptDownloads: true });
-  const isolatedPage = await isolatedContext.newPage();
-  failOnConsoleErrors(isolatedPage);
+  // Run the same action in two entirely new browser contexts. This catches a
+  // history leak from another demo/claim while making the route data and JSON
+  // key order deterministic apart from intentional route/timestamp metadata.
+  const [firstExport, secondExport] = await Promise.all([
+    exportCompletedRouteFromFreshContext(browser),
+    exportCompletedRouteFromFreshContext(browser)
+  ]);
 
-  try {
-    await isolatedPage.goto("http://127.0.0.1:4173/#history");
-    await expect(isolatedPage.getByRole("button", { name: "Export JSON" })).toBeDisabled();
-
-    await isolatedPage.goto("http://127.0.0.1:4173/");
-    await isolatedPage.getByRole("button", { name: "8 + 7" }).click();
-    await isolatedPage.getByRole("button", { name: /Begin the route/ }).click();
-    await isolatedPage.getByRole("button", { name: "2", exact: true }).click();
-    await isolatedPage.getByRole("button", { name: /Move the chunk/ }).click();
-    await isolatedPage.getByRole("button", { name: /Join the numbers and finish/ }).click();
-    await isolatedPage.goto("http://127.0.0.1:4173/#history");
-
-    const exportButton = isolatedPage.getByRole("button", { name: "Export JSON" });
-    await expect(isolatedPage.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
-    await expect(exportButton).toBeEnabled();
-
-    // Subscribe before the activation. Waiting after click loses the browser
-    // event because a Blob URL download is dispatched synchronously.
-    const downloadPromise = isolatedPage.waitForEvent("download");
-    await exportButton.click();
-    const download = await downloadPromise;
-
-    expect(download.suggestedFilename()).toMatch(/^arithmetic-steps-\d{4}-\d{2}-\d{2}\.json$/);
-    expect(await download.failure()).toBeNull();
-    const stream = await download.createReadStream();
-    expect(stream).not.toBeNull();
-    const chunks: Buffer[] = [];
-    for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
-    const payload = JSON.parse(Buffer.concat(chunks).toString("utf8")) as {
-      product: string;
-      exportedAt: string;
-      attempts: Array<{ schemaVersion: number; operation: string; first: number; second: number; result: number; frames: Array<{ kind: string; equation: string }> }>;
-    };
-
+  for (const payload of [firstExport, secondExport]) {
     expect(payload.product).toBe("arithmetic-steps");
     expect(Number.isNaN(Date.parse(payload.exportedAt))).toBe(false);
     expect(payload.attempts).toHaveLength(1);
@@ -307,9 +367,9 @@ test("@claim:json-export deterministically downloads one completed route as JSON
         { kind: "finish", equation: "8 + 7 = 15" }
       ]
     });
-  } finally {
-    await isolatedContext.close();
   }
+
+  expect(stableExport(firstExport)).toEqual(stableExport(secondExport));
 });
 
 test("@claim:json-import restores valid routes chosen by the user", async ({ page }) => {

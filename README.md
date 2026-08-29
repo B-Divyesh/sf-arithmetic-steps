@@ -14,7 +14,8 @@ Open [the sample route](https://arithmetic-steps.sociobot.in/demo), or press
 **Try it with sample data** on the landing page. It starts a part-complete
 `52 − 18` route so a learner can finish the last chunk and replay the
 reasoning right away. Demo data is isolated in `demo:arithmetic-steps` and is
-discarded by **Reset demo** or **Start for real**. See
+discarded by **Reset demo**, **Start for real**, or an ordinary link away from
+demo. See
 [.factory/demo.md](.factory/demo.md) for the sandbox details.
 
 ## What v1 includes

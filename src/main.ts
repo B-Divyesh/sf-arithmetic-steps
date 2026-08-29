@@ -39,8 +39,12 @@ const toast = requiredElement<HTMLDivElement>("#toast");
 const networkBanner = requiredElement<HTMLDivElement>("#network-banner");
 const demoBanner = requiredElement<HTMLDivElement>("#demo-banner");
 
+function urlIsDemo(url: URL): boolean {
+  return url.pathname === "/demo" || url.searchParams.get("demo") === "1";
+}
+
 function locationIsDemo(): boolean {
-  return location.pathname === "/demo" || new URLSearchParams(location.search).get("demo") === "1";
+  return urlIsDemo(new URL(location.href));
 }
 
 type View = "setup" | "work" | "complete" | "history";
@@ -125,11 +129,28 @@ async function resetDemo(): Promise<void> {
   document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
 }
 
+/**
+ * Demo storage is disposable by design. Always restore the real namespace,
+ * including when IndexedDB reports a blocked deletion, so a failed cleanup
+ * can never route later work into the demo database.
+ */
+async function discardDemoStorage(): Promise<void> {
+  setStorageMode("demo");
+  try {
+    await resetCurrentStorage();
+  } finally {
+    setStorageMode("real");
+  }
+}
+
 async function leaveDemo(replaceLocation = true): Promise<void> {
   stopReplay();
-  setStorageMode("demo");
-  await resetCurrentStorage().catch(() => undefined);
-  setStorageMode("real");
+  try {
+    await discardDemoStorage();
+  } catch {
+    showToast("The sample could not be cleared. Close other Arithmetic Steps tabs, then try again.");
+    return;
+  }
   state.isDemo = false;
   state.view = "setup";
   state.route = null;
@@ -141,6 +162,15 @@ async function leaveDemo(replaceLocation = true): Promise<void> {
   updateDemoBanner();
   render();
   document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+}
+
+async function navigateAwayFromDemo(destination: URL): Promise<void> {
+  try {
+    await discardDemoStorage();
+    window.location.assign(destination.href);
+  } catch {
+    showToast("The sample could not be cleared. Close other Arithmetic Steps tabs, then try again.");
+  }
 }
 
 const escapeHtml = (value: string | number) => String(value)
@@ -559,6 +589,21 @@ window.addEventListener("popstate", () => {
   else void leaveDemo(false);
 });
 
+// Header, footer, and legal-page links are regular links so they retain their
+// expected browser behavior. In demo mode, wait for its disposable database
+// to be removed before following an ordinary navigation away from /demo.
+// This covers the common home/privacy/footer exits that cannot be handled by
+// the app's History API callback alone.
+document.addEventListener("click", (event) => {
+  if (!state.isDemo || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+  if (!target || target.target || target.hasAttribute("download")) return;
+  const destination = new URL(target.href, location.href);
+  if (urlIsDemo(destination)) return;
+  event.preventDefault();
+  void navigateAwayFromDemo(destination);
+});
+
 document.querySelector<HTMLButtonElement>("#reset-demo")?.addEventListener("click", () => { void resetDemo(); });
 document.querySelector<HTMLButtonElement>("#start-real")?.addEventListener("click", () => { void leaveDemo(); });
 
@@ -601,6 +646,16 @@ async function registerServiceWorker(): Promise<void> {
 
 async function bootstrap(): Promise<void> {
   updateDemoBanner();
+  // A real-app load may follow an ordinary document navigation from /demo.
+  // Await cleanup before rendering so the old sample cannot survive that exit
+  // even if a browser did not run the preceding page's click handler.
+  if (!state.isDemo) {
+    try {
+      await discardDemoStorage();
+    } catch {
+      showToast("A previous sample could not be cleared. Close other Arithmetic Steps tabs, then reload.");
+    }
+  }
   if (location.hash === "#history") { await renderHistory(); void registerServiceWorker(); return; }
   try {
     const active = await loadActive();

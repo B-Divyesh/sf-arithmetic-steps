@@ -14,8 +14,10 @@ routes use `arithmetic-steps`; the app selects the demo database before any
 route data is read or written. The persistent banner identifies demo mode.
 
 **Reset demo** deletes only `demo:arithmetic-steps` and reseeds the supplied
-route. **Start for real** deletes the demo database, returns to `/#learn`, and
-selects the real database. No demo action reads or writes the real database.
+route. **Start for real**, the normal Arithmetic Steps home link, and any
+ordinary navigation away from demo first delete the demo database, then select
+the real database. A real-app load also clears a leftover demo namespace before
+it reads real routes. No demo action reads or writes the real database.
 
 The offline claim is exercised from `/demo`, so the supplied sample remains
 available after the first online visit when the browser is offline.
