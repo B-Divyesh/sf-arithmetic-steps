@@ -166,8 +166,7 @@ test("shows helpful validation without losing the entered problem", async ({ pag
   await expect(page.getByLabel("First number")).toHaveValue("90");
 });
 
-test("works from the installed cache while offline", async ({ page, context, isMobile }) => {
-  test.skip(isMobile, "one Chromium offline run covers the same service worker");
+test("works from the installed cache while offline", async ({ page, context }) => {
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
     if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
@@ -240,8 +239,7 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
 });
 
-test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context, isMobile }) => {
-  test.skip(isMobile, "one Chromium offline run covers the same service worker");
+test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context }) => {
   const workerRequests: string[] = [];
   page.on("request", (request) => workerRequests.push(new URL(request.url()).pathname));
   await page.goto("/demo");
@@ -255,6 +253,23 @@ test("@claim:offline-reload works offline after the first visit from the demo en
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
   await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
   expect(workerRequests).not.toContain("/staticwebapp.config.json");
+});
+
+test("offers and applies a waiting service-worker update without losing the demo", async ({ page }) => {
+  await page.goto("/demo");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
+  });
+  expect(await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL)).toMatch(/\/sw\.js$/);
+  await page.evaluate(() => navigator.serviceWorker.register("/sw.js?test-update=1"));
+  await expect(page.getByText("An update is ready.")).toBeVisible();
+  const reload = page.waitForNavigation({ waitUntil: "domcontentloaded" });
+  await page.getByRole("button", { name: "Update" }).click();
+  await reload;
+  expect(await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL)).toContain("test-update=1");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
+  await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
 });
 
 test("@claim:local-only keeps the complete cold-load and worker flow first-party", async ({ browser }) => {
@@ -531,6 +546,7 @@ test("@claim:clear-data keeps saved problems on cancel and deletes them on confi
   await page.getByRole("button", { name: "2", exact: true }).click();
   await page.getByRole("button", { name: /Move the chunk/ }).click();
   await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("The answer is 15.");
   await page.goto("/#history");
   await expect(page.getByRole("heading", { name: "Saved problems" })).toBeVisible();
   await expect(page.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
@@ -605,8 +621,16 @@ test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer gues
 
 test("@claim:mobile-controls fits the 390px viewport with 44px controls", async ({ page, isMobile }) => {
   test.skip(!isMobile, "mobile-only viewport check");
+  const expectVisibleTargetsAtLeast44 = async (): Promise<void> => {
+    const undersized = await page.locator('button:visible, a:visible, input:not([type="radio"]):visible, select:visible').evaluateAll((elements) => elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return { label: element.getAttribute("aria-label") ?? element.textContent?.trim(), width: rect.width, height: rect.height };
+    }).filter((target) => target.width < 44 || target.height < 44));
+    expect(undersized).toEqual([]);
+  };
   const metrics = await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth }));
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  await expectVisibleTargetsAtLeast44();
   const begin = page.getByRole("button", { name: /Start the problem/ });
   const box = await begin.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(44);
@@ -623,6 +647,7 @@ test("@claim:mobile-controls fits the 390px viewport with 44px controls", async 
   const subtractQuickChoice = await page.getByRole("button", { name: "8", exact: true }).boundingBox();
   expect(subtractQuickChoice?.width).toBeGreaterThanOrEqual(44);
   expect(subtractQuickChoice?.height).toBeGreaterThanOrEqual(44);
+  await expectVisibleTargetsAtLeast44();
 });
 
 test("legal pages keep the same accessible shell", async ({ page }) => {
