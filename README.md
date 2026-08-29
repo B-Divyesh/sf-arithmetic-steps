@@ -1,33 +1,33 @@
 # Arithmetic Steps
 
-Arithmetic Steps is a deliberately slow, offline-friendly number game for children learning addition and subtraction to 100. Instead of rewarding a fast answer, it lets a child move quantities in chunks, describes every transformation in plain language, replays the reasoning trail, and makes a print-ready discussion card.
+Arithmetic Steps is an offline addition and subtraction activity for children learning numbers to 100. A child moves counters in chunks, explains each step, replays the work, and prints a discussion card.
 
 Live product: [arithmetic-steps.sociobot.in](https://arithmetic-steps.sociobot.in)
 
 ## Who it is for
 
-Elementary teachers, parents, and children who want to discuss the structure inside a calculation—making a ten, splitting a quantity, regrouping—not only whether the final answer is correct. An adult can sit nearby, let the child choose each chunk, then ask what changed and what stayed the same.
+It is for elementary teachers, parents, and children discussing the structure inside a calculation. An adult can let the child choose each chunk, then ask what changed and what stayed the same.
 
 ## Try the demo
 
-Open [the sample route](https://arithmetic-steps.sociobot.in/demo), or press
+Open [the sample problem](https://arithmetic-steps.sociobot.in/demo), or press
 **Try it with sample data** on the landing page. It starts a part-complete
-`52 − 18` route so a learner can finish the last chunk and replay the
-reasoning right away. Demo data is isolated in `demo:arithmetic-steps` and is
+`52 − 18` problem so a learner can finish the last chunk and replay the
+steps right away. Demo data is isolated in `demo:arithmetic-steps` and is
 discarded by **Reset demo**, **Start for real**, or an ordinary link away from
 demo. See
 [.factory/demo.md](.factory/demo.md) for the sandbox details.
 
 ## What v1 includes
 
-- Addition and subtraction routes with whole numbers and results from 0 to 100
-- Visual tens bars and one-counters, with an equivalent screen-reader description
-- Fully labelled stepper and quick-chunk controls; dragging is never required
-- Plain-language route ledger, self-paced or automatic replay, and printable conversation prompts
-- IndexedDB persistence for an unfinished route and completed local history
-- JSON export/import, explicit clear controls, and no accounts or child identifiers
+- Addition and subtraction problems with whole numbers and results from 0 to 100
+- Interactive ten-frames and one-counters with equivalent screen-reader descriptions
+- Direct counter dragging plus labelled keyboard controls for the same moves
+- Plain-language reasoning steps, replay, and a print-ready discussion card
+- IndexedDB persistence for unfinished work and completed local history
+- JSON export/import, confirmed clear controls, and no accounts or child identifiers
 - Installable PWA with an app-shell cache and tested offline operation
-- Responsive 390 px layout, keyboard operation, focus states, reduced-motion behavior, and print styles
+- Responsive 390 px layout, visible keyboard focus, reduced-motion behavior, and tested print styles
 
 The product intentionally has no timer, score, streak, leaderboard, answer guessing, AI grading, or third-party analytics.
 
@@ -40,7 +40,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the local URL. Route data is stored only in that browser profile.
+Vite prints the local URL. Problem data is stored only in that browser profile.
 
 ## Test and build
 
@@ -49,7 +49,7 @@ npm test
 npm run build
 ```
 
-`npm test` runs unit tests plus Playwright journeys in desktop Chromium and a 393 px mobile viewport, including an offline reload and axe accessibility scan. Playwright 1.58.2 is pinned; if its browser is missing locally, run `npx playwright install chromium` once.
+`npm test` runs unit tests plus Playwright flows in desktop Chromium and a 393 px mobile viewport, including an offline reload and axe accessibility scan. Playwright 1.58.2 is pinned; if its browser is missing locally, run `npx playwright install chromium` once.
 
 Every public product claim is declared in [.factory/claims.json](.factory/claims.json).
 Each may be run from a clean demo context with its listed command, for example:
@@ -66,7 +66,7 @@ npm run preview
 
 ## Data and privacy
 
-No route data is sent to a server. The Privacy page explains IndexedDB storage and export behavior. The app has no runtime dependencies, remote fonts, third-party scripts, advertising, or tracking. Remove data from **Saved routes** or the browser’s site-data settings.
+No problem data is sent to a server. The Privacy page explains IndexedDB storage and export behavior. The app has no runtime dependencies, remote fonts, third-party scripts, advertising, or tracking. Remove completed data from **Saved problems** or remove all site data in browser settings.
 
 ## Product and design notes
 

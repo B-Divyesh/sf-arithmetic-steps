@@ -40,8 +40,8 @@ All normal-size text combinations target WCAG AA ≥4.5:1; color never carries m
 
 ## Interaction grammar
 
-- **Choose a route:** addition or subtraction, then a problem. The primary action is always a verb: “Begin the route,” “Move the chunk,” “Finish the route.”
-- **Manipulate:** large plus/minus steppers are the keyboard and switch-device equivalent to dragging. Optional quick chips suggest meaningful chunks without dictating one correct method.
+- **Choose a problem:** addition or subtraction, then two numbers. Task headings name the action plainly; the transit language stays in the visual system.
+- **Manipulate:** each one-counter and ten-frame can be dragged to the marked destination. Large plus/minus steppers and quick choices provide the equivalent keyboard and switch-device path.
 - **See:** quantities render as labelled ten-bars and one-counters. Grouping is spatial and patterned, not color-only.
 - **Narrate:** every action appends a plain-language station to the route ledger immediately.
 - **Replay:** a single play/pause control advances through the recorded states; previous/next enables self-paced explanation.
@@ -71,4 +71,4 @@ new imagery or text and is used only for Open Graph/Twitter metadata.
 
 ## Accessibility intent
 
-The interface does not require dragging. Quantity controls are native buttons with visible labels, track steps are an ordered list, replay state is announced politely, and every ten-frame has a concise accessible text equivalent. Focus uses a high-contrast brass/ink double ring. The final discussion card remains intelligible in grayscale print.
+The interface offers direct dragging but never requires it. Movable counters are native buttons, the equivalent chunk controls are fully labelled, steps are an ordered list, replay state is announced politely, and every quantity has a concise accessible text equivalent. Focus uses a high-contrast brass/ink double ring. The final discussion card remains intelligible in grayscale print.

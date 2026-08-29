@@ -30,9 +30,9 @@ const integer = (value: number) => Number.isInteger(value) && value >= 0 && valu
 export function validateProblem(operation: Operation, first: number, second: number): string | null {
   if (!integer(first) || !integer(second)) return "Use whole numbers from 0 to 100.";
   if (operation === "add" && first + second > 100) return "Choose numbers with a total of 100 or less.";
-  if (operation === "add" && first + second === 0) return "Choose at least one counter so there is a route to explore.";
-  if (operation === "subtract" && second > first) return "For this route, the number being taken away must be smaller than the starting number.";
-  if (operation === "subtract" && second === 0) return "Choose something to take away so there is a route to explore.";
+  if (operation === "add" && first + second === 0) return "Choose at least one counter so there is a problem to explore.";
+  if (operation === "subtract" && second > first) return "The number being taken away must be smaller than the starting number.";
+  if (operation === "subtract" && second === 0) return "Choose something to take away so there is a problem to explore.";
   return null;
 }
 
@@ -63,18 +63,18 @@ export function createRoute(operation: Operation, first: number, second: number)
 
 export function currentFrame(route: ActiveRoute): RouteFrame {
   const frame = route.frames.at(-1);
-  if (!frame) throw new Error("This route has no starting station.");
+  if (!frame) throw new Error("This problem has no first step.");
   return frame;
 }
 
 function reasonWords(reason: MoveReason): string {
   if (reason === "make-ten") return "to land on a friendly ten";
   if (reason === "split") return "to split the problem into easier parts";
-  return "to try my own route";
+  return "to try my own step";
 }
 
 export function moveAddition(route: ActiveRoute, amount: number, direction: MoveDirection, reason: MoveReason): RouteFrame {
-  if (route.operation !== "add" || route.completed) throw new Error("This addition route cannot be changed now.");
+  if (route.operation !== "add" || route.completed) throw new Error("This addition problem cannot be changed now.");
   const before = currentFrame(route);
   const source = direction === "right-to-left" ? before.right : before.left;
   if (!Number.isInteger(amount) || amount < 1 || amount > source) {
@@ -96,7 +96,7 @@ export function moveAddition(route: ActiveRoute, amount: number, direction: Move
 }
 
 export function subtractChunk(route: ActiveRoute, amount: number, reason: MoveReason): RouteFrame {
-  if (route.operation !== "subtract" || route.completed) throw new Error("This subtraction route cannot be changed now.");
+  if (route.operation !== "subtract" || route.completed) throw new Error("This subtraction problem cannot be changed now.");
   const before = currentFrame(route);
   if (!Number.isInteger(amount) || amount < 1 || amount > before.right) {
     throw new Error(`Choose a chunk from 1 to ${before.right}.`);
@@ -121,7 +121,7 @@ export function canFinish(route: ActiveRoute): boolean {
 
 export function finishRoute(route: ActiveRoute): RouteFrame {
   if (!canFinish(route)) {
-    throw new Error(route.operation === "subtract" ? "Take away the remaining amount first." : "Make at least one move before finishing the route.");
+    throw new Error(route.operation === "subtract" ? "Take away the remaining amount first." : "Make at least one move before finishing the problem.");
   }
   const before = currentFrame(route);
   const frame: RouteFrame = {
@@ -130,7 +130,7 @@ export function finishRoute(route: ActiveRoute): RouteFrame {
     equation: `${route.first} ${route.operation === "add" ? "+" : "−"} ${route.second} = ${route.result}`,
     narration: route.operation === "add"
       ? `Join ${before.left} and ${before.right}. The total is ${route.result}.`
-      : `Nothing is left to take away. We arrived at ${route.result}.`,
+      : `Nothing is left to take away. The answer is ${route.result}.`,
     kind: "finish"
   };
   route.frames.push(frame);

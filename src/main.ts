@@ -125,7 +125,7 @@ async function resetDemo(): Promise<void> {
   await seedDemoRoute(true);
   updateDemoBanner();
   render();
-  showToast("The 52 − 18 sample route is ready again.");
+  showToast("The 52 − 18 sample problem is ready again.");
   document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
 }
 
@@ -190,22 +190,38 @@ function showToast(message: string, action?: { label: string; run: () => void })
 function reasonLabel(reason: MoveReason): string {
   if (reason === "make-ten") return "Land on a friendly ten";
   if (reason === "split") return "Split into easier parts";
-  return "Try my own route";
+  return "Try my own step";
 }
 
 function equationLabel(route: Pick<Attempt, "first" | "second" | "operation">): string {
   return `${route.first} ${route.operation === "add" ? "+" : "−"} ${route.second}`;
 }
 
-function quantity(value: number, label: string, tone: "coral" | "brass" | "teal" = "coral"): string {
+type QuantityOptions = {
+  source?: boolean;
+  target?: boolean;
+};
+
+function quantity(
+  value: number,
+  label: string,
+  tone: "coral" | "brass" | "teal" = "coral",
+  options: QuantityOptions = {}
+): string {
   const tens = Math.floor(value / 10);
   const ones = value % 10;
-  const bars = Array.from({ length: tens }, () => `<span class="ten-bar" aria-hidden="true">${"<i></i>".repeat(10)}</span>`).join("");
-  const dots = Array.from({ length: ones }, () => `<span class="one-counter" aria-hidden="true"></span>`).join("");
-  return `<div class="quantity quantity--${tone}" role="img" aria-label="${escapeHtml(label)}: ${value}, shown as ${tens} tens and ${ones} ones">
+  const token = (amount: 1 | 10, index: number, contents: string): string => options.source
+    ? `<button class="counter-token ${amount === 10 ? "ten-bar" : "one-counter"}" type="button" draggable="true" data-counter-amount="${amount}" data-counter-index="${index}" aria-label="Choose ${amount === 10 ? "one ten-frame (10)" : "one counter (1)"} from ${escapeHtml(label)} to move">${contents}</button>`
+    : `<span class="${amount === 10 ? "ten-bar" : "one-counter"}" aria-hidden="true">${contents}</span>`;
+  const bars = Array.from({ length: tens }, (_, index) => token(10, index, "<i></i>".repeat(10))).join("");
+  const dots = Array.from({ length: ones }, (_, index) => token(1, index, "")).join("");
+  const summary = `${escapeHtml(label)}: ${value}, shown as ${tens} ten-frames and ${ones} ones`;
+  return `<div class="quantity quantity--${tone}${options.source ? " source-quantity" : ""}${options.target ? " drop-target" : ""}" ${options.target ? `data-drop-target role="region" aria-label="Move counters to ${escapeHtml(label)}"` : ""}>
+    <span class="visually-hidden" role="img" aria-label="${summary}"></span>
     <div class="quantity-heading"><span>${escapeHtml(label)}</span><strong>${value}</strong></div>
     <div class="blocks">${bars}${dots}${value === 0 ? `<span class="zero-marker" aria-hidden="true">0</span>` : ""}</div>
-    <small>${tens} ${tens === 1 ? "ten" : "tens"} + ${ones} ${ones === 1 ? "one" : "ones"}</small>
+    <small>${tens} ${tens === 1 ? "ten-frame" : "ten-frames"} + ${ones} ${ones === 1 ? "one" : "ones"}</small>
+    ${options.target ? `<span class="drop-cue" aria-hidden="true">Drop counters here</span>` : ""}
   </div>`;
 }
 
@@ -215,31 +231,31 @@ function setupTemplate(): string {
   const secondLabel = op === "add" ? "Second number" : "Take away";
   return `<section class="hero" aria-labelledby="page-title">
     <div class="hero-copy">
-      <p class="eyebrow"><span>Line A</span> Addition and subtraction to 100</p>
+      <p class="eyebrow">Addition and subtraction to 100</p>
       <h1 id="page-title" tabindex="-1">Explore addition and subtraction steps</h1>
       <p class="lede">For elementary children with a teacher or parent, move counters to explain how each answer changes.</p>
       <div class="hero-actions">
         <button class="primary-button" id="try-sample" type="button">Try it with sample data <span aria-hidden="true">→</span></button>
-        <a class="text-link" href="#route-planner">Plan your own route <span aria-hidden="true">↓</span></a>
+        <a class="text-link" href="#problem-planner">Choose your own problem <span aria-hidden="true">↓</span></a>
       </div>
-      <ul class="hero-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>Routes stay only on this device.</li><li>Free with no accounts or scores.</li></ul>
+      <ul class="hero-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>Problems stay only on this device.</li><li>Free with no accounts or scores.</li></ul>
     </div>
     <picture class="hero-art">
       <source media="(max-width: 700px)" srcset="/assets/number-line-limited-720.avif" type="image/avif" />
       <source media="(max-width: 700px)" srcset="/assets/number-line-limited-720.webp" type="image/webp" />
       <source srcset="/assets/number-line-limited-1200.avif" type="image/avif" />
       <source srcset="/assets/number-line-limited-1200.webp" type="image/webp" />
-      <img src="/assets/number-line-limited-1200.jpg" width="1200" height="800" fetchpriority="high" alt="Two counter trains travel on separate tracks and meet at a ten-frame station." />
+      <img src="/assets/number-line-limited-1200.jpg" width="1200" height="800" fetchpriority="high" alt="Coral and brass counters meet inside a teal ten-frame." />
     </picture>
   </section>
-  <section class="planner-section" id="route-planner" aria-labelledby="planner-title">
+  <section class="planner-section" id="problem-planner" aria-labelledby="planner-title">
     <div class="section-sign">
       <span aria-hidden="true">01</span>
-      <div><p>Route office</p><h2 id="planner-title">Choose a journey</h2></div>
+      <div><p>Choose a problem</p><h2 id="planner-title">Pick addition or subtraction</h2></div>
     </div>
     <form class="route-form" id="route-form" novalidate>
       <fieldset class="operation-switch">
-        <legend>Which kind of route?</legend>
+        <legend>Which operation?</legend>
         <label><input type="radio" name="operation" value="add" ${op === "add" ? "checked" : ""} /><span><b aria-hidden="true">+</b> Add</span></label>
         <label><input type="radio" name="operation" value="subtract" ${op === "subtract" ? "checked" : ""} /><span><b aria-hidden="true">−</b> Subtract</span></label>
       </fieldset>
@@ -249,12 +265,12 @@ function setupTemplate(): string {
         <label>${secondLabel}<input id="second-number" name="second" type="number" inputmode="numeric" min="0" max="100" step="1" value="${state.second}" required /></label>
       </div>
       <div class="example-row" aria-label="Example problems">
-        <span>Try a route:</span>
+        <span>Try a problem:</span>
         ${(op === "add" ? [[8, 7], [38, 27], [46, 35]] : [[15, 7], [52, 18], [83, 46]]).map(([a, b]) =>
           `<button class="route-chip" type="button" data-example="${a},${b}">${a} ${op === "add" ? "+" : "−"} ${b}</button>`).join("")}
       </div>
       <p class="form-error" id="form-error" aria-live="assertive">${escapeHtml(state.error)}</p>
-      <button class="primary-button" type="submit">Begin the route <span aria-hidden="true">→</span></button>
+      <button class="primary-button" type="submit">Start the problem <span aria-hidden="true">→</span></button>
     </form>
     <div class="grownup-note" role="note" aria-labelledby="grownup-note-title">
       <span class="station-dot" aria-hidden="true"></span>
@@ -262,8 +278,8 @@ function setupTemplate(): string {
     </div>
   </section>
   <section class="three-stops" aria-labelledby="how-title">
-    <p class="eyebrow">How it works</p><h2 id="how-title">A thought becomes a route</h2>
-    <ol><li><span>1</span><strong>Move</strong><p>Choose a useful chunk. The counters show tens and ones.</p></li><li><span>2</span><strong>Explain</strong><p>Each choice becomes a sentence, not a speed score.</p></li><li><span>3</span><strong>Replay</strong><p>Step through the route and talk about why it works.</p></li></ol>
+    <p class="eyebrow">How it works</p><h2 id="how-title">Move, explain, and replay each step</h2>
+    <ol><li><span>1</span><strong>Move</strong><p>Drag a counter or ten-frame, or use the labelled controls.</p></li><li><span>2</span><strong>Explain</strong><p>Each choice becomes a sentence, not a speed score.</p></li><li><span>3</span><strong>Replay</strong><p>Step through the work and talk about why it works.</p></li></ol>
   </section>`;
 }
 
@@ -271,7 +287,7 @@ function controlsTemplate(route: ActiveRoute, frame: RouteFrame): string {
   const isAdd = route.operation === "add";
   const maximum = isAdd ? (state.direction === "right-to-left" ? frame.right : frame.left) : frame.right;
   if (!isAdd && maximum === 0) {
-    return `<div class="move-controls ready-to-finish"><p class="eyebrow">All chunks moved</p><h2>Nothing is left to take away</h2><p>You can finish the route and replay how you reached ${route.result}.</p><button class="finish-button" type="button" id="finish-route">Finish the route</button></div>`;
+    return `<div class="move-controls ready-to-finish"><p class="eyebrow">All chunks moved</p><h2>Nothing is left to take away</h2><p>You can finish the problem and replay how you reached ${route.result}.</p><button class="finish-button" type="button" id="finish-route">Finish the problem</button></div>`;
   }
   if (isAdd && maximum === 0 && canFinish(route)) {
     return `<div class="move-controls ready-to-finish"><p class="eyebrow">All counters together</p><h2>This side has no more chunks</h2><p>Join the numbers now, or change direction to keep exploring.</p>
@@ -286,13 +302,15 @@ function controlsTemplate(route: ActiveRoute, frame: RouteFrame): string {
   if (state.amount < 1 || state.amount > maximum) state.amount = suggestions[0] ?? 1;
   return `<div class="move-controls">
     <div class="control-intro">
-      <p class="eyebrow">Next move</p>
+      <p class="eyebrow">Next step</p>
       <h2>${isAdd ? "Move a chunk between the numbers" : `Choose part of the ${frame.right} still to subtract`}</h2>
     </div>
     ${isAdd ? `<fieldset class="direction-switch"><legend>Direction</legend>
       <label><input type="radio" name="direction" value="right-to-left" ${state.direction === "right-to-left" ? "checked" : ""} /><span>${frame.right} <b aria-hidden="true">→</b> ${frame.left}</span></label>
       <label><input type="radio" name="direction" value="left-to-right" ${state.direction === "left-to-right" ? "checked" : ""} /><span>${frame.left} <b aria-hidden="true">→</b> ${frame.right}</span></label>
     </fieldset>` : ""}
+    <p class="direct-move-help" id="direct-move-help">Drag a counter or ten-frame to the marked area. You can also choose a chunk below.</p>
+    <p class="visually-hidden" id="direct-move-status" aria-live="polite"></p>
     <div class="chunk-picker">
       <label for="chunk-amount">Chunk size</label>
       <div class="stepper">
@@ -310,15 +328,15 @@ function controlsTemplate(route: ActiveRoute, frame: RouteFrame): string {
     <p class="form-error" id="move-error" aria-live="assertive">${escapeHtml(state.error)}</p>
     <div class="action-row">
       <button class="primary-button" type="button" id="apply-move">${isAdd ? "Move the chunk" : "Take away the chunk"} <span aria-hidden="true">→</span></button>
-      <button class="secondary-button" type="button" id="undo-move" ${route.frames.length <= 1 ? "disabled" : ""}>Undo last move</button>
+      <button class="secondary-button" type="button" id="undo-move" ${route.frames.length <= 1 ? "disabled" : ""}>Undo last step</button>
     </div>
-    ${isAdd ? `<button class="finish-button" type="button" id="finish-route" ${canFinish(route) ? "" : "disabled"}>Join the numbers and finish</button>` : frame.right === 0 ? `<button class="finish-button" type="button" id="finish-route">Finish the route</button>` : ""}
+    ${isAdd ? `<button class="finish-button" type="button" id="finish-route" ${canFinish(route) ? "" : "disabled"}>Join the numbers and finish</button>` : frame.right === 0 ? `<button class="finish-button" type="button" id="finish-route">Finish the problem</button>` : ""}
   </div>`;
 }
 
 function ledgerTemplate(route: ActiveRoute, activeIndex = route.frames.length - 1): string {
   return `<section class="route-ledger" aria-labelledby="ledger-title">
-    <div class="ledger-heading"><span class="route-line" aria-hidden="true"></span><div><p>Reasoning trail</p><h2 id="ledger-title">Route stations</h2></div></div>
+    <div class="ledger-heading"><span class="route-line" aria-hidden="true"></span><div><p>Reasoning steps</p><h2 id="ledger-title">Steps you chose</h2></div></div>
     <ol>${route.frames.map((frame, index) => `<li class="${index === activeIndex ? "is-current" : ""} ${frame.kind === "finish" ? "is-finish" : ""}">
       <span class="ledger-marker" aria-hidden="true">${index + 1}</span>
       <div><strong>${escapeHtml(frame.equation)}</strong><p>${escapeHtml(frame.narration)}</p></div>
@@ -331,20 +349,22 @@ function workTemplate(): string {
   if (!route) return setupTemplate();
   const frame = currentFrame(route);
   const opWord = route.operation === "add" ? "Addition" : "Subtraction";
+  const sourceIsLeft = route.operation === "add" && state.direction === "left-to-right";
   return `<section class="work-page" aria-labelledby="page-title">
     <div class="route-masthead">
-      <div><p class="eyebrow">${opWord} line · numbers to 100</p><h1 id="page-title" tabindex="-1">${equationLabel(route)}</h1><p>One useful move at a time.</p></div>
-      <button class="quiet-button" type="button" id="new-route">Choose a different route</button>
+      <div><p class="eyebrow">${opWord} · whole numbers to 100</p><h1 id="page-title" tabindex="-1">${equationLabel(route)}</h1><p>Choose one useful step at a time.</p></div>
+      <button class="quiet-button" type="button" id="new-route">Choose a different problem</button>
     </div>
     <div class="work-layout">
       <div class="workbench">
         <div class="platform-label"><span>Now at</span><strong>${escapeHtml(frame.equation)}</strong></div>
         <div class="quantity-platform ${route.operation === "subtract" ? "is-subtraction" : ""}">
-          ${quantity(frame.left, route.operation === "add" ? "First number" : "Current number", "coral")}
+          ${quantity(frame.left, route.operation === "add" ? "First number" : "Current number", "coral", { source: sourceIsLeft, target: route.operation === "add" && !sourceIsLeft })}
           <span class="platform-operator" aria-hidden="true">${route.operation === "add" ? "+" : "−"}</span>
-          ${quantity(frame.right, route.operation === "add" ? "Second number" : "Still to subtract", "brass")}
+          ${quantity(frame.right, route.operation === "add" ? "Second number" : "Still to subtract", "brass", { source: route.operation === "subtract" || !sourceIsLeft, target: sourceIsLeft })}
         </div>
-        <p class="invariant"><span aria-hidden="true">◆</span> ${route.operation === "add" ? `The total stays ${route.result}, however you move the chunks.` : `Goal: take away ${route.second} altogether and arrive at ${route.result}.`}</p>
+        ${route.operation === "add" ? `<div class="mobile-move-drop drop-target" data-mobile-drop-target data-drop-target role="region" aria-label="Move counters to ${sourceIsLeft ? "Second number" : "First number"}"><strong>Move here: ${sourceIsLeft ? "Second number" : "First number"}</strong><span>Drop the counter or ten-frame in this area.</span></div>` : frame.right > 0 ? `<div class="take-away-drop drop-target" data-drop-target role="region" aria-label="Drop counters here to take them away"><strong>Take away here</strong><span>Drag from “Still to subtract”</span></div>` : ""}
+        <p class="invariant"><span aria-hidden="true">◆</span> ${route.operation === "add" ? `The total stays ${route.result}, however you move the chunks.` : `Goal: take away ${route.second} altogether. The answer will be ${route.result}.`}</p>
         ${controlsTemplate(route, frame)}
       </div>
       ${ledgerTemplate(route)}
@@ -358,10 +378,10 @@ function completionTemplate(): string {
   const frame = route.frames[state.replayIndex] ?? route.frames[0]!;
   const finalEquation = `${equationLabel(route)} = ${route.result}`;
   return `<section class="complete-page" aria-labelledby="page-title">
-    <div class="arrival-heading"><p class="eyebrow">Route complete</p><h1 id="page-title" tabindex="-1">You arrived at ${route.result}.</h1><p>The answer is one stop. Your reasoning is the whole journey.</p></div>
+    <div class="arrival-heading"><p class="eyebrow">Problem complete</p><h1 id="page-title" tabindex="-1">The answer is ${route.result}.</h1><p>The recorded steps show how the answer was found.</p></div>
     <div class="replay-layout">
       <div class="replay-stage">
-        <div class="platform-label"><span>Replay station ${state.replayIndex + 1} of ${route.frames.length}</span><strong>${escapeHtml(frame.equation)}</strong></div>
+        <div class="platform-label"><span>Replay step ${state.replayIndex + 1} of ${route.frames.length}</span><strong>${escapeHtml(frame.equation)}</strong></div>
         <div class="quantity-platform">
           ${quantity(frame.left, route.operation === "add" ? "First number" : "Current number", frame.kind === "finish" ? "teal" : "coral")}
           ${frame.kind !== "finish" ? `<span class="platform-operator" aria-hidden="true">${route.operation === "add" ? "+" : "−"}</span>${quantity(frame.right, route.operation === "add" ? "Second number" : "Still to subtract", "brass")}` : ""}
@@ -369,41 +389,41 @@ function completionTemplate(): string {
         <p class="replay-narration" aria-live="polite">${escapeHtml(frame.narration)}</p>
         <div class="replay-controls" aria-label="Replay controls">
           <button type="button" id="replay-previous" ${state.replayIndex === 0 ? "disabled" : ""}><span aria-hidden="true">←</span> Previous</button>
-          <button type="button" id="replay-play">${state.replayTimer === null ? "Play route" : "Pause"}</button>
+          <button type="button" id="replay-play">${state.replayTimer === null ? "Play steps" : "Pause"}</button>
           <button type="button" id="replay-next" ${state.replayIndex >= route.frames.length - 1 ? "disabled" : ""}>Next <span aria-hidden="true">→</span></button>
         </div>
       </div>
       ${ledgerTemplate(route, state.replayIndex)}
     </div>
     <article class="discussion-card" id="discussion-card" aria-labelledby="ticket-title">
-      <header><span>Number Line Limited</span><b>Discussion ticket</b></header>
-      <div class="ticket-equation"><p>Our route</p><h2 id="ticket-title">${escapeHtml(finalEquation)}</h2></div>
+      <header><span>Arithmetic Steps</span><b>Discussion card</b></header>
+      <div class="ticket-equation"><p>Our problem</p><h2 id="ticket-title">${escapeHtml(finalEquation)}</h2></div>
       <ol>${route.frames.slice(1).map((step) => `<li>${escapeHtml(step.narration)}</li>`).join("")}</ol>
-      <div class="talk-prompts"><h3>Talk at the station</h3><ul><li>What changed at each step?</li><li>What stayed the same?</li><li>Which chunk made the problem friendlier?</li><li>Can you find a different route?</li></ul></div>
-      <footer><span>Route ${escapeHtml(new Date(route.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))}</span><span>No score. Explain what you noticed.</span></footer>
+      <div class="talk-prompts"><h3>Discuss the steps</h3><ul><li>What changed at each step?</li><li>What stayed the same?</li><li>Which chunk made the problem friendlier?</li><li>Can you find a different way?</li></ul></div>
+      <footer><span>Completed ${escapeHtml(new Date(route.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))}</span><span>No score. Explain what you noticed.</span></footer>
     </article>
     <div class="completion-actions">
       <button class="primary-button" id="print-card" type="button">Print discussion card</button>
-      <button class="secondary-button" id="copy-route" type="button">Copy route</button>
-      <button class="secondary-button" id="start-another" type="button">Start another route</button>
+      <button class="secondary-button" id="copy-route" type="button">Copy steps</button>
+      <button class="secondary-button" id="start-another" type="button">Start another problem</button>
     </div>
   </section>`;
 }
 
 function historyTemplate(attempts: Attempt[], error = ""): string {
   return `<section class="history-page" aria-labelledby="page-title">
-    <div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title" tabindex="-1">Saved routes</h1><p>Finished reasoning trails stay only in this browser. Replay one for a conversation, or take your data with you.</p></div>
+    <div class="history-heading"><p class="eyebrow">Stored on this device</p><h1 id="page-title" tabindex="-1">Saved problems</h1><p>Finished reasoning steps stay only in this browser. Replay one for a conversation, or export your data.</p></div>
     <div class="history-tools">
-      <a class="primary-button" href="/#learn">Start a new route</a>
+      <a class="primary-button" href="/#learn">Start a new problem</a>
       <button class="secondary-button" id="export-history" type="button" ${attempts.length ? "" : "disabled"}>Export JSON</button>
       <label class="secondary-button file-button">Import JSON<input id="import-history" type="file" accept="application/json,.json" /></label>
     </div>
     <p class="form-error" aria-live="assertive">${escapeHtml(error)}</p>
     ${attempts.length ? `<ol class="history-list">${attempts.map((attempt) => `<li>
-      <div class="history-route"><span class="station-dot" aria-hidden="true"></span><div><strong>${escapeHtml(equationLabel(attempt))} = ${attempt.result}</strong><p>${attempt.frames.length} stations · ${escapeHtml(new Date(attempt.createdAt).toLocaleDateString())}</p></div></div>
-      <button class="quiet-button" type="button" data-replay-id="${escapeHtml(attempt.id)}">Replay route</button>
-    </li>`).join("")}</ol>` : `<div class="empty-state"><span class="empty-rails" aria-hidden="true"></span><h2>No finished routes yet</h2><p>Complete a problem and its reasoning trail will wait here for the next conversation.</p><a href="/#learn">Plan the first route</a></div>`}
-    ${attempts.length ? `<div class="clear-zone">${state.confirmingClear ? `<p><strong>Remove all ${attempts.length} saved ${attempts.length === 1 ? "route" : "routes"} from this browser?</strong> Export first if you may need them later.</p><button id="confirm-clear" class="danger-button" type="button">Remove all routes</button><button id="cancel-clear" class="quiet-button" type="button">Keep routes</button>` : `<button id="ask-clear" class="quiet-button" type="button">Clear saved routes…</button>`}</div>` : ""}
+      <div class="history-route"><span class="station-dot" aria-hidden="true"></span><div><strong>${escapeHtml(equationLabel(attempt))} = ${attempt.result}</strong><p>${attempt.frames.length} steps · ${escapeHtml(new Date(attempt.createdAt).toLocaleDateString())}</p></div></div>
+      <button class="quiet-button" type="button" data-replay-id="${escapeHtml(attempt.id)}">Replay steps</button>
+    </li>`).join("")}</ol>` : `<div class="empty-state"><span class="empty-rails" aria-hidden="true"></span><h2>No finished problems yet</h2><p>Complete a problem and its reasoning steps will wait here for the next conversation.</p><a href="/#learn">Choose the first problem</a></div>`}
+    ${attempts.length ? `<div class="clear-zone">${state.confirmingClear ? `<p><strong>Remove all ${attempts.length} saved ${attempts.length === 1 ? "problem" : "problems"} from this browser?</strong> Export first if you may need them later.</p><button id="confirm-clear" class="danger-button" type="button">Remove all problems</button><button id="cancel-clear" class="quiet-button" type="button">Keep problems</button>` : `<button id="ask-clear" class="quiet-button" type="button">Clear saved problems…</button>`}</div>` : ""}
   </section>`;
 }
 
@@ -443,7 +463,7 @@ function bindSetup(): void {
 async function safelySaveActive(): Promise<void> {
   if (!state.route) return;
   try { await saveActive(state.route); }
-  catch { showToast("This route is open, but this browser could not save it for later."); }
+  catch { showToast("This problem is open, but this browser could not save it for later."); }
 }
 
 function bindWork(): void {
@@ -465,9 +485,8 @@ function bindWork(): void {
   });
   document.querySelectorAll<HTMLButtonElement>("[data-amount]").forEach((button) => button.addEventListener("click", () => { state.amount = Number(button.dataset.amount); render(); document.querySelector<HTMLButtonElement>(`[data-amount="${state.amount}"]`)?.focus(); }));
   document.querySelector<HTMLSelectElement>("#reason")?.addEventListener("change", (event) => { state.reason = (event.target as HTMLSelectElement).value as MoveReason; });
-  document.querySelector("#apply-move")?.addEventListener("click", async () => {
-    const input = document.querySelector<HTMLInputElement>("#chunk-amount");
-    state.amount = Number(input?.value);
+  const applySelectedMove = async (amount = Number(document.querySelector<HTMLInputElement>("#chunk-amount")?.value)): Promise<void> => {
+    state.amount = amount;
     state.reason = (document.querySelector<HTMLSelectElement>("#reason")?.value ?? "own") as MoveReason;
     try {
       route.operation === "add" ? moveAddition(route, state.amount, state.direction, state.reason) : subtractChunk(route, state.amount, state.reason);
@@ -477,6 +496,66 @@ function bindWork(): void {
       await safelySaveActive(); render();
       document.querySelector<HTMLButtonElement>(frame.right === 0 && route.operation === "subtract" ? "#finish-route" : "#apply-move")?.focus();
     } catch (error) { state.error = error instanceof Error ? error.message : "That move could not be made."; render(); document.querySelector<HTMLInputElement>("#chunk-amount")?.focus(); }
+  };
+  document.querySelector("#apply-move")?.addEventListener("click", () => { void applySelectedMove(); });
+
+  const dropTargets = [...document.querySelectorAll<HTMLElement>("[data-drop-target]")];
+  const clearDragState = (): void => {
+    document.querySelectorAll(".is-dragging, .is-drop-active").forEach((element) => element.classList.remove("is-dragging", "is-drop-active"));
+  };
+  const dropAmount = (amount: number): void => {
+    clearDragState();
+    void applySelectedMove(amount);
+  };
+  dropTargets.forEach((target) => {
+    target.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+      target.classList.add("is-drop-active");
+    });
+    target.addEventListener("dragleave", () => target.classList.remove("is-drop-active"));
+    target.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const amount = Number(event.dataTransfer?.getData("text/plain"));
+      if (amount === 1 || amount === 10) dropAmount(amount);
+      else clearDragState();
+    });
+  });
+  document.querySelectorAll<HTMLButtonElement>("[data-counter-amount]").forEach((counter) => {
+    const amount = Number(counter.dataset.counterAmount);
+    counter.addEventListener("click", () => {
+      state.amount = amount;
+      if (amountInput) amountInput.value = String(amount);
+      document.querySelectorAll("[data-amount]").forEach((choice) => choice.classList.toggle("is-selected", (choice as HTMLElement).dataset.amount === String(amount)));
+      const status = document.querySelector<HTMLElement>("#direct-move-status");
+      if (status) status.textContent = `${amount} selected. Use Move the chunk or drag it to the marked area.`;
+    });
+    counter.addEventListener("dragstart", (event) => {
+      event.dataTransfer?.setData("text/plain", String(amount));
+      if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+      counter.classList.add("is-dragging");
+    });
+    counter.addEventListener("dragend", clearDragState);
+    counter.addEventListener("pointerdown", (startEvent) => {
+      if (startEvent.pointerType === "mouse") return;
+      startEvent.preventDefault();
+      counter.classList.add("is-dragging");
+      dropTargets.forEach((target) => target.classList.add("is-drop-active"));
+      const finishPointerDrag = (endEvent: PointerEvent): void => {
+        const target = document.elementFromPoint(endEvent.clientX, endEvent.clientY)?.closest("[data-drop-target]");
+        clearDragState();
+        window.removeEventListener("pointerup", finishPointerDrag);
+        window.removeEventListener("pointercancel", cancelPointerDrag);
+        if (target) dropAmount(amount);
+      };
+      const cancelPointerDrag = (): void => {
+        clearDragState();
+        window.removeEventListener("pointerup", finishPointerDrag);
+        window.removeEventListener("pointercancel", cancelPointerDrag);
+      };
+      window.addEventListener("pointerup", finishPointerDrag);
+      window.addEventListener("pointercancel", cancelPointerDrag);
+    });
   });
   document.querySelector("#undo-move")?.addEventListener("click", async () => {
     if (route.frames.length > 1) route.frames.pop();
@@ -487,10 +566,10 @@ function bindWork(): void {
       finishRoute(route); state.view = "complete"; state.replayIndex = route.frames.length - 1; state.error = "";
       await saveAttempt(route); history.replaceState(null, "", `#route-${route.id}`); render();
       document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
-    } catch (error) { state.error = error instanceof Error ? error.message : "This route is not ready to finish."; render(); }
+    } catch (error) { state.error = error instanceof Error ? error.message : "This problem is not ready to finish."; render(); }
   });
   document.querySelector("#new-route")?.addEventListener("click", async () => {
-    if (route.frames.length > 1 && !window.confirm("Leave this unfinished route? Its steps will be removed.")) return;
+    if (route.frames.length > 1 && !window.confirm("Leave this unfinished problem? Its steps will be removed.")) return;
     await clearActive().catch(() => undefined); state.route = null; state.view = "setup"; history.replaceState(null, "", "#learn"); render();
   });
 }
@@ -509,7 +588,7 @@ function bindCompletion(): void {
     if (state.replayTimer !== null) { stopReplay(); render(); return; }
     if (state.replayIndex >= route.frames.length - 1) state.replayIndex = 0;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) { state.replayIndex = Math.min(route.frames.length - 1, state.replayIndex + 1); showToast("Reduced motion is on, so replay advances one station at a time."); render(); return; }
+    if (reduced) { state.replayIndex = Math.min(route.frames.length - 1, state.replayIndex + 1); showToast("Reduced motion is on, so replay advances one step at a time."); render(); return; }
     state.replayTimer = window.setInterval(() => {
       if (state.replayIndex >= route.frames.length - 1) { stopReplay(); render(); return; }
       state.replayIndex += 1; render();
@@ -519,7 +598,7 @@ function bindCompletion(): void {
   document.querySelector("#print-card")?.addEventListener("click", () => window.print());
   document.querySelector("#copy-route")?.addEventListener("click", async () => {
     const summary = [`${equationLabel(route)} = ${route.result}`, ...route.frames.map((frame, index) => `${index + 1}. ${frame.narration}`), "Talk about it: What changed? What stayed the same?"] .join("\n");
-    try { await navigator.clipboard.writeText(summary); showToast("Route copied."); }
+    try { await navigator.clipboard.writeText(summary); showToast("Steps copied."); }
     catch { showToast("Copy was blocked. Use Print discussion card instead."); }
   });
   document.querySelector("#start-another")?.addEventListener("click", () => { stopReplay(); state.route = null; state.view = "setup"; state.error = ""; history.replaceState(null, "", "#learn"); render(); });
@@ -528,10 +607,10 @@ function bindCompletion(): void {
 async function renderHistory(error = ""): Promise<void> {
   state.view = "history"; stopReplay();
   updateDemoBanner();
-  app.innerHTML = `<section class="history-page" aria-labelledby="page-title"><div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title" tabindex="-1">Saved routes</h1></div><div class="empty-state" role="status"><span class="empty-rails" aria-hidden="true"></span><h2>Opening the route archive…</h2><p>Reading the finished trails stored in this browser.</p></div></section>`;
+  app.innerHTML = `<section class="history-page" aria-labelledby="page-title"><div class="history-heading"><p class="eyebrow">Stored on this device</p><h1 id="page-title" tabindex="-1">Saved problems</h1></div><div class="empty-state" role="status"><span class="empty-rails" aria-hidden="true"></span><h2>Opening saved problems…</h2><p>Reading the finished steps stored in this browser.</p></div></section>`;
   let attempts: Attempt[] = [];
   try { attempts = await listAttempts(); }
-  catch { error = "Saved routes could not be opened in this browser. You can still practice a new route."; }
+  catch { error = "Saved problems could not be opened in this browser. You can still practice a new problem."; }
   app.innerHTML = historyTemplate(attempts, error);
   document.querySelectorAll<HTMLButtonElement>("[data-replay-id]").forEach((button) => button.addEventListener("click", () => {
     const attempt = attempts.find((item) => item.id === button.dataset.replayId);
@@ -558,13 +637,13 @@ async function renderHistory(error = ""): Promise<void> {
     try {
       const parsed = JSON.parse(await file.text()) as unknown;
       const values = Array.isArray(parsed) ? parsed : (parsed && typeof parsed === "object" && "attempts" in parsed ? (parsed as { attempts: unknown }).attempts : []);
-      if (!Array.isArray(values)) throw new Error("The JSON file has no routes list.");
-      const count = await importAttempts(values); showToast(`${count} ${count === 1 ? "route" : "routes"} imported.`); await renderHistory();
+      if (!Array.isArray(values)) throw new Error("The JSON file has no problems list.");
+      const count = await importAttempts(values); showToast(`${count} ${count === 1 ? "problem" : "problems"} imported.`); await renderHistory();
     } catch (problem) { await renderHistory(problem instanceof Error ? problem.message : "That file could not be imported."); }
   });
   document.querySelector("#ask-clear")?.addEventListener("click", () => { state.confirmingClear = true; void renderHistory(); });
   document.querySelector("#cancel-clear")?.addEventListener("click", () => { state.confirmingClear = false; void renderHistory(); });
-  document.querySelector("#confirm-clear")?.addEventListener("click", async () => { await clearAttempts(); state.confirmingClear = false; showToast("All saved routes were removed."); await renderHistory(); });
+  document.querySelector("#confirm-clear")?.addEventListener("click", async () => { await clearAttempts(); state.confirmingClear = false; showToast("All saved problems were removed."); await renderHistory(); });
 }
 
 function render(): void {
@@ -636,7 +715,7 @@ async function registerServiceWorker(): Promise<void> {
       const worker = registration.installing;
       worker?.addEventListener("statechange", () => {
         if (worker.state === "installed" && navigator.serviceWorker.controller) {
-          showToast("A fresh route map is ready.", { label: "Update", run: () => { refreshForUpdate = true; worker.postMessage({ type: "SKIP_WAITING" }); } });
+          showToast("An update is ready.", { label: "Update", run: () => { refreshForUpdate = true; worker.postMessage({ type: "SKIP_WAITING" }); } });
         }
       });
     });
@@ -668,7 +747,7 @@ async function bootstrap(): Promise<void> {
     } else if (state.isDemo) {
       await seedDemoRoute();
     }
-  } catch { showToast("A previous unfinished route could not be restored."); }
+  } catch { showToast("A previous unfinished problem could not be restored."); }
   render();
   void registerServiceWorker();
 }

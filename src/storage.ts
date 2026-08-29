@@ -42,7 +42,7 @@ export async function resetCurrentStorage(): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase(name);
     request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error ?? new Error("The sample routes could not be reset."));
+    request.onerror = () => reject(request.error ?? new Error("The sample problems could not be reset."));
     request.onblocked = () => reject(new Error("Close other Arithmetic Steps tabs, then reset the sample again."));
   });
 }
@@ -104,7 +104,7 @@ export async function listAttempts(): Promise<Attempt[]> {
 
 export async function importAttempts(values: unknown[]): Promise<number> {
   const attempts = values.filter(isAttempt);
-  if (attempts.length === 0) throw new Error("That file does not contain any valid Arithmetic Steps routes.");
+  if (attempts.length === 0) throw new Error("That file does not contain any valid Arithmetic Steps problems.");
   const db = await openDatabase();
   const transaction = db.transaction(ATTEMPTS, "readwrite");
   const store = transaction.objectStore(ATTEMPTS);

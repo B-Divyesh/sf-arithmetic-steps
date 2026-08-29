@@ -3,7 +3,7 @@
   "short_name": "Math Steps",
   "description": "Help children explain each addition and subtraction step to 100.",
   "id": "/?app=arithmetic-steps",
-  "start_url": "/?source=pwa&v=1.0.1",
+  "start_url": "/?source=pwa&v=1.0.2",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -16,7 +16,7 @@
   ],
   "categories": ["education", "games"],
   "shortcuts": [
-    { "name": "Start a route", "url": "/#learn", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Saved routes", "url": "/#history", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Start a problem", "url": "/#learn", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Saved problems", "url": "/#history", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] }
   ]
 }
