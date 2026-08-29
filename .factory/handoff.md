@@ -35,15 +35,26 @@ Executed after `npm ci` from a clean dependency install:
 | Check | Result |
 | --- | --- |
 | `npm run lint` | PASS — `tsc --noEmit` |
-| `npm test` | PASS — 8 Vitest tests; 17 Playwright tests passed, 3 intentional device-applicability skips |
+| `npm test` | PASS — 9 Vitest tests; 17 Playwright tests passed, 3 intentional device-applicability skips |
 | `npm test -- --grep @claim:demo-sandbox` | PASS — desktop and mobile; asserts sample route, reset, real-data sentinel preservation, and isolated namespace cleanup |
 | `npm test -- --grep @claim:offline-reload` | PASS — desktop; waits for SW, sets context offline, reloads `/demo`, and sees the sample route |
 | `npm test -- --grep @claim:local-only` | PASS — desktop and mobile; route flow has only same-origin requests and no account, score, or embedded-frame controls |
 | `npm run build` | PASS — `dist/index.html`, PWA manifest/SW, demo fallback, legal pages, 404, and host configuration produced |
-| Production bundle | PASS — app JS 32.06 kB / 9.51 kB gzip; CSS 24.58 kB / 5.74 kB gzip |
+| Production bundle | PASS — app JS 32.02 kB / 9.50 kB gzip; CSS 24.58 kB / 5.74 kB gzip |
 | `verify-url.sh` on local production preview | PASS — 200, title/lang, one h1, main landmark, image alt, labelled buttons, and zero console errors |
 | Axe | PASS through the Playwright axe integration on desktop/mobile main and legal pages: zero serious or critical violations. The standalone Axe CLI could not discover a system Chrome in this container; the pinned Playwright Chromium integration is the exercised accessibility check. |
 | Lighthouse 13.4.1, local production preview | PASS — Performance 1.00, Accessibility 1.00, Best Practices 1.00, SEO 1.00 |
+
+## Production deployment evidence
+
+The `dist/` artifact from commit `3921dd888d7e07a9de266c4b2680ca1b5b892fb7`
+was deployed to Azure Static Web Apps production with SWA CLI. Live checks at
+`https://arithmetic-steps.sociobot.in` returned: `/` 200, `/demo` 200, and an
+unknown path 404 with the styled 404 document. Root and assets now return the
+configured CSP, `X-Frame-Options: DENY`, `Permissions-Policy`, and the hashed
+JavaScript asset returns `Cache-Control: public, max-age=31536000, immutable`.
+Fresh live desktop and Pixel 5 browsers opened `/demo`, completed `52 − 18`
+to 34, had zero console/page errors, and mobile had zero horizontal overflow.
 
 Browser coverage includes desktop and Pixel 5/393 px flows, keyboard radio
 selection, addition, multi-step subtraction, invalid input recovery, demo
