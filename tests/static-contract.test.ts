@@ -31,4 +31,9 @@ describe("static hosting contract", () => {
     expect(offline).toContain('href="/error.css"');
     expect(offline).not.toContain("<style");
   });
+
+  it("does not emit inline styles that the production CSP blocks", async () => {
+    const source = await readFile(resolve(root, "src/main.ts"), "utf8");
+    expect(source).not.toContain('style="--i:');
+  });
 });

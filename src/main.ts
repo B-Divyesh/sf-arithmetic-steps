@@ -170,8 +170,8 @@ function equationLabel(route: Pick<Attempt, "first" | "second" | "operation">): 
 function quantity(value: number, label: string, tone: "coral" | "brass" | "teal" = "coral"): string {
   const tens = Math.floor(value / 10);
   const ones = value % 10;
-  const bars = Array.from({ length: tens }, (_, index) => `<span class="ten-bar" aria-hidden="true" style="--i:${index}">${"<i></i>".repeat(10)}</span>`).join("");
-  const dots = Array.from({ length: ones }, (_, index) => `<span class="one-counter" aria-hidden="true" style="--i:${index}"></span>`).join("");
+  const bars = Array.from({ length: tens }, () => `<span class="ten-bar" aria-hidden="true">${"<i></i>".repeat(10)}</span>`).join("");
+  const dots = Array.from({ length: ones }, () => `<span class="one-counter" aria-hidden="true"></span>`).join("");
   return `<div class="quantity quantity--${tone}" role="img" aria-label="${escapeHtml(label)}: ${value}, shown as ${tens} tens and ${ones} ones">
     <div class="quantity-heading"><span>${escapeHtml(label)}</span><strong>${value}</strong></div>
     <div class="blocks">${bars}${dots}${value === 0 ? `<span class="zero-marker" aria-hidden="true">0</span>` : ""}</div>
