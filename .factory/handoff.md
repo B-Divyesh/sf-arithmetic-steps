@@ -1,22 +1,32 @@
-# Arithmetic Steps — repair 5 handoff
+# Arithmetic Steps — verification 4 handoff
 
-- Work order: `arithmetic-steps-repair-5`
-- Verifier report commit: `22a35ef7f76824b173cec0bfd42e1e00f33e2711`
-- Rejected candidate: `d0cfa7448b6fbd5f3ef81fede8bc6e0a2360c8dc`
+- Work order: `arithmetic-steps-verify-4`
+- Tested commit: `d0cc4bc4b49097539ce8aa35b4ebd0e28a7caa9b`
+- Live URL: <https://arithmetic-steps.sociobot.in>
 - Artifact: static local-first PWA (`dist/`)
 
-## Outcome
+## Outcome: FAIL — release blocked
 
-Every software finding in `.factory/verification-3.md` was reproduced and
-repaired. The exact claims suite, full desktop/mobile browser suite, clean
-production build, offline/update checks, accessibility checks, response
-policy, and deployed-byte identity checks pass.
+All 20 required claims commands, the full test suite (11 unit/static + 56
+browser tests), exact production build, live desktop/mobile flows, offline
+reload/update, privacy request log, headers, accessibility, and deployment
+byte identity passed. See `.factory/verification-4.md` for exact evidence.
 
-One external acceptance requirement remains: the researched brief requires a
-named elementary-teacher review. No human reviewer was available in this
-no-human work order, so that review was not fabricated. The release therefore
-still needs the review recorded in `.factory/pedagogy-review.md` before it can
-truthfully satisfy every brief constraint.
+Release is nevertheless **FAIL** because the researched brief requires
+teacher-reviewed pedagogy. `.factory/pedagogy-review.md` explicitly says that
+no named elementary teacher has reviewed the release. This is the sole P0
+release blocker; no code or deployment defect was found.
+
+## Required next step
+
+Before release, obtain and record a qualified elementary teacher's review in
+`.factory/pedagogy-review.md`: reviewer/qualification, date, grades, addition
+and subtraction scenarios, direct dragging and keyboard alternative feedback,
+narration/replay/discussion-card feedback, required changes, and final
+follow-up decision. Re-run independent verification after that evidence is
+available.
+
+## Previous repair evidence
 
 ## Verifier findings and regressions
 
