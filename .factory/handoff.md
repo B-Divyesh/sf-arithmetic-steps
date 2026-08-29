@@ -1,71 +1,71 @@
-# Arithmetic Steps — build handoff
+# Arithmetic Steps — repair handoff
 
-> ## Independent verification result — **FAIL**
->
-> Verified on 2026-08-29 against commit
-> `c0ce7dd5084356b5df0b916dec17c26d92b4ec62` and
-> `https://arithmetic-steps.sociobot.in`.
->
-> The deployed HTML, main JS, and service worker are byte-identical to the
-> locally built candidate. Local type/unit/browser/build checks, offline
-> reload, privacy request logging, mobile, axe, keyboard focus, and
-> reduced-motion checks otherwise passed. **Do not release:**
-> `.factory/claims.json` is missing; the required one-click isolated sample
-> demo and its documentation are absent; and the cold landing screen does not
-> plainly say what it does, who it is for, and what to click first. Live
-> response headers also lack CSP/clickjacking protection and immutable asset
-> caching, and unknown routes return HTTP 200 instead of a real 404.
->
-> Full independent evidence and defect severities:
-> [`.factory/verification.md`](verification.md).
+Work order: `arithmetic-steps-repair-1`
+Repair date: 2026-08-29
+Artifact: static, local-first PWA (`dist/`)
 
-Work order: `arithmetic-steps-build-1`
-Completed: 2026-08-28
+## Repairs delivered
 
-## What shipped
+- Added `/demo` and the first-screen **Try it with sample data** action. It
+  opens a part-complete `52 − 18` route (`42 − 8` remains) so the learner can
+  work immediately rather than configure a problem first.
+- Added the persistent **Demo — sample data, nothing is saved** banner with
+  **Reset demo** and **Start for real**. Every demo read/write uses the
+  `demo:arithmetic-steps` IndexedDB database; real routes remain in
+  `arithmetic-steps`. Leaving the demo deletes only the demo database.
+- Added `.factory/demo.md`, `.factory/claims.json`, and exact Playwright
+  regressions for the demo sandbox, offline reload from `/demo`, and local-only
+  requests/account controls. The claim commands run from a clean context.
+- Rewrote the cold first screen in plain words: it names addition/subtraction,
+  elementary children with a teacher or parent, and what the sample action
+  opens. `.factory/copy-audit.md` records the wording and counts.
+- Added `staticwebapp.config.json` to the deployment artifact: CSP,
+  clickjacking protection, permissions policy, immutable asset caching,
+  no-cache service worker behavior, navigation fallback, and a true HTTP 404
+  response override. Added the styled `404.html`; moved offline-page styling
+  to a CSP-compatible external stylesheet.
+- Added canonical, Open Graph/Twitter, and Apple-touch metadata; a locally
+  derived 1200×630 social preview; and the required Param Factory/build footer
+  information on all pages.
 
-- A complete addition/subtraction-to-100 learning loop: choose a problem, move or subtract child-chosen chunks, state the strategy, finish, replay every intermediate state, and print or copy a discussion card.
-- Quantity visuals made from labelled tens bars and one-counters. Every visual has an equivalent accessible description; no interaction requires dragging.
-- Plain-language reasoning trails that preserve the invariant for addition and the remaining amount for subtraction.
-- Local IndexedDB persistence for an unfinished route and completed route history, plus JSON export/import and a confirmed clear-all action. No child identifiers or accounts.
-- First-class empty, loading, invalid-problem, storage-error, offline, install, and update states.
-- Installable PWA: 192/512/maskable icons, matching splash colors, generated versioned app-shell precache, cache-first same-origin assets, navigation fallback, update prompt, and an offline page.
-- Real `/privacy/` and `/terms/` pages; README, MIT license, sitemap, and robots file.
-- A responsive art-deco transit-poster visual system documented in `.factory/design.md`. The original generated “Number Line Limited” illustration, prompt, review, and provenance live in `assets/src/`; AVIF, WebP, and JPEG delivery assets are in `public/assets/`.
+## Verification evidence
 
-## How to run
+Executed after `npm ci` from a clean dependency install:
+
+| Check | Result |
+| --- | --- |
+| `npm run lint` | PASS — `tsc --noEmit` |
+| `npm test` | PASS — 8 Vitest tests; 17 Playwright tests passed, 3 intentional device-applicability skips |
+| `npm test -- --grep @claim:demo-sandbox` | PASS — desktop and mobile; asserts sample route, reset, real-data sentinel preservation, and isolated namespace cleanup |
+| `npm test -- --grep @claim:offline-reload` | PASS — desktop; waits for SW, sets context offline, reloads `/demo`, and sees the sample route |
+| `npm test -- --grep @claim:local-only` | PASS — desktop and mobile; route flow has only same-origin requests and no account, score, or embedded-frame controls |
+| `npm run build` | PASS — `dist/index.html`, PWA manifest/SW, demo fallback, legal pages, 404, and host configuration produced |
+| Production bundle | PASS — app JS 32.06 kB / 9.51 kB gzip; CSS 24.58 kB / 5.74 kB gzip |
+| `verify-url.sh` on local production preview | PASS — 200, title/lang, one h1, main landmark, image alt, labelled buttons, and zero console errors |
+| Axe | PASS through the Playwright axe integration on desktop/mobile main and legal pages: zero serious or critical violations. The standalone Axe CLI could not discover a system Chrome in this container; the pinned Playwright Chromium integration is the exercised accessibility check. |
+| Lighthouse 13.4.1, local production preview | PASS — Performance 1.00, Accessibility 1.00, Best Practices 1.00, SEO 1.00 |
+
+Browser coverage includes desktop and Pixel 5/393 px flows, keyboard radio
+selection, addition, multi-step subtraction, invalid input recovery, demo
+reset/exit, offline reload, mobile overflow/touch sizing, legal pages, focus,
+and reduced-motion behavior already covered by the retained suite.
+
+## Run and deploy
 
 ```sh
 npm ci
-npm run dev
 npm test
 npm run build
 npm run preview
 ```
 
-The deployment command is exactly `npm run build`. Static output is `dist/`, and `dist/index.html` is at its root.
+Deploy the generated `dist/` directory as the static artifact. The included
+`dist/staticwebapp.config.json` is the Static Web Apps deployment contract.
 
-## Verification
+## Known constraint
 
-- `npm test`: pass. This includes strict TypeScript checking, 6 unit tests, and Playwright 1.58.2 journeys in desktop Chromium and a Pixel 5 viewport. Browser result: 12 passed, 2 intentionally skipped by device applicability (the offline worker is exercised once on desktop; the overflow/touch-size assertion once on mobile).
-- End-to-end journeys cover addition, multi-step subtraction, narration, replay, history persistence, invalid input, offline reload, 393 px layout, legal pages, and serious/critical axe findings.
-- Axe through Playwright: 0 serious or critical violations on the main experience, Privacy, and Terms.
-- Factory `verify-url.sh`: pass at production preview. Title present, `lang="en"`, exactly one `h1`, main landmark present, 0 images missing alt text, 0 unlabeled buttons, and 0 console errors.
-- Explicit offline test: pass after service-worker activation; reload, route setup, and IndexedDB saving work with the browser context offline.
-- `npm run build`: pass. Initial application JS is 29.9 KB uncompressed (8.8 KB gzip); CSS is 23.4 KB uncompressed (5.6 KB gzip). The 720 px hero is 16 KB AVIF / 28 KB WebP; the 1200 px hero is 40 KB AVIF / 64 KB WebP; JPEG fallback is 119 KB.
-- Lighthouse 12.8.2 mobile, local production preview: Performance 100, Accessibility 100, Best Practices 100, SEO 100. FCP 0.96 s, LCP 1.58 s, TBT 0 ms, CLS 0.005. Lab Lighthouse does not report field INP; all local controls respond synchronously with no long tasks.
-- `npm audit`: 0 vulnerabilities.
-
-## Product decisions
-
-- Addition preserves the total while moving chunks between addends; the finish step joins the transformed quantities.
-- Subtraction tracks both the current number and the amount still to remove, so multiple valid decompositions remain visible.
-- Strategy suggestions (“friendly ten,” “easier parts,” or “own route”) guide without grading a child’s chosen path.
-- Replay defaults to a controllable 1.4-second cadence. With reduced motion enabled, the same button advances one station at a time instead of autoplaying.
-- The product is entirely free; no billing integration or analytics was added.
-
-## Known gaps and next steps
-
-- The interaction and language follow established make-ten and decomposition patterns, but a formal teacher review and the brief’s three-session child outcome study cannot be performed inside this build container. Run that review before describing the pedagogy as classroom-validated; tune suggested chunks and wording from observations without adding scores or timers.
-- The optional maintenance print pack remains outside this free v1. The built-in discussion card already prints cleanly.
-- Lighthouse was measured against a local production server; production hosting and compression can be rechecked after factory deployment.
+No formal human teacher review was available inside this disposable build
+container. The app does **not** claim classroom validation or learning
+outcomes; Terms says it supports conversation and is not a substitute for a
+teacher’s judgment. A named teacher review of suggested chunks and language is
+still required before making a classroom-readiness or outcome claim.

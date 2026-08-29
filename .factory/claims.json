@@ -1,0 +1,23 @@
+[
+  {
+    "id": "demo-sandbox",
+    "claim": "Try it with sample data opens an isolated 52 − 18 route.",
+    "where": "Landing page primary action and Demo banner",
+    "test": "npm test -- --grep @claim:demo-sandbox",
+    "sandbox": "Fresh browser context; opens the landing action, asserts /demo, sample route, demo namespace, reset-on-leave behavior."
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "Landing page fact and README",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "Fresh browser context at /demo; waits for the service worker, sets the context offline, reloads, and asserts the sample route remains available."
+  },
+  {
+    "id": "local-only",
+    "claim": "Routes stay only on this device; there are no account or score controls, or third-party requests.",
+    "where": "Landing page fact, footer, Privacy page, and README",
+    "test": "npm test -- --grep @claim:local-only",
+    "sandbox": "Fresh browser context; records every request while opening and advancing the demo route, then asserts same-origin traffic only and no account or embedded-frame controls."
+  }
+]

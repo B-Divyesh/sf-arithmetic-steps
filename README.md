@@ -8,6 +8,15 @@ Live product: [arithmetic-steps.sociobot.in](https://arithmetic-steps.sociobot.i
 
 Elementary teachers, parents, and children who want to discuss the structure inside a calculation—making a ten, splitting a quantity, regrouping—not only whether the final answer is correct. An adult can sit nearby, let the child choose each chunk, then ask what changed and what stayed the same.
 
+## Try the demo
+
+Open [the sample route](https://arithmetic-steps.sociobot.in/demo), or press
+**Try it with sample data** on the landing page. It starts a part-complete
+`52 − 18` route so a learner can finish the last chunk and replay the
+reasoning right away. Demo data is isolated in `demo:arithmetic-steps` and is
+discarded by **Reset demo** or **Start for real**. See
+[.factory/demo.md](.factory/demo.md) for the sandbox details.
+
 ## What v1 includes
 
 - Addition and subtraction routes with whole numbers and results from 0 to 100
@@ -40,6 +49,13 @@ npm run build
 ```
 
 `npm test` runs unit tests plus Playwright journeys in desktop Chromium and a 393 px mobile viewport, including an offline reload and axe accessibility scan. Playwright 1.58.2 is pinned; if its browser is missing locally, run `npx playwright install chromium` once.
+
+The three public claims are declared in [.factory/claims.json](.factory/claims.json).
+Each may be run from a clean demo context with its listed command, for example:
+
+```sh
+npm test -- --grep @claim:offline-reload
+```
 
 The exact production command is `npm run build`. It creates the static deployment at `dist/`, with `dist/index.html` at its root, legal pages, immutable hashed application assets, and a versioned precache service worker. Preview it with:
 

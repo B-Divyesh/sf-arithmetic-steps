@@ -65,6 +65,10 @@ Counters move only when their quantity changes (220ms transform/opacity); route 
 
 Generated with the factory `factory-image` deployment on 2026-08-28. The selected output and prompt sidecar live in `assets/src/`; optimized WebP derivatives live in `public/assets/`. Generated imagery is original to this product and disclosed in the footer.
 
+The social preview at `public/assets/social-preview.jpg` is a 1200×630,
+center-cropped derivative of the selected hero illustration. It introduces no
+new imagery or text and is used only for Open Graph/Twitter metadata.
+
 ## Accessibility intent
 
 The interface does not require dragging. Quantity controls are native buttons with visible labels, track steps are an ordered list, replay state is announced politely, and every ten-frame has a concise accessible text equivalent. Focus uses a high-contrast brass/ink double ring. The final discussion card remains intelligible in grayscale print.

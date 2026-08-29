@@ -6,9 +6,25 @@ const DB_VERSION = 1;
 const ATTEMPTS = "attempts";
 const SETTINGS = "settings";
 
+/**
+ * Demo work must never share the learner's IndexedDB database. Keeping this
+ * switch in the persistence module means every existing save/load call uses
+ * the selected namespace, rather than relying on individual callers to
+ * remember a demo flag.
+ */
+let storageMode: "real" | "demo" = "real";
+
+export function setStorageMode(mode: "real" | "demo"): void {
+  storageMode = mode;
+}
+
+export function storageDatabaseName(): string {
+  return storageMode === "demo" ? `demo:${DB_NAME}` : DB_NAME;
+}
+
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(storageDatabaseName(), DB_VERSION);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(ATTEMPTS)) db.createObjectStore(ATTEMPTS, { keyPath: "id" });
@@ -16,6 +32,18 @@ function openDatabase(): Promise<IDBDatabase> {
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error ?? new Error("Local storage could not be opened."));
+  });
+}
+
+/** Remove only the currently selected namespace. Used when resetting/leaving
+ * the sample activity; it can never delete a learner's real saved routes. */
+export async function resetCurrentStorage(): Promise<void> {
+  const name = storageDatabaseName();
+  await new Promise<void>((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(name);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error ?? new Error("The sample routes could not be reset."));
+    request.onblocked = () => reject(new Error("Close other Arithmetic Steps tabs, then reset the sample again."));
   });
 }
 

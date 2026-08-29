@@ -22,8 +22,10 @@ import {
   importAttempts,
   listAttempts,
   loadActive,
+  resetCurrentStorage,
   saveActive,
-  saveAttempt
+  saveAttempt,
+  setStorageMode
 } from "./storage";
 
 function requiredElement<T extends Element>(selector: string): T {
@@ -35,6 +37,11 @@ function requiredElement<T extends Element>(selector: string): T {
 const app = requiredElement<HTMLDivElement>("#app");
 const toast = requiredElement<HTMLDivElement>("#toast");
 const networkBanner = requiredElement<HTMLDivElement>("#network-banner");
+const demoBanner = requiredElement<HTMLDivElement>("#demo-banner");
+
+function locationIsDemo(): boolean {
+  return location.pathname === "/demo" || new URLSearchParams(location.search).get("demo") === "1";
+}
 
 type View = "setup" | "work" | "complete" | "history";
 
@@ -51,6 +58,7 @@ const state: {
   replayIndex: number;
   replayTimer: number | null;
   confirmingClear: boolean;
+  isDemo: boolean;
 } = {
   view: "setup",
   operation: "add",
@@ -63,8 +71,77 @@ const state: {
   error: "",
   replayIndex: 0,
   replayTimer: null,
-  confirmingClear: false
+  confirmingClear: false,
+  isDemo: locationIsDemo()
 };
+
+if (state.isDemo) setStorageMode("demo");
+
+function updateDemoBanner(): void {
+  demoBanner.hidden = !state.isDemo;
+  document.title = state.isDemo
+    ? "Demo — Arithmetic Steps"
+    : "Arithmetic Steps — Explore addition and subtraction";
+}
+
+function sampleRoute(): ActiveRoute {
+  const route = createRoute("subtract", 52, 18);
+  subtractChunk(route, 10, "split");
+  return route;
+}
+
+async function seedDemoRoute(reset = false): Promise<void> {
+  setStorageMode("demo");
+  if (reset) await resetCurrentStorage();
+  state.operation = "subtract";
+  state.first = 52;
+  state.second = 18;
+  state.route = sampleRoute();
+  state.direction = "right-to-left";
+  state.amount = 8;
+  state.reason = "make-ten";
+  state.error = "";
+  state.replayIndex = 0;
+  state.view = "work";
+  await safelySaveActive();
+}
+
+async function enterDemo(pushLocation = true): Promise<void> {
+  stopReplay();
+  state.isDemo = true;
+  await seedDemoRoute(true);
+  if (pushLocation) history.pushState(null, "", "/demo");
+  updateDemoBanner();
+  render();
+  document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+}
+
+async function resetDemo(): Promise<void> {
+  stopReplay();
+  await seedDemoRoute(true);
+  updateDemoBanner();
+  render();
+  showToast("The 52 − 18 sample route is ready again.");
+  document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+}
+
+async function leaveDemo(replaceLocation = true): Promise<void> {
+  stopReplay();
+  setStorageMode("demo");
+  await resetCurrentStorage().catch(() => undefined);
+  setStorageMode("real");
+  state.isDemo = false;
+  state.view = "setup";
+  state.route = null;
+  state.operation = "add";
+  state.first = 8;
+  state.second = 7;
+  state.error = "";
+  if (replaceLocation) history.replaceState(null, "", "/#learn");
+  updateDemoBanner();
+  render();
+  document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+}
 
 const escapeHtml = (value: string | number) => String(value)
   .replaceAll("&", "&amp;")
@@ -108,10 +185,14 @@ function setupTemplate(): string {
   const secondLabel = op === "add" ? "Second number" : "Take away";
   return `<section class="hero" aria-labelledby="page-title">
     <div class="hero-copy">
-      <p class="eyebrow"><span>Line A</span> Slow mathematics</p>
-      <h1 id="page-title" tabindex="-1">See the route.<br><em>Not just the answer.</em></h1>
-      <p class="lede">Move numbers in useful chunks, say what changed, and replay the path together. No timer. No score. Just reasoning you can see.</p>
-      <a class="text-link" href="#route-planner">Plan a number route <span aria-hidden="true">↓</span></a>
+      <p class="eyebrow"><span>Line A</span> Addition and subtraction to 100</p>
+      <h1 id="page-title" tabindex="-1">Explore addition and subtraction steps</h1>
+      <p class="lede">For elementary children with a teacher or parent, move counters to explain how each answer changes.</p>
+      <div class="hero-actions">
+        <button class="primary-button" id="try-sample" type="button">Try it with sample data <span aria-hidden="true">→</span></button>
+        <a class="text-link" href="#route-planner">Plan your own route <span aria-hidden="true">↓</span></a>
+      </div>
+      <ul class="hero-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>Routes stay only on this device.</li><li>Free with no accounts or scores.</li></ul>
     </div>
     <picture class="hero-art">
       <source media="(max-width: 700px)" srcset="/assets/number-line-limited-720.avif" type="image/avif" />
@@ -297,6 +378,7 @@ function historyTemplate(attempts: Attempt[], error = ""): string {
 }
 
 function bindSetup(): void {
+  document.querySelector<HTMLButtonElement>("#try-sample")?.addEventListener("click", () => { void enterDemo(); });
   document.querySelectorAll<HTMLInputElement>('input[name="operation"]').forEach((input) => input.addEventListener("change", () => {
     state.operation = input.value as Operation;
     [state.first, state.second] = state.operation === "add" ? [8, 7] : [15, 7];
@@ -415,6 +497,7 @@ function bindCompletion(): void {
 
 async function renderHistory(error = ""): Promise<void> {
   state.view = "history"; stopReplay();
+  updateDemoBanner();
   app.innerHTML = `<section class="history-page" aria-labelledby="page-title"><div class="history-heading"><p class="eyebrow">Local route archive</p><h1 id="page-title" tabindex="-1">Saved routes</h1></div><div class="empty-state" role="status"><span class="empty-rails" aria-hidden="true"></span><h2>Opening the route archive…</h2><p>Reading the finished trails stored in this browser.</p></div></section>`;
   let attempts: Attempt[] = [];
   try { attempts = await listAttempts(); }
@@ -445,6 +528,7 @@ async function renderHistory(error = ""): Promise<void> {
 
 function render(): void {
   if (state.view === "history") { void renderHistory(); return; }
+  updateDemoBanner();
   app.innerHTML = state.view === "setup" ? setupTemplate() : state.view === "work" ? workTemplate() : completionTemplate();
   if (state.view === "setup") bindSetup();
   else if (state.view === "work") bindWork();
@@ -456,6 +540,16 @@ window.addEventListener("hashchange", () => {
   if (hash === "#history") { state.confirmingClear = false; void renderHistory(); }
   else if (hash === "#learn" || hash === "") { stopReplay(); state.view = "setup"; state.route = null; state.error = ""; render(); }
 });
+
+window.addEventListener("popstate", () => {
+  const shouldUseDemo = locationIsDemo();
+  if (shouldUseDemo === state.isDemo) return;
+  if (shouldUseDemo) void enterDemo(false);
+  else void leaveDemo(false);
+});
+
+document.querySelector<HTMLButtonElement>("#reset-demo")?.addEventListener("click", () => { void resetDemo(); });
+document.querySelector<HTMLButtonElement>("#start-real")?.addEventListener("click", () => { void leaveDemo(); });
 
 function updateNetworkState(): void {
   networkBanner.hidden = navigator.onLine;
@@ -495,8 +589,8 @@ async function registerServiceWorker(): Promise<void> {
 }
 
 async function bootstrap(): Promise<void> {
+  updateDemoBanner();
   if (location.hash === "#history") { await renderHistory(); void registerServiceWorker(); return; }
-  render();
   try {
     const active = await loadActive();
     if (active && !active.completed) {
@@ -505,9 +599,11 @@ async function bootstrap(): Promise<void> {
       state.first = active.first;
       state.second = active.second;
       state.operation = active.operation;
-      render();
+    } else if (state.isDemo) {
+      await seedDemoRoute();
     }
   } catch { showToast("A previous unfinished route could not be restored."); }
+  render();
   void registerServiceWorker();
 }
 
