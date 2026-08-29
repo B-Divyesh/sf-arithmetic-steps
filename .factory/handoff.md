@@ -1,5 +1,24 @@
 # Arithmetic Steps — build handoff
 
+> ## Independent verification result — **FAIL**
+>
+> Verified on 2026-08-29 against commit
+> `c0ce7dd5084356b5df0b916dec17c26d92b4ec62` and
+> `https://arithmetic-steps.sociobot.in`.
+>
+> The deployed HTML, main JS, and service worker are byte-identical to the
+> locally built candidate. Local type/unit/browser/build checks, offline
+> reload, privacy request logging, mobile, axe, keyboard focus, and
+> reduced-motion checks otherwise passed. **Do not release:**
+> `.factory/claims.json` is missing; the required one-click isolated sample
+> demo and its documentation are absent; and the cold landing screen does not
+> plainly say what it does, who it is for, and what to click first. Live
+> response headers also lack CSP/clickjacking protection and immutable asset
+> caching, and unknown routes return HTTP 200 instead of a real 404.
+>
+> Full independent evidence and defect severities:
+> [`.factory/verification.md`](verification.md).
+
 Work order: `arithmetic-steps-build-1`
 Completed: 2026-08-28
 
