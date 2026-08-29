@@ -21,8 +21,8 @@ Artifact: static, local-first PWA (`dist/`)
   opens. `.factory/copy-audit.md` records the wording and counts.
 - Added `staticwebapp.config.json` to the deployment artifact: CSP,
   clickjacking protection, permissions policy, immutable asset caching,
-  no-cache service worker behavior, navigation fallback, and a true HTTP 404
-  response override. Added the styled `404.html`; moved offline-page styling
+  no-cache service worker behavior, an explicit `/demo` rewrite, and a true
+  HTTP 404 response override. Added the styled `404.html`; moved offline-page styling
   to a CSP-compatible external stylesheet.
 - Added canonical, Open Graph/Twitter, and Apple-touch metadata; a locally
   derived 1200×630 social preview; and the required Param Factory/build footer

@@ -9,12 +9,13 @@ describe("static hosting contract", () => {
   it("ships security, cache, and real-404 settings for Static Web Apps", async () => {
     const config = JSON.parse(await readFile(resolve(root, "public/staticwebapp.config.json"), "utf8")) as {
       globalHeaders: Record<string, string>;
-      routes: { route: string; headers?: Record<string, string> }[];
+      routes: { route: string; rewrite?: string; headers?: Record<string, string> }[];
       responseOverrides: Record<string, { rewrite: string; statusCode: number }>;
     };
     expect(config.globalHeaders["Content-Security-Policy"]).toContain("frame-ancestors 'none'");
     expect(config.globalHeaders["X-Frame-Options"]).toBe("DENY");
     expect(config.globalHeaders["Permissions-Policy"]).toContain("camera=()");
+    expect(config.routes.find((route) => route.route === "/demo")).toMatchObject({ rewrite: "/index.html" });
     expect(config.routes.find((route) => route.route === "/assets/*")?.headers?.["Cache-Control"]).toContain("immutable");
     expect(config.responseOverrides["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
   });
