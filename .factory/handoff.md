@@ -7,7 +7,7 @@
 - Artifact: static local-first offline PWA (`dist/`)
 - Live URL: <https://arithmetic-steps.sociobot.in>
 
-## Outcome: technical QA PASS; release remains blocked
+## Outcome: FAIL — release remains blocked
 
 The verifier's only documented product-QA blocker is still real: the researched
 brief requires **teacher-reviewed pedagogy**, while
@@ -17,10 +17,13 @@ behavior were preserved. A repository worker cannot honestly manufacture a
 human qualification, review date, observations, or approval, so this P0 is
 not claimed as repaired.
 
-All executable product, PWA, privacy, accessibility, response-policy,
-deployment, and claims checks pass. The deployment is technically healthy but
-must not be treated as release-acceptable until the external review below is
-recorded.
+Independent verification 5 against candidate
+`4585b5872982db89aad80b4719493daf6bf14dc8` reconfirmed that all executable
+product, PWA, privacy, accessibility, response-policy, deployment, and claims
+checks pass, and the live runtime assets exactly match the fresh production
+build. The release result is nevertheless **FAIL** until the external review
+below is recorded. See `.factory/verification-5.md` for the full fresh
+evidence.
 
 ## P0 reproduction and required resolution
 
