@@ -45,6 +45,41 @@ describe("static hosting contract", () => {
     expect(generator).toContain('!deploymentOnlyFiles.has');
   });
 
+  it("keeps the independent live checker aligned with the current control and completion copy", async () => {
+    const [app, liveChecker] = await Promise.all([
+      readFile(resolve(root, "src/main.ts"), "utf8"),
+      readFile(resolve(root, ".factory/qa-artifacts/independent-live-qa.mjs"), "utf8")
+    ]);
+    expect(app).toContain('id="finish-route">Finish the problem</button>');
+    expect(app).toContain('type="submit">Start the problem');
+    expect(app).toContain('>The answer is ${route.result}.</h1>');
+    expect(app).toContain('>Clear saved problems…</button>');
+    expect(app).toContain('>Keep problems</button>');
+    expect(app).toContain('>Remove all problems</button>');
+    expect(app).toContain('<h2>No finished problems yet</h2>');
+    expect(app).toContain('state.replayTimer === null ? "Play steps" : "Pause"');
+    expect(app).toContain('replay advances one step at a time.');
+    expect(liveChecker).toContain('name: "Finish the problem"');
+    expect(liveChecker).toContain('name: "Start the problem"');
+    expect(liveChecker).toContain('name: "The answer is 34."');
+    expect(liveChecker).toContain('name: "The answer is 100."');
+    expect(liveChecker).toContain('name: "Clear saved problems…"');
+    expect(liveChecker).toContain('name: "Keep problems"');
+    expect(liveChecker).toContain('name: "Remove all problems"');
+    expect(liveChecker).toContain('name: "No finished problems yet"');
+    expect(liveChecker).toContain('name: "Play steps"');
+    expect(liveChecker).toContain('replay advances one step at a time.');
+    expect(liveChecker).not.toContain('name: "Finish the route"');
+    expect(liveChecker).not.toContain('name: "Begin the route"');
+    expect(liveChecker).not.toContain('name: "You arrived at');
+    expect(liveChecker).not.toContain('saved routes');
+    expect(liveChecker).not.toContain('Keep routes');
+    expect(liveChecker).not.toContain('Remove all routes');
+    expect(liveChecker).not.toContain('No finished routes yet');
+    expect(liveChecker).not.toContain('Play route');
+    expect(liveChecker).not.toContain('one station at a time');
+  });
+
   it("gives every registered public claim one exactly tagged browser regression", async () => {
     const [claimsText, browserTests] = await Promise.all([
       readFile(resolve(root, ".factory/claims.json"), "utf8"),

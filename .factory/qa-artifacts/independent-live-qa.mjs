@@ -50,8 +50,8 @@ async function runDesktop(browser) {
   assert(await page.getByText("42 − 8", { exact: true }).first().isVisible(), "demo is not part complete");
   const demoAxe = await axe(page, "desktop demo");
   await page.getByRole("button", { name: "Take away the chunk" }).click();
-  await page.getByRole("button", { name: "Finish the route" }).click();
-  await page.getByRole("heading", { name: "You arrived at 34." }).waitFor();
+  await page.getByRole("button", { name: "Finish the problem" }).click();
+  await page.getByRole("heading", { name: "The answer is 34." }).waitFor();
   assert(await page.getByRole("heading", { name: "52 − 18 = 34" }).isVisible(), "final equation missing");
   assert(await page.getByText("What stayed the same?").isVisible(), "discussion prompt missing");
   const completeAxe = await axe(page, "desktop completion");
@@ -73,7 +73,7 @@ async function runDesktop(browser) {
     await page.getByRole("radio", { name: "Add" }).check({ force: true });
     await page.getByLabel("First number").fill(item.first);
     await page.getByLabel("Second number").fill(item.second);
-    await page.getByRole("button", { name: "Begin the route" }).click();
+    await page.getByRole("button", { name: "Start the problem" }).click();
     const error = await page.locator("#form-error").innerText();
     assert(error.includes(item.expected), `invalid case ${item.first}+${item.second} gave: ${error}`);
     assert((await page.getByLabel("First number").inputValue()) === item.first, "invalid input was not retained");
@@ -82,16 +82,16 @@ async function runDesktop(browser) {
   await page.getByRole("radio", { name: "Subtract" }).check({ force: true });
   await page.getByLabel("Start at").fill("5");
   await page.getByLabel("Take away").fill("6");
-  await page.getByRole("button", { name: "Begin the route" }).click();
+  await page.getByRole("button", { name: "Start the problem" }).click();
   assert((await page.locator("#form-error").innerText()).includes("smaller than the starting number"), "invalid subtraction was accepted");
 
   await page.getByRole("radio", { name: "Add" }).check({ force: true });
   await page.getByLabel("First number").fill("99");
   await page.getByLabel("Second number").fill("1");
-  await page.getByRole("button", { name: "Begin the route" }).click();
+  await page.getByRole("button", { name: "Start the problem" }).click();
   await page.getByRole("button", { name: "Move the chunk" }).click();
   await page.getByRole("button", { name: "Join the numbers and finish" }).click();
-  await page.getByRole("heading", { name: "You arrived at 100." }).waitFor();
+  await page.getByRole("heading", { name: "The answer is 100." }).waitFor();
 
   await page.goto(`${base}/#history`);
   await page.getByText("99 + 1 = 100").waitFor();
@@ -112,12 +112,12 @@ async function runDesktop(browser) {
   assert(exported.attempts[0]?.operation === "add" && exported.attempts[0]?.first === 99 && exported.attempts[0]?.second === 1 && exported.attempts[0]?.result === 100, "JSON export content did not contain 99 + 1 = 100");
   await page.getByLabel("Import JSON").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from("{bad") });
   await page.locator(".form-error").filter({ hasText: /Expected property|Unexpected token|JSON/ }).waitFor();
-  await page.getByRole("button", { name: "Clear saved routes" }).click();
-  await page.getByRole("button", { name: "Keep routes" }).click();
+  await page.getByRole("button", { name: "Clear saved problems…" }).click();
+  await page.getByRole("button", { name: "Keep problems" }).click();
   await page.getByText("99 + 1 = 100").waitFor();
-  await page.getByRole("button", { name: "Clear saved routes" }).click();
-  await page.getByRole("button", { name: "Remove all routes" }).click();
-  await page.getByRole("heading", { name: "No finished routes yet" }).waitFor();
+  await page.getByRole("button", { name: "Clear saved problems…" }).click();
+  await page.getByRole("button", { name: "Remove all problems" }).click();
+  await page.getByRole("heading", { name: "No finished problems yet" }).waitFor();
   const historyAxe = await axe(page, "desktop history empty");
 
   const origins = [...new Set(observed.requests.map(url => new URL(url).origin))];
@@ -167,13 +167,13 @@ async function runKeyboardAndMotion(browser) {
   const focused = await page.evaluate(() => ({ outline: getComputedStyle(document.activeElement).outline, offset: getComputedStyle(document.activeElement).outlineOffset }));
   assert(focused.outline !== "none", "focused main action has no outline");
   await page.keyboard.press("Enter");
-  await page.getByRole("button", { name: "Finish the route" }).press("Enter");
+  await page.getByRole("button", { name: "Finish the problem" }).press("Enter");
   await page.getByRole("button", { name: "Previous" }).click();
   const before = await page.locator(".platform-label span").innerText();
-  await page.getByRole("button", { name: "Play route" }).click();
+  await page.getByRole("button", { name: "Play steps" }).click();
   const after = await page.locator(".platform-label span").innerText();
   assert(before !== after, "reduced-motion replay did not advance one station");
-  assert(await page.getByText("Reduced motion is on, so replay advances one station at a time.").isVisible(), "reduced-motion feedback missing");
+  assert(await page.getByText("Reduced motion is on, so replay advances one step at a time.").isVisible(), "reduced-motion feedback missing");
   const reducedCss = await page.evaluate(() => ({ animationDuration: getComputedStyle(document.body).animationDuration, scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior }));
   await context.close();
   return { firstFocus, focused, reducedCss, replayAdvancedOneStep: true };
