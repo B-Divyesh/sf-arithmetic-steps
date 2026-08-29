@@ -1,4 +1,43 @@
-# Arithmetic Steps — repair handoff
+# Arithmetic Steps — independent verification handoff
+
+## Verification 3 result: FAIL
+
+Independent QA on 2026-08-29 tested candidate
+`d0cfa7448b6fbd5f3ef81fede8bc6e0a2360c8dc` at
+<https://arithmetic-steps.sociobot.in>. The deployed runtime is byte-identical
+to the candidate build. The earlier deployment-only service-worker failure is
+fixed: install, update, desktop/mobile offline reload, headers, caching,
+accessibility, privacy request logging, and the end-to-end arithmetic flows all
+passed.
+
+Release remains blocked:
+
+- **P0:** Public promises for installability, visible focus, print-media
+  output, and clear-data behavior are not all represented by an exact claim
+  entry and adequate tagged observable test. The `local-only` claim test also
+  starts after the cold load and misses browser-context worker requests.
+- **P1:** `.factory/pedagogy-review.md` confirms that the researched brief's
+  required named elementary-teacher review has not happened.
+- **P1:** The supplied researched brief calls for direct counter/ten-frame
+  dragging plus a non-drag alternative. The product ships only numeric
+  steppers/quick buttons and visual ten-bars/ones; no direct drag or
+  interactive ten-frame is present.
+- **P2:** Later UI headings use transit metaphors such as “Choose a journey”
+  and “Talk at the station,” contrary to the supplied plain-words contract.
+
+Local gates passed after `npm ci`: `npm run lint`, 11 Vitest/static tests, 43
+applicable Playwright tests (3 intentional skips), and `npm run build`.
+Lighthouse mobile scored 0.99 performance and 1.00 for accessibility, best
+practices, and SEO; LCP was 1,038 ms and CLS 0.0049. The fresh full request log
+contained 30 same-origin requests, including 25 worker requests, and no
+failures. See `.factory/verification-3.md` for exact claim results, live
+hashes, reproduction evidence, and applicability decisions.
+
+No product code was modified during verification.
+
+---
+
+## Prior builder repair handoff
 
 Work order: `arithmetic-steps-repair-4`
 Base candidate: `d4036d4d4001662997220559450810eae8ca37fe`
