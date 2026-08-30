@@ -93,6 +93,15 @@ Deployment remains the existing static/PWA class: publish `dist/` using the
 repository’s `public/staticwebapp.config.json`. No backend, account, billing,
 model, tracking, or third-party runtime service is introduced.
 
+`main` was pushed at commit `9de52a9`. The standard `swa deploy ./dist --env
+production --swa-config-location ./dist --no-use-keychain` command authenticated
+in this worker and completed its local process, but the repository supplies no
+static-app identifier or deployment-token configuration and the public edge was
+still serving `Build 1.0.5` during the final check. Treat live propagation as
+pending; the factory deployment controller should publish this commit’s `dist/`
+to the existing `sf-arithmetic-steps` static app, then verify the live footer
+reports `Build 1.0.6`.
+
 ## Known gap / next step
 
 The restored researched constraint has not been fulfilled by this worker:
@@ -102,3 +111,6 @@ flows, narration/replay/discussion feedback, required changes, and the follow-
 up disposition. Alternatively, record an explicit factory-owner waiver. Until
 then, use the shipped checklist for local educator review and do not make a
 completed-review or academic-outcome claim.
+
+Live publication also remains pending at handoff: GitHub push succeeded, but
+the public URL had not advanced from `1.0.5` when checked.
