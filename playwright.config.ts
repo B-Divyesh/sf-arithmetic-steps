@@ -5,6 +5,10 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 7_000 },
   fullyParallel: false,
+  // Chromium's headless shell is unstable in this worker image when the two
+  // device projects launch simultaneously. The product suite is intentionally
+  // serial so its fresh storage, service-worker, and Axe checks stay reliable.
+  workers: 1,
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:4173",

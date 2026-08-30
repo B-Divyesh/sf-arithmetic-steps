@@ -1,0 +1,31 @@
+{
+  "product": "arithmetic-steps",
+  "version": "1.0.6",
+  "verifiedAt": "2026-08-30T06:50:00Z",
+  "cleanInstall": { "command": "npm ci", "result": "pass", "packages": 61, "auditVulnerabilities": 0 },
+  "checks": {
+    "lint": "pass",
+    "unit": { "result": "pass", "tests": 17 },
+    "fullSuite": { "result": "pass", "playwrightPassed": 60, "playwrightSkipped": 2, "workers": 1 },
+    "claims": { "result": "pass", "registered": 21, "completed": 21 },
+    "build": { "result": "pass", "precacheUrls": 24 },
+    "urlSmoke": { "result": "pass", "loadMs": 652 },
+    "browserSmoke": {
+      "result": "pass",
+      "desktop": { "viewport": "1280x800", "overflow": false },
+      "mobile": { "viewport": "390x844", "overflow": false, "demoBanner": true },
+      "consoleErrors": 0
+    },
+    "lighthouse": {
+      "result": "pass",
+      "performance": 100,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "fcp": "1.1 s",
+      "lcp": "1.4 s",
+      "tbt": "0 ms",
+      "cls": "0.005"
+    }
+  }
+}

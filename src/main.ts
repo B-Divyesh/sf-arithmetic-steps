@@ -1,4 +1,5 @@
 import "./styles.css";
+import { applyBuildVersion } from "./version";
 import {
   additionSuggestions,
   canFinish,
@@ -39,6 +40,8 @@ const app = requiredElement<HTMLDivElement>("#app");
 const toast = requiredElement<HTMLDivElement>("#toast");
 const networkBanner = requiredElement<HTMLDivElement>("#network-banner");
 const demoBanner = requiredElement<HTMLDivElement>("#demo-banner");
+
+applyBuildVersion();
 
 function urlIsDemo(url: URL): boolean {
   return url.pathname === "/demo" || url.searchParams.get("demo") === "1";
@@ -277,6 +280,25 @@ function setupTemplate(): string {
       <span class="station-dot" aria-hidden="true"></span>
       <div><h3 id="grownup-note-title">For the grown-up nearby</h3><p>Let the child choose the chunk, even when it is not the shortest path. Ask “What stayed the same?” before offering a strategy.</p></div>
     </div>
+    <section class="facilitator-review" id="facilitator-review" aria-labelledby="facilitator-review-title">
+      <div class="section-sign">
+        <span aria-hidden="true">02</span>
+        <div><p>Educator review</p><h2 id="facilitator-review-title">Review this tool before classroom use</h2></div>
+      </div>
+      <p>Use the supplied sample to check controls, explanations, and discussion prompts for your setting.</p>
+      <form id="facilitator-review-form">
+        <fieldset>
+          <legend>Mark each check after you try it</legend>
+          <ol class="facilitator-checks">
+            <li class="facilitator-check facilitator-check--sample"><label><input type="checkbox" name="facilitator-review" value="sample" /><span><strong>Finish the sample.</strong> Remove the final 8 in the supplied route.</span></label><a class="quiet-button" href="/demo">Open 52 − 18 sample</a></li>
+            <li><label><input type="checkbox" name="facilitator-review" value="choice" /><span><strong>Try a child-chosen chunk.</strong> Move a ten-frame or counter, then use a labelled chunk button.</span></label></li>
+            <li><label><input type="checkbox" name="facilitator-review" value="explanation" /><span><strong>Read the reasoning trail.</strong> Finish a route, replay it, and read the discussion prompts.</span></label></li>
+            <li><label><input type="checkbox" name="facilitator-review" value="access" /><span><strong>Check access for your setting.</strong> Use keyboard controls and decide how you will support the learner.</span></label></li>
+          </ol>
+        </fieldset>
+        <div class="facilitator-review-footer"><p id="facilitator-review-status" role="status" aria-live="polite">0 of 4 review checks marked. Marks are not stored.</p><button class="secondary-button" id="reset-facilitator-review" type="button">Reset review checklist</button></div>
+      </form>
+    </section>
   </section>
   <section class="three-stops" aria-labelledby="how-title">
     <p class="eyebrow">How it works</p><h2 id="how-title">Move, explain, and replay each step</h2>
@@ -469,6 +491,20 @@ function bindSetup(): void {
     render();
     document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
     await persistence;
+  });
+
+  const reviewChecks = [...document.querySelectorAll<HTMLInputElement>('input[name="facilitator-review"]')];
+  const reviewStatus = document.querySelector<HTMLElement>("#facilitator-review-status");
+  const updateReviewStatus = (): void => {
+    const marked = reviewChecks.filter((check) => check.checked).length;
+    if (reviewStatus) reviewStatus.textContent = marked === reviewChecks.length
+      ? `All ${marked} review checks marked. Decide whether it fits your setting before classroom use.`
+      : `${marked} of ${reviewChecks.length} review checks marked. Marks are not stored.`;
+  };
+  reviewChecks.forEach((check) => check.addEventListener("change", updateReviewStatus));
+  document.querySelector<HTMLButtonElement>("#reset-facilitator-review")?.addEventListener("click", () => {
+    reviewChecks.forEach((check) => { check.checked = false; });
+    updateReviewStatus();
   });
 }
 

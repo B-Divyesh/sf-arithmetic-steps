@@ -1,11 +1,11 @@
 {
   "name": "arithmetic-steps",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/generate-sw.mjs",
+    "build": "node scripts/sync-version.mjs && vite build && node scripts/generate-sw.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "tsc --noEmit",
     "test": "npm run lint && vitest run && playwright test",

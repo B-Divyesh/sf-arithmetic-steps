@@ -8,6 +8,10 @@ Live product: [arithmetic-steps.sociobot.in](https://arithmetic-steps.sociobot.i
 
 It is for elementary teachers, parents, and children discussing the structure inside a calculation. An adult can let the child choose each chunk, then ask what changed and what stayed the same.
 
+## Review before classroom use
+
+Educators can use the in-product review checklist with the supplied sample before classroom use. It covers the sample route, child-chosen chunks, reasoning prompts, and keyboard controls. Checklist marks stay only on the open page and are not a completed external review.
+
 ## Try the demo
 
 Open [the sample problem](https://arithmetic-steps.sociobot.in/demo), or press
@@ -72,7 +76,8 @@ No problem data is sent to a server. The Privacy page explains browser storage a
 
 - [.factory/brief.json](.factory/brief.json) records the scoped opportunity.
 - [.factory/design.md](.factory/design.md) records the art-deco transit-poster system and generated-art provenance.
-- [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the observable guidance safeguards and evidence boundary.
+- [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the review boundary and observable guidance safeguards.
+- [.factory/facilitator-review.md](.factory/facilitator-review.md) documents the executable local review checklist.
 - [.factory/handoff.md](.factory/handoff.md) records final verification and known gaps.
 
 ## License

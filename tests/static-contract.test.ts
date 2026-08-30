@@ -80,10 +80,11 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('one station at a time');
   });
 
-  it("keeps pedagogy requirements observable and makes no outside-review promise", async () => {
-    const [briefText, evidence, app, readme, landing, privacy, terms, manifest] = await Promise.all([
+  it("preserves the research review constraint without inventing a completed review", async () => {
+    const [briefText, evidence, facilitatorReview, app, readme, landing, privacy, terms, manifest] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
       readFile(resolve(root, ".factory/pedagogy-evidence.md"), "utf8"),
+      readFile(resolve(root, ".factory/facilitator-review.md"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
       readFile(resolve(root, "README.md"), "utf8"),
       readFile(resolve(root, "index.html"), "utf8"),
@@ -92,16 +93,47 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
-    const observableConstraint = "Adult-guided discussion prompts with no timed or scored drills and no academic-outcome claims";
     const activeCopy = [briefText, app, readme, landing, privacy, terms, manifest].join("\n");
 
-    expect(brief.constraints).toContain(observableConstraint);
-    expect(activeCopy).not.toMatch(/teacher[- ]reviewed|reviewed by (?:an?|the)|qualified (?:elementary )?teacher/i);
+    expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
+    expect([app, readme, landing, privacy, terms, manifest].join("\n")).not.toMatch(/teacher[- ]reviewed|reviewed by (?:an?|the)|qualified (?:elementary )?teacher/i);
     expect(activeCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
-    expect(evidence.replace(/\s+/g, " ")).toContain("makes only behavior claims that the repository sandbox can exercise");
+    expect(evidence).toContain("does **not** contain a completed qualified educator review");
+    expect(evidence).toContain("No study, reviewer identity");
+    expect(facilitatorReview).toContain("It is not a teacher study");
+    expect(facilitatorReview).toContain("npm test -- --grep @claim:facilitator-review");
     expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
     expect(app).toContain("For the grown-up nearby");
     expect(app).toContain("What stayed the same?");
+    expect(app).toContain("Review this tool before classroom use");
+    expect(app).toContain('name="facilitator-review"');
+    expect(app).toContain("Reset review checklist");
+    expect(app).toContain("Marks are not stored.");
+  });
+
+  it("derives every visible build identity and the PWA start URL from package.json", async () => {
+    const [packageText, manifestText, main, legal, landing, privacy, terms, viteConfig] = await Promise.all([
+      readFile(resolve(root, "package.json"), "utf8"),
+      readFile(resolve(root, "public/manifest.webmanifest"), "utf8"),
+      readFile(resolve(root, "src/main.ts"), "utf8"),
+      readFile(resolve(root, "src/legal.ts"), "utf8"),
+      readFile(resolve(root, "index.html"), "utf8"),
+      readFile(resolve(root, "privacy/index.html"), "utf8"),
+      readFile(resolve(root, "terms/index.html"), "utf8"),
+      readFile(resolve(root, "vite.config.ts"), "utf8")
+    ]);
+    const packageInfo = JSON.parse(packageText) as { version: string };
+    const manifest = JSON.parse(manifestText) as { start_url: string };
+
+    expect(manifest.start_url).toBe(`/?source=pwa&v=${packageInfo.version}`);
+    expect(viteConfig).toContain("package.json");
+    expect(viteConfig).toContain("__ARITHMETIC_STEPS_VERSION__");
+    expect(main).toContain("applyBuildVersion()");
+    expect(legal).toContain("applyBuildVersion()");
+    for (const document of [landing, privacy, terms]) {
+      expect(document).toContain("data-build-version");
+      expect(document).not.toMatch(/Build 1\.0\./);
+    }
   });
 
   it("gives every registered public claim one exactly tagged browser regression", async () => {

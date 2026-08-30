@@ -31,6 +31,20 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | For the grown-up nearby | 5 | Adult guidance heading |
 | Let the child choose the chunk, even when it is not the shortest path. | 14 | Adult guidance |
 | Ask “What stayed the same?” before offering a strategy. | 10 | Adult guidance |
+| Educator review | 2 | Section label |
+| Review this tool before classroom use | 6 | `facilitator-review` |
+| Use the supplied sample to check controls, explanations, and discussion prompts for your setting. | 14 | `facilitator-review` |
+| Mark each check after you try it | 7 | Checklist instruction |
+| Finish the sample. | 3 | Checklist item |
+| Remove the final 8 in the supplied route. | 9 | Checklist instruction |
+| Open 52 − 18 sample | 4 | Opens supplied sample |
+| Try a child-chosen chunk. | 4 | Checklist item |
+| Move a ten-frame or counter, then use a labelled chunk button. | 11 | Checklist instruction |
+| Read the reasoning trail. | 4 | Checklist item |
+| Finish a route, replay it, and read the discussion prompts. | 10 | Checklist instruction |
+| Check access for your setting. | 6 | Checklist item |
+| Use keyboard controls and decide how you will support the learner. | 11 | Checklist instruction |
+| Reset review checklist | 3 | Clears local checklist marks |
 | How it works | 3 | Process label |
 | Move, explain, and replay each step | 6 | Process heading |
 | Move | 1 | Step one heading |
@@ -44,6 +58,7 @@ No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
 
-The active product copy and brief make no outside-evaluation or learning-outcome
-promise. The brief instead names observable adult guidance, discussion prompts,
-and the absence of timed or scored drills; static and browser tests cover them.
+The active product copy makes no outside-evaluation or learning-outcome
+promise. The researched brief keeps its teacher-review constraint. The product
+instead offers a testable facilitator checklist and asks for review before
+classroom use; it does not present that checklist as an outside evaluation.

@@ -295,6 +295,22 @@ button:disabled, .secondary-button:has(input:disabled) { cursor: not-allowed; op
 .grownup-note p { max-width: 62ch; margin: 0; color: var(--muted); }
 .station-dot { flex: 0 0 auto; display: block; width: 28px; height: 28px; background: var(--paper); border: 8px solid var(--teal-dark); border-radius: 50%; box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--teal-dark); }
 
+.facilitator-review { max-width: 900px; margin: 56px auto 0; padding: 32px; background: var(--paper-raised); border: 3px double var(--ink); box-shadow: var(--shadow); }
+.facilitator-review > .section-sign { margin-bottom: 16px; }
+.facilitator-review > p { max-width: 60ch; margin: 0 0 24px; color: var(--muted); }
+.facilitator-review fieldset { margin: 0; padding: 0; border: 0; }
+.facilitator-review legend { margin-bottom: 12px; font-weight: 900; }
+.facilitator-checks { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.facilitator-check--sample { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.facilitator-checks label { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; min-height: 56px; gap: 12px; padding: 8px 12px 8px 4px; background: var(--paper); border: 1px solid var(--ink); cursor: pointer; }
+.facilitator-checks input { appearance: none; display: grid; width: 44px; min-width: 44px; height: 44px; margin: 0; place-items: center; color: var(--paper-raised); background: var(--paper-raised); border: 2px solid var(--ink); cursor: pointer; }
+.facilitator-checks input:checked { color: var(--paper-raised); background: var(--teal-dark); }
+.facilitator-checks input:checked::after { content: "✓"; font-size: 1.5rem; font-weight: 900; }
+.facilitator-checks strong { display: block; }
+.facilitator-checks a { color: var(--teal-dark); font-weight: 800; }
+.facilitator-review-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 2px dashed var(--ink); }
+.facilitator-review-footer p { margin: 0; color: var(--muted); font-weight: 800; }
+
 .three-stops { padding: 72px 0 96px; }
 .three-stops > h2 { max-width: 14ch; font-family: var(--display); font-size: clamp(2rem, 5vw, 3.7rem); text-transform: uppercase; }
 .three-stops ol { display: grid; grid-template-columns: repeat(3, 1fr); margin: 40px 0 0; padding: 0; border-top: 6px double var(--ink); list-style: none; }
@@ -534,6 +550,11 @@ button:disabled, .secondary-button:has(input:disabled) { cursor: not-allowed; op
   .example-row > span { width: 100%; }
   .primary-button { width: 100%; }
   .grownup-note { padding-inline: 12px 0; }
+  .facilitator-review { margin-top: 40px; padding: 20px 16px; }
+  .facilitator-check--sample { grid-template-columns: 1fr; }
+  .facilitator-check--sample .quiet-button { width: 100%; }
+  .facilitator-review-footer { align-items: stretch; }
+  .facilitator-review-footer .secondary-button { width: 100%; }
   .route-masthead { display: block; }
   .route-masthead h1 { font-size: 3.2rem; }
   .route-masthead .quiet-button { margin-top: 20px; }

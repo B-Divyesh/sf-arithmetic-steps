@@ -1,5 +1,8 @@
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { readFileSync } from "node:fs";
+
+const PRODUCT_VERSION = (JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string }).version;
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
@@ -703,6 +706,30 @@ test("@claim:reduced-motion makes replay manual", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Play steps" })).toBeVisible();
 });
 
+test("@claim:facilitator-review provides a local pre-classroom review checklist", async ({ page }) => {
+  await expect(page.getByRole("heading", { name: "Review this tool before classroom use" })).toBeVisible();
+  const checks = page.getByRole("checkbox", { name: /Finish the sample|Try a child-chosen chunk|Read the reasoning trail|Check access for your setting/ });
+  await expect(checks).toHaveCount(4);
+  await expect(page.getByRole("link", { name: "Open 52 − 18 sample" })).toHaveAttribute("href", "/demo");
+  await page.getByRole("link", { name: "Open 52 − 18 sample" }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
+
+  await page.goto("/");
+  const reviewChecks = page.getByRole("checkbox");
+  for (let index = 0; index < 4; index += 1) await reviewChecks.nth(index).check();
+  await expect(page.getByRole("status")).toContainText("All 4 review checks marked. Decide whether it fits your setting before classroom use.");
+
+  await page.reload();
+  await expect(page.getByRole("status")).toContainText("0 of 4 review checks marked. Marks are not stored.");
+  for (let index = 0; index < 4; index += 1) await expect(page.getByRole("checkbox").nth(index)).not.toBeChecked();
+
+  await page.getByRole("checkbox").first().check();
+  await page.getByRole("button", { name: "Reset review checklist" }).click();
+  await expect(page.getByRole("status")).toContainText("0 of 4 review checks marked. Marks are not stored.");
+  await expect(page.getByRole("checkbox").first()).not.toBeChecked();
+});
+
 test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser", async ({ page }) => {
   await expect(page.locator('[data-timer], [data-streak], [data-leaderboard], input[placeholder*="answer" i]')).toHaveCount(0);
   await expect(page.getByText(/timer|streak|leaderboard|guess the answer/i)).toHaveCount(0);
@@ -746,4 +773,15 @@ test("legal pages keep the same accessible shell", async ({ page }) => {
     const results = await new AxeBuilder({ page: page as never }).analyze();
     expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
   }
+});
+
+test("uses one build identity on app, legal, and manifest routes", async ({ page, request }) => {
+  for (const path of ["/", "/privacy/", "/terms/"]) {
+    await page.goto(path);
+    await expect(page.locator("[data-build-version]")).toHaveText(`Build ${PRODUCT_VERSION}`);
+  }
+  const manifestResponse = await request.get("/manifest.webmanifest");
+  expect(manifestResponse.ok()).toBe(true);
+  const manifest = await manifestResponse.json() as { start_url: string };
+  expect(manifest.start_url).toBe(`/?source=pwa&v=${PRODUCT_VERSION}`);
 });
