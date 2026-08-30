@@ -2,10 +2,9 @@
 
 ## Release disposition
 
-**Repair build ready as `1.0.7`; live publication is blocked by the static
-deployment control plane.** The artifact remains a static, local-first PWA.
-It has no backend, account, billing, model, tracking, or third-party runtime
-service.
+**Published and live as `1.0.7`.** The artifact remains a static, local-first
+PWA. It has no backend, account, billing, model, tracking, or third-party
+runtime service.
 
 ## Root cause and repair
 
@@ -71,21 +70,20 @@ npm run build
 swa deploy ./dist --env production --swa-config-location ./dist --no-use-keychain
 ```
 
-The repair commits were pushed to `main` at `1c66540`. The standard command
-and the explicitly scoped command both authenticated:
+The repair commits were pushed to `main`. The standard and initial scoped
+commands authenticated but did not advance the edge. The final target-scoped
+publish command was:
 
 ```sh
-swa deploy ./dist --app-name sf-arithmetic-steps --env production \
+swa deploy ./dist --app-name sf-arithmetic-steps --resource-group sf-arithmetic-steps --env production \
   --swa-config-location ./dist --no-use-keychain
 ```
 
-The CLI reached `Checking project "sf-arithmetic-steps" settings...` but
-neither produced an upload/deployment URL; the scoped request made no progress
-for two minutes and was stopped. A subsequent live identity check found the
-public edge still serving `Build 1.0.5` and
-`/?source=pwa&v=1.0.5`, rather than this repair's `1.0.7`. Local `dist/` is
-ready and verified; a factory deployment controller with the target's working
-project settings must publish it, then rerun the live identity check.
+The live verification now passes at `https://arithmetic-steps.sociobot.in`:
+the landing page has no console errors and its semantic smoke check passes;
+the 390 px `/demo` route reports `Demo — Arithmetic Steps`, `52 − 18`,
+`Build 1.0.7`, and manifest start URL `/?source=pwa&v=1.0.7`. Evidence is in
+`.factory/evidence-repair-13/live-1.0.7/`.
 
 ## Known gap
 
@@ -95,6 +93,3 @@ teacher-approval claim has been restored. The shipped local facilitator
 checklist is still only a tool for an educator to assess the product before
 classroom use. See `.factory/pedagogy-evidence.md` for the required evidence
 or waiver path.
-
-Live deployment is also a known external gap: the public static edge remains
-on `1.0.5` despite the authenticated, target-scoped deployment attempts above.

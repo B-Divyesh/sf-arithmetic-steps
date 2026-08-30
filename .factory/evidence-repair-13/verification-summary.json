@@ -15,16 +15,17 @@
     "lighthouse": { "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcp": "1.1 s", "lcp": "1.5 s", "tbt": "0 ms", "cls": "0.005" }
   },
   "deployment": {
-    "status": "blocked by static deployment control plane",
+    "status": "verified live",
     "attempts": [
       "swa deploy ./dist --env production --swa-config-location ./dist --no-use-keychain",
-      "swa deploy ./dist --app-name sf-arithmetic-steps --env production --swa-config-location ./dist --no-use-keychain"
+      "swa deploy ./dist --app-name sf-arithmetic-steps --env production --swa-config-location ./dist --no-use-keychain",
+      "swa deploy ./dist --app-name sf-arithmetic-steps --resource-group sf-arithmetic-steps --env production --swa-config-location ./dist --no-use-keychain"
     ],
-    "observedLiveIdentity": {
+    "priorLiveIdentity": {
       "footer": "Build 1.0.5",
       "manifestStartUrl": "/?source=pwa&v=1.0.5"
     },
-    "expectedLiveIdentity": {
+    "verifiedLiveIdentity": {
       "footer": "Build 1.0.7",
       "manifestStartUrl": "/?source=pwa&v=1.0.7"
     }
