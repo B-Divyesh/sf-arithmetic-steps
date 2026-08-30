@@ -90,6 +90,24 @@ async function runDesktop(browser) {
   assert((await page.locator("#form-error").innerText()).includes("smaller than the starting number"), "invalid subtraction was accepted");
 
   await page.getByRole("radio", { name: "Add" }).check({ force: true });
+  await page.getByLabel("First number").fill("");
+  await page.getByLabel("Second number").fill("7");
+  await page.getByRole("button", { name: "Start the problem" }).click();
+  assert((await page.locator("#form-error").innerText()) === "Enter the first number before starting the problem.", "blank first operand did not show its required-field error");
+  assert(new URL(page.url()).hash !== "#route", "blank first operand opened a route");
+  assert((await page.getByLabel("First number").inputValue()) === "", "blank first operand was not retained");
+  assert((await page.getByLabel("Second number").inputValue()) === "7", "second operand was not retained after a blank-first error");
+  assert((await page.evaluate(() => document.activeElement?.id)) === "first-number", "blank first operand did not receive focus");
+  await page.screenshot({ path: artifact("blank-first-rejected.png"), fullPage: true });
+
+  await page.getByLabel("First number").fill("99");
+  await page.getByLabel("Second number").fill("");
+  await page.getByRole("button", { name: "Start the problem" }).click();
+  assert((await page.locator("#form-error").innerText()) === "Enter the second number before starting the problem.", "blank second operand did not show its required-field error");
+  assert(new URL(page.url()).hash !== "#route", "blank second operand opened a route");
+  assert((await page.getByLabel("First number").inputValue()) === "99", "first operand was not retained after a blank-second error");
+  assert((await page.evaluate(() => document.activeElement?.id)) === "second-number", "blank second operand did not receive focus");
+
   await page.getByLabel("First number").fill("99");
   await page.getByLabel("Second number").fill("1");
   await page.getByRole("button", { name: "Start the problem" }).click();
@@ -131,7 +149,7 @@ async function runDesktop(browser) {
   assert(observed.pageErrors.length === 0, `page errors: ${observed.pageErrors.join("; ")}`);
 
   await context.close();
-  return { firstRead, landingAxe, demoAxe, completeAxe, historyAxe, requestCount: observed.requests.length, origins, invalidCases: invalidCases.length + 1, boundary: "99 + 1 = 100", exportDownload: true, exportPayload: "99 + 1 = 100" };
+  return { firstRead, landingAxe, demoAxe, completeAxe, historyAxe, requestCount: observed.requests.length, origins, invalidCases: invalidCases.length + 3, blankOperandsRejected: true, boundary: "99 + 1 = 100", exportDownload: true, exportPayload: "99 + 1 = 100" };
 }
 
 async function runMobile(browser) {

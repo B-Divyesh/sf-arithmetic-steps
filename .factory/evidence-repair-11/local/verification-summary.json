@@ -1,0 +1,55 @@
+{
+  "verifiedAt": "2026-08-30T05:25:00Z",
+  "candidateBase": "798486ff692b64e0c663066b026e6ce1590b85f4",
+  "version": "1.0.5",
+  "blankFirstBefore": {
+    "input": "blank + 7",
+    "url": "http://127.0.0.1:5173/#route",
+    "renderedEquation": "0 + 7",
+    "storedFirst": 0
+  },
+  "blankFirstAfter": {
+    "input": "blank + 7",
+    "url": "http://127.0.0.1:5173/",
+    "error": "Enter the first number before starting the problem.",
+    "focusedElement": "first-number",
+    "retainedSecond": "7",
+    "routeCreated": false,
+    "storedRoute": null
+  },
+  "cleanInstall": "pass; 61 packages; 0 audit vulnerabilities",
+  "lint": "pass",
+  "unitAndStatic": "16 passed",
+  "browser": "56 passed; 2 intentional project-specific skips",
+  "claimCommands": "20 of 20 passed independently",
+  "build": {
+    "status": "pass",
+    "serviceWorkerCache": "arithmetic-steps-0be4cf63a607",
+    "precacheUrls": 24,
+    "mainJsBytes": 37580,
+    "mainJsGzipBytes": 11038,
+    "cssBytes": 26424,
+    "cssGzipBytes": 6192
+  },
+  "localSwaBrowserMatrix": {
+    "status": "pass",
+    "desktop": "1440x900",
+    "mobile": "390x844; 390px scroll and client widths; no target below 44px",
+    "axe": "0 total violations on every scanned route and state",
+    "privacy": "same-origin requests only",
+    "offlineReload": "200 with demo state retained",
+    "unknownRoute": "404",
+    "blankOperandsRejected": true
+  },
+  "lighthouseMobile": {
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcp": "1.3 s",
+    "lcp": "1.7 s",
+    "tbt": "0 ms",
+    "cls": 0.005,
+    "speedIndex": "1.3 s"
+  }
+}

@@ -493,6 +493,33 @@ test("@claim:arithmetic-bounds accepts only whole-number routes through 100", as
   await page.getByLabel("Take away").fill("6");
   await page.getByRole("button", { name: /Start the problem/ }).click();
   await expect(page.getByText("The number being taken away must be smaller than the starting number.")).toBeVisible();
+
+  await page.getByRole("radio", { name: "Add" }).focus();
+  await page.getByRole("radio", { name: "Add" }).press("Space");
+  const firstNumber = page.getByLabel("First number");
+  const secondNumber = page.getByLabel("Second number");
+
+  await firstNumber.fill("");
+  await secondNumber.fill("7");
+  await page.getByRole("button", { name: /Start the problem/ }).click();
+  await expect(page.getByText("Enter the first number before starting the problem.")).toBeVisible();
+  await expect(page.locator(".work-page")).toHaveCount(0);
+  await expect(firstNumber).toHaveValue("");
+  await expect(secondNumber).toHaveValue("7");
+  await expect(firstNumber).toBeFocused();
+
+  await firstNumber.fill("8");
+  await secondNumber.fill("");
+  await page.getByRole("button", { name: /Start the problem/ }).click();
+  await expect(page.getByText("Enter the second number before starting the problem.")).toBeVisible();
+  await expect(page.locator(".work-page")).toHaveCount(0);
+  await expect(firstNumber).toHaveValue("8");
+  await expect(secondNumber).toHaveValue("");
+  await expect(secondNumber).toBeFocused();
+
+  await secondNumber.fill("7");
+  await page.getByRole("button", { name: /Start the problem/ }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("8 + 7");
 });
 
 test("@claim:keyboard-controls provides the same move without dragging", async ({ page }) => {

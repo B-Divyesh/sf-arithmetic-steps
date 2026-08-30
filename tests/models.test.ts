@@ -7,12 +7,23 @@ import {
   isActiveRoute,
   isAttempt,
   moveAddition,
+  parseProblemOperands,
   subtractChunk,
   subtractionSuggestions,
   validateProblem
 } from "../src/models";
 
 describe("problem validation", () => {
+  it("rejects a blank first operand before numeric conversion", () => {
+    expect(parseProblemOperands("", "7")).toEqual({ ok: false, emptyField: "first" });
+    expect(parseProblemOperands("   ", "7")).toEqual({ ok: false, emptyField: "first" });
+    expect(parseProblemOperands("0", "7")).toEqual({ ok: true, first: 0, second: 7 });
+  });
+
+  it("rejects a blank second operand before numeric conversion", () => {
+    expect(parseProblemOperands("8", "")).toEqual({ ok: false, emptyField: "second" });
+  });
+
   it("keeps work within whole numbers to 100", () => {
     expect(validateProblem("add", 70, 31)).toMatch(/100 or less/);
     expect(validateProblem("add", 0, 0)).toMatch(/at least one/);

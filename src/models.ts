@@ -27,6 +27,20 @@ export interface ActiveRoute extends Attempt {
 
 const integer = (value: number) => Number.isInteger(value) && value >= 0 && value <= 100;
 
+export type ParsedProblemOperands =
+  | { ok: true; first: number; second: number }
+  | { ok: false; emptyField: "first" | "second" };
+
+/**
+ * Keep required-field checks on the raw form values. Number("") is 0, which
+ * would otherwise turn a missing operand into a number the child never chose.
+ */
+export function parseProblemOperands(firstValue: string, secondValue: string): ParsedProblemOperands {
+  if (firstValue.trim() === "") return { ok: false, emptyField: "first" };
+  if (secondValue.trim() === "") return { ok: false, emptyField: "second" };
+  return { ok: true, first: Number(firstValue), second: Number(secondValue) };
+}
+
 export function validateProblem(operation: Operation, first: number, second: number): string | null {
   if (!integer(first) || !integer(second)) return "Use whole numbers from 0 to 100.";
   if (operation === "add" && first + second > 100) return "Choose numbers with a total of 100 or less.";

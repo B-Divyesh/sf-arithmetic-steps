@@ -24,6 +24,10 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | Second number / Take away | 4 | Number field labels |
 | Try a problem: | 3 | Example control label |
 | Start the problem | 3 | Starts the selected problem |
+| Enter the first number before starting the problem. | 8 | Required-field error |
+| Enter the second number before starting the problem. | 8 | Required-field error |
+| Enter the starting number before starting the problem. | 8 | Required-field error |
+| Enter how many to take away before starting the problem. | 10 | Required-field error |
 | For the grown-up nearby | 5 | Adult guidance heading |
 | Let the child choose the chunk, even when it is not the shortest path. | 14 | Adult guidance |
 | Ask “What stayed the same?” before offering a strategy. | 10 | Adult guidance |

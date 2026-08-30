@@ -6,6 +6,7 @@ import {
   currentFrame,
   finishRoute,
   moveAddition,
+  parseProblemOperands,
   subtractChunk,
   subtractionSuggestions,
   validateProblem,
@@ -52,8 +53,8 @@ type View = "setup" | "work" | "complete" | "history";
 const state: {
   view: View;
   operation: Operation;
-  first: number;
-  second: number;
+  first: string;
+  second: string;
   route: ActiveRoute | null;
   direction: MoveDirection;
   amount: number;
@@ -66,8 +67,8 @@ const state: {
 } = {
   view: "setup",
   operation: "add",
-  first: 8,
-  second: 7,
+  first: "8",
+  second: "7",
   route: null,
   direction: "right-to-left",
   amount: 2,
@@ -98,8 +99,8 @@ async function seedDemoRoute(reset = false): Promise<void> {
   setStorageMode("demo");
   if (reset) await resetCurrentStorage();
   state.operation = "subtract";
-  state.first = 52;
-  state.second = 18;
+  state.first = "52";
+  state.second = "18";
   state.route = sampleRoute();
   state.direction = "right-to-left";
   state.amount = 8;
@@ -155,8 +156,8 @@ async function leaveDemo(replaceLocation = true): Promise<void> {
   state.view = "setup";
   state.route = null;
   state.operation = "add";
-  state.first = 8;
-  state.second = 7;
+  state.first = "8";
+  state.second = "7";
   state.error = "";
   if (replaceLocation) history.replaceState(null, "", "/#learn");
   updateDemoBanner();
@@ -260,9 +261,9 @@ function setupTemplate(): string {
         <label><input type="radio" name="operation" value="subtract" ${op === "subtract" ? "checked" : ""} /><span><b aria-hidden="true">−</b> Subtract</span></label>
       </fieldset>
       <div class="number-fields">
-        <label>${firstLabel}<input id="first-number" name="first" type="number" inputmode="numeric" min="0" max="100" step="1" value="${state.first}" required /></label>
+        <label>${firstLabel}<input id="first-number" name="first" type="number" inputmode="numeric" min="0" max="100" step="1" value="${escapeHtml(state.first)}" required aria-describedby="form-error" /></label>
         <span class="operator" aria-hidden="true">${op === "add" ? "+" : "−"}</span>
-        <label>${secondLabel}<input id="second-number" name="second" type="number" inputmode="numeric" min="0" max="100" step="1" value="${state.second}" required /></label>
+        <label>${secondLabel}<input id="second-number" name="second" type="number" inputmode="numeric" min="0" max="100" step="1" value="${escapeHtml(state.second)}" required aria-describedby="form-error" /></label>
       </div>
       <div class="example-row" aria-label="Example problems">
         <span>Try a problem:</span>
@@ -431,21 +432,31 @@ function bindSetup(): void {
   document.querySelector<HTMLButtonElement>("#try-sample")?.addEventListener("click", () => { void enterDemo(); });
   document.querySelectorAll<HTMLInputElement>('input[name="operation"]').forEach((input) => input.addEventListener("change", () => {
     state.operation = input.value as Operation;
-    [state.first, state.second] = state.operation === "add" ? [8, 7] : [15, 7];
+    [state.first, state.second] = state.operation === "add" ? ["8", "7"] : ["15", "7"];
     state.error = "";
     render();
   }));
   document.querySelectorAll<HTMLButtonElement>("[data-example]").forEach((button) => button.addEventListener("click", () => {
-    const [first, second] = (button.dataset.example ?? "").split(",").map(Number);
+    const [first, second] = (button.dataset.example ?? "").split(",");
     if (first === undefined || second === undefined) return;
     state.first = first; state.second = second; state.error = ""; render();
     document.querySelector<HTMLInputElement>("#first-number")?.focus();
   }));
   document.querySelector<HTMLFormElement>("#route-form")?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const first = Number(document.querySelector<HTMLInputElement>("#first-number")?.value);
-    const second = Number(document.querySelector<HTMLInputElement>("#second-number")?.value);
-    state.first = first; state.second = second;
+    const firstValue = document.querySelector<HTMLInputElement>("#first-number")?.value ?? "";
+    const secondValue = document.querySelector<HTMLInputElement>("#second-number")?.value ?? "";
+    state.first = firstValue; state.second = secondValue;
+    const operands = parseProblemOperands(firstValue, secondValue);
+    if (!operands.ok) {
+      state.error = operands.emptyField === "first"
+        ? (state.operation === "add" ? "Enter the first number before starting the problem." : "Enter the starting number before starting the problem.")
+        : (state.operation === "add" ? "Enter the second number before starting the problem." : "Enter how many to take away before starting the problem.");
+      render();
+      document.querySelector<HTMLInputElement>(operands.emptyField === "first" ? "#first-number" : "#second-number")?.focus();
+      return;
+    }
+    const { first, second } = operands;
     const error = validateProblem(state.operation, first, second);
     if (error) { state.error = error; render(); document.querySelector<HTMLInputElement>("#first-number")?.focus(); return; }
     state.route = createRoute(state.operation, first, second);
@@ -748,8 +759,8 @@ async function bootstrap(): Promise<void> {
     if (active && !active.completed) {
       state.route = active;
       state.view = "work";
-      state.first = active.first;
-      state.second = active.second;
+      state.first = String(active.first);
+      state.second = String(active.second);
       state.operation = active.operation;
     } else if (state.isDemo) {
       await seedDemoRoute();
