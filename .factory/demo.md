@@ -9,15 +9,17 @@ can see `42 − 8`, choose the last chunk, finish, and replay the steps.
 
 ## Isolation and reset
 
-Demo problems use the IndexedDB database named `demo:arithmetic-steps`. Real
-problems use `arithmetic-steps`; the app selects the demo database before any
-problem data is read or written. The persistent banner identifies demo mode.
+Demo problems use the IndexedDB database named `demo:arithmetic-steps` and the
+local checkpoint key `demo:arithmetic-steps:active-route`. Real problems use
+`arithmetic-steps` and `arithmetic-steps:active-route`; the app selects both
+demo namespaces before any problem data is read or written. The persistent
+banner identifies demo mode.
 
-**Reset demo** deletes only `demo:arithmetic-steps` and reseeds the supplied
-problem. **Start for real**, the normal Arithmetic Steps home link, and any
-ordinary navigation away from demo first delete the demo database, then select
-the real database. A real-app load also clears a leftover demo namespace before
-it reads real problems. No demo action reads or writes the real database.
+**Reset demo** deletes only the demo database and checkpoint, then reseeds the
+supplied problem. **Start for real**, the normal Arithmetic Steps home link,
+and any ordinary navigation away from demo first delete both demo stores, then
+select the real stores. A real-app load also clears leftover demo data before
+it reads real problems. No demo action reads or writes the real namespaces.
 
 The offline claim is exercised from `/demo`, so the supplied sample remains
 available after the first online visit when the browser is offline.

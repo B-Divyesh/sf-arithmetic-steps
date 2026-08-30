@@ -181,6 +181,7 @@ test("works from the installed cache while offline", async ({ page, context }) =
 
 test("@claim:demo-sandbox opens an isolated sample route and can return to real storage", async ({ page }) => {
   await page.evaluate(async () => {
+    localStorage.setItem("arithmetic-steps:qa-sentinel", "keep-real-data");
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open("arithmetic-steps");
       request.onsuccess = () => resolve(request.result);
@@ -213,6 +214,8 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   const initialDemoRoute = await readSetting(page, "demo:arithmetic-steps", "active-route") as { first: number; second: number; frames: unknown[] };
   expect(initialDemoRoute).toMatchObject({ first: 52, second: 18 });
   expect(initialDemoRoute.frames).toHaveLength(2);
+  expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).not.toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe("keep-real-data");
   expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
   expect(await readSetting(page, "arithmetic-steps", "active-route")).toBeUndefined();
 
@@ -236,6 +239,8 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   const namesAfterLeaving = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(namesAfterLeaving).not.toContain("demo:arithmetic-steps");
   expect(namesAfterLeaving).toContain("arithmetic-steps");
+  expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe("keep-real-data");
   expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
 });
 
@@ -479,9 +484,40 @@ test("@claim:keyboard-controls provides the same move without dragging", async (
 test("@claim:unfinished-persistence restores a route after a refresh", async ({ page }) => {
   await page.getByRole("button", { name: "38 + 27" }).click();
   await page.getByRole("button", { name: /Start the problem/ }).click();
+
+  // Hold a real IndexedDB write transaction open. This reproduces the
+  // verifier's mobile contention: the arithmetic state changes immediately,
+  // but the durable transaction cannot finish until this document unloads.
+  await page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("arithmetic-steps", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction("settings", "readwrite");
+    const store = transaction.objectStore("settings");
+    let hold = true;
+    const keepAlive = (): void => {
+      if (!hold) return;
+      const request = store.get("qa-write-hold");
+      request.onsuccess = keepAlive;
+    };
+    keepAlive();
+    (window as Window & { releaseQaWriteHold?: () => void }).releaseQaWriteHold = () => {
+      hold = false;
+      transaction.commit();
+      database.close();
+    };
+  });
+
   await page.getByRole("button", { name: "10", exact: true }).click();
   await page.getByRole("button", { name: /Move the chunk/ }).click();
-  await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible({ timeout: 1_000 });
+  const checkpoint = await page.evaluate(() => JSON.parse(localStorage.getItem("arithmetic-steps:active-route") ?? "null") as { route?: { frames?: Array<{ equation?: string }> } } | null);
+  expect(checkpoint?.route?.frames?.at(-1)?.equation).toBe("48 + 17");
+
+  // Reload before releasing the blocked transaction. The synchronous local
+  // checkpoint must recover the move even when IndexedDB never acknowledges it.
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("38 + 27");
   await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();

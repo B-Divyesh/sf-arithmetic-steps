@@ -4,6 +4,8 @@ import {
   canFinish,
   createRoute,
   finishRoute,
+  isActiveRoute,
+  isAttempt,
   moveAddition,
   subtractChunk,
   subtractionSuggestions,
@@ -21,6 +23,15 @@ describe("problem validation", () => {
 });
 
 describe("addition routes", () => {
+  it("distinguishes an unfinished checkpoint from a completed attempt", () => {
+    const route = createRoute("add", 8, 7);
+    expect(isActiveRoute(route)).toBe(true);
+    expect(isAttempt(route)).toBe(false);
+    moveAddition(route, 2, "right-to-left", "make-ten");
+    expect(isActiveRoute(structuredClone(route))).toBe(true);
+    expect(isActiveRoute({ ...route, completed: "no" })).toBe(false);
+  });
+
   it("preserves the total while making a ten", () => {
     const route = createRoute("add", 8, 7);
     const frame = moveAddition(route, 2, "right-to-left", "make-ten");

@@ -24,7 +24,7 @@ demo. See
 - Interactive ten-frames and one-counters with equivalent screen-reader descriptions
 - Direct counter dragging plus labelled keyboard controls for the same moves
 - Plain-language reasoning steps, replay, and a print-ready discussion card
-- IndexedDB persistence for unfinished work and completed local history
+- IndexedDB persistence for completed history, with a local checkpoint for unfinished work
 - JSON export/import, confirmed clear controls, and no accounts or child identifiers
 - Installable PWA with an app-shell cache and tested offline operation
 - Responsive 390 px layout, visible keyboard focus, reduced-motion behavior, and tested print styles
@@ -66,7 +66,7 @@ npm run preview
 
 ## Data and privacy
 
-No problem data is sent to a server. The Privacy page explains IndexedDB storage and export behavior. The app has no runtime dependencies, remote fonts, third-party scripts, advertising, or tracking. Remove completed data from **Saved problems** or remove all site data in browser settings.
+No problem data is sent to a server. The Privacy page explains browser storage and export behavior. The app has no runtime dependencies, remote fonts, third-party scripts, advertising, or tracking. Remove completed data from **Saved problems** or remove all site data in browser settings.
 
 ## Product and design notes
 

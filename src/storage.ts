@@ -1,10 +1,11 @@
 import type { ActiveRoute, Attempt } from "./models";
-import { isAttempt } from "./models";
+import { isActiveRoute, isAttempt } from "./models";
 
 const DB_NAME = "arithmetic-steps";
 const DB_VERSION = 1;
 const ATTEMPTS = "attempts";
 const SETTINGS = "settings";
+const ACTIVE_ROUTE = "active-route";
 
 /**
  * Demo work must never share the learner's IndexedDB database. Keeping this
@@ -20,6 +21,41 @@ export function setStorageMode(mode: "real" | "demo"): void {
 
 export function storageDatabaseName(): string {
   return storageMode === "demo" ? `demo:${DB_NAME}` : DB_NAME;
+}
+
+function activeCheckpointKey(): string {
+  return `${storageDatabaseName()}:${ACTIVE_ROUTE}`;
+}
+
+type ActiveCheckpoint = {
+  schemaVersion: 1;
+  route: ActiveRoute | null;
+};
+
+function saveCheckpoint(route: ActiveRoute | null): boolean {
+  try {
+    const checkpoint: ActiveCheckpoint = { schemaVersion: 1, route: structuredClone(route) };
+    localStorage.setItem(activeCheckpointKey(), JSON.stringify(checkpoint));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function loadCheckpoint(): { found: boolean; route: ActiveRoute | null } {
+  const key = activeCheckpointKey();
+  const stored = localStorage.getItem(key);
+  if (stored === null) return { found: false, route: null };
+  try {
+    const checkpoint = JSON.parse(stored) as Partial<ActiveCheckpoint>;
+    if (checkpoint.schemaVersion === 1 && (checkpoint.route === null || isActiveRoute(checkpoint.route))) {
+      return { found: true, route: checkpoint.route ?? null };
+    }
+  } catch {
+    // A malformed checkpoint must not hide the valid IndexedDB copy below.
+  }
+  localStorage.removeItem(key);
+  return { found: false, route: null };
 }
 
 function openDatabase(): Promise<IDBDatabase> {
@@ -45,6 +81,7 @@ export async function resetCurrentStorage(): Promise<void> {
     request.onerror = () => reject(request.error ?? new Error("The sample problems could not be reset."));
     request.onblocked = () => reject(new Error("Close other Arithmetic Steps tabs, then reset the sample again."));
   });
+  localStorage.removeItem(activeCheckpointKey());
 }
 
 function transactionDone(transaction: IDBTransaction): Promise<void> {
@@ -59,23 +96,36 @@ export async function saveAttempt(attempt: Attempt): Promise<void> {
   const db = await openDatabase();
   const transaction = db.transaction([ATTEMPTS, SETTINGS], "readwrite");
   transaction.objectStore(ATTEMPTS).put(attempt);
-  transaction.objectStore(SETTINGS).delete("active-route");
+  transaction.objectStore(SETTINGS).delete(ACTIVE_ROUTE);
   await transactionDone(transaction);
   db.close();
+  saveCheckpoint(null);
 }
 
 export async function saveActive(route: ActiveRoute): Promise<void> {
-  const db = await openDatabase();
-  const transaction = db.transaction(SETTINGS, "readwrite");
-  transaction.objectStore(SETTINGS).put({ key: "active-route", value: route });
-  await transactionDone(transaction);
-  db.close();
+  // The local checkpoint is synchronous. It makes a just-completed move safe
+  // if the page refreshes while IndexedDB is busy, and lets the UI respond
+  // without waiting for a storage transaction under mobile contention.
+  const checkpointSaved = saveCheckpoint(route);
+  let db: IDBDatabase | null = null;
+  try {
+    db = await openDatabase();
+    const transaction = db.transaction(SETTINGS, "readwrite");
+    transaction.objectStore(SETTINGS).put({ key: ACTIVE_ROUTE, value: route });
+    await transactionDone(transaction);
+  } catch (error) {
+    if (!checkpointSaved) throw error;
+  } finally {
+    db?.close();
+  }
 }
 
 export async function loadActive(): Promise<ActiveRoute | null> {
+  const checkpoint = loadCheckpoint();
+  if (checkpoint.found) return checkpoint.route;
   const db = await openDatabase();
   const value = await new Promise<{ key: string; value: ActiveRoute } | undefined>((resolve, reject) => {
-    const request = db.transaction(SETTINGS).objectStore(SETTINGS).get("active-route");
+    const request = db.transaction(SETTINGS).objectStore(SETTINGS).get(ACTIVE_ROUTE);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -86,9 +136,10 @@ export async function loadActive(): Promise<ActiveRoute | null> {
 export async function clearActive(): Promise<void> {
   const db = await openDatabase();
   const transaction = db.transaction(SETTINGS, "readwrite");
-  transaction.objectStore(SETTINGS).delete("active-route");
+  transaction.objectStore(SETTINGS).delete(ACTIVE_ROUTE);
   await transactionDone(transaction);
   db.close();
+  saveCheckpoint(null);
 }
 
 export async function listAttempts(): Promise<Attempt[]> {

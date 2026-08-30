@@ -1,30 +1,104 @@
-# Arithmetic Steps — verification 6 handoff
+# Arithmetic Steps — repair 8 handoff
 
-- Candidate: `f078cee4f7e1491ac984a2d689572d70c277d55d`
+- Source finding report: commit `206d557599bb970faffdf063d4a0fd9334c486d9`
+- Repaired candidate: commit recorded after the final evidence update
+- Original candidate: `f078cee4f7e1491ac984a2d689572d70c277d55d`
+- Product version: `1.0.3`
 - Live URL: <https://arithmetic-steps.sociobot.in>
 - Date: 2026-08-30 UTC
 
-## Outcome: FAIL
+## Outcome
 
-The live local-first PWA works end to end and its 24 public deployment files match this candidate's fresh build byte-for-byte. All 20 required claim commands pass independently; the retry of the full suite passed 55 tests with one intentional project skip; the production build passes. Desktop, 390px mobile, keyboard, reduced-motion, offline reload, service-worker update, privacy requests, response headers, route/link checks, and axe checks pass.
+The release-blocking persistence flake is fixed and covered by a controlled
+regression. All automated, claim, local production, accessibility, privacy,
+offline/update, routing, response-policy, and performance checks pass.
 
-Release is blocked by two findings:
+Release acceptance still requires the brief's external pedagogy constraint.
+No named qualified elementary teacher review exists in repository history,
+remote branches, or project issues. This unattended worker cannot truthfully
+create that human evidence. `.factory/pedagogy-review.md` therefore remains an
+honest incomplete review record; no teacher-reviewed or learning-outcome claim
+was added.
 
-1. **P0:** the brief requires teacher-reviewed pedagogy, but `.factory/pedagogy-review.md` says no named elementary teacher has reviewed the release and every required review-record field is blank.
-2. **P1:** the first full `npm test` run flaked on mobile `@claim:unfinished-persistence` waiting for the first move; the isolated claim and an immediate full retry passed. The test gate is therefore not yet reliably reproducible.
+## Verifier findings
 
-See `.factory/verification-6.md` for commands, observed behavior, exact evidence, headers, deployment identity, and remediation. No product code was modified during this verification.
+### P1 — full-suite persistence flake: fixed
 
-## How to verify
+Root cause: a move changed the arithmetic model immediately, but `src/main.ts`
+waited for an IndexedDB transaction before rendering. Under the verifier's
+mobile/parallel contention, the screen could remain at `38 + 27` longer than
+the seven-second assertion even though the move itself had succeeded.
+
+Repair:
+
+- Render setup, move, and undo state immediately instead of waiting for the
+  durable IndexedDB transaction.
+- Add a synchronous, versioned local checkpoint for unfinished work, separated
+  as `arithmetic-steps:active-route` and
+  `demo:arithmetic-steps:active-route`.
+- Keep IndexedDB as the durable store and recovery fallback.
+- Validate checkpoint data before restoration and preserve demo/real deletion
+  boundaries.
+- Update privacy and demo documentation for the checkpoint.
+
+Exact regression: `@claim:unfinished-persistence` now holds a real IndexedDB
+write transaction open, requires `48 + 17` to render within one second, checks
+the namespaced checkpoint, and reloads before releasing IndexedDB. Desktop and
+mobile both restore the same intermediate equation. A 10-repeat, four-worker
+stress run passed 20/20 cases. The full clean suite then passed twice without a
+retry.
+
+### P0 — qualified elementary-teacher review: external gate remains
+
+The verifier explicitly requires a real qualified teacher to exercise both
+operations, drag and keyboard paths, narration, replay, and the discussion
+card, then record their name, qualification, date, grades/ages, observations,
+changes, and follow-up decision. Automated QA, published research, or an
+invented identity cannot satisfy this gate. The required record remains in
+`.factory/pedagogy-review.md` for a real reviewer to complete.
+
+## Verification evidence
+
+| Gate | Result and evidence |
+| --- | --- |
+| Clean work-order pipeline | PASS — `npm ci && npm test && npm run build`; 61 packages, 0 audit vulnerabilities; TypeScript clean; 14 Vitest tests; 55 Playwright tests passed and one intentional desktop skip; `dist/` produced. |
+| Independent claims | PASS — every exact command in `.factory/claims.json` ran separately; 20/20 claim IDs passed on their applicable desktop/mobile projects. |
+| Persistence stress | PASS — `npx playwright test --grep '@claim:unfinished-persistence' --repeat-each=10 --workers=4`; 20/20 passed with blocked IndexedDB writes and immediate reloads. |
+| Production bundle | PASS — app JS 36.90 kB raw / 10.90 kB gzip plus 0.76 kB loader; CSS 26.36 kB raw / 6.15 kB gzip; 24 precached URLs; cache `arithmetic-steps-6f613e180a4d`. |
+| Desktop product flow | PASS — sample `52 − 18 = 34`, narration, replay, discussion prompt, validation cases, `99 + 1 = 100`, JSON download/import, and confirmed clear all passed. |
+| Exact 390 px mobile | PASS — `scrollWidth === clientWidth === 390`; no visible control below 44×44 px; visual capture at `.factory/qa-artifacts/repair-8-local/mobile-demo.png`. |
+| Keyboard and motion | PASS — first Tab reaches the skip link; Enter focuses `main`; controls have a 3 px brass outline and 3 px offset; reduced-motion replay advances once with status feedback. |
+| Accessibility | PASS — axe found zero violations on landing, demo, completion, empty history, Privacy, Terms, and 404. URL smoke found `lang=en`, one h1, main, alt text, labelled buttons, and zero console/page errors. |
+| Privacy | PASS — the full demo/product request trace contained only same-origin GET requests; no analytics, API, account, payment, iframe, or identifying-input surface. Demo IndexedDB and checkpoint namespaces were deleted without changing real sentinels. |
+| Offline/update | PASS — activated controlling service worker; waiting-worker update preserved demo state; offline `/demo` reload returned 200 with `52 − 18`; deployment-only configuration is not precached. |
+| Routes/links | PASS — `/`, `/demo`, `/privacy/`, and `/terms/` returned 200; unknown route returned the styled 404; every crawled internal and source link returned 2xx/3xx. |
+| Response policy | PASS in the Static Web Apps emulator — CSP with response-header `frame-ancestors 'none'`, HSTS, DENY framing, nosniff, strict referrer policy, restrictive permissions policy, immutable hashed assets, short HTML caching, and no-store service worker. |
+| Lighthouse mobile | PASS — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.3 s, LCP 1.8 s, TBT 0 ms, CLS 0.005, transfer 96 KiB. |
+| Package/consumer, backend policy, identity | Not applicable — this remains a static local-first PWA with no package API, server endpoint, authentication, billing, or model integration. |
+
+Local evidence is in `.factory/qa-artifacts/repair-8-local/`:
+`independent-qa.json`, `verify.json`, `lighthouse.json`, and desktop/mobile
+screenshots.
+
+## Run and verify
 
 ```sh
 npm ci
 npm test
 npm run build
-# Run every exact test value listed in .factory/claims.json.
-node .factory/qa-artifacts/independent-live-qa.mjs https://arithmetic-steps.sociobot.in
+
+# Run every exact `test` command in .factory/claims.json.
+swa start dist --port 4280
 VERIFY_NODE_MODULES=/work/repo/node_modules /opt/fleet/lib/verify-url.sh \
-  https://arithmetic-steps.sociobot.in <evidence-dir>
+  http://localhost:4280 .factory/qa-artifacts/repair-8-local
+node .factory/qa-artifacts/independent-live-qa.mjs \
+  http://localhost:4280 .factory/qa-artifacts/repair-8-local
 ```
 
-Before a release decision, obtain a real qualified elementary-teacher review and record it truthfully in `.factory/pedagogy-review.md`; then eliminate or explain the full-suite flake and repeat this verification.
+## Required next step
+
+A qualified elementary teacher must complete the eight fields in
+`.factory/pedagogy-review.md` after exercising the specified flows. Apply any
+required changes, record the follow-up decision, then rerun the clean pipeline,
+all claim commands, and live independent QA. Until that happens, do not label
+the release teacher-reviewed or accepted against the full researched brief.

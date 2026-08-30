@@ -154,12 +154,20 @@ export function subtractionSuggestions(current: number, remaining: number): numb
   return uniqueChunks([toTen, Math.min(10, remaining), remaining % 10, remaining], remaining);
 }
 
-export function isAttempt(value: unknown): value is Attempt {
+function hasValidRouteShape(value: unknown, minimumFrames: number): value is Attempt {
   if (!value || typeof value !== "object") return false;
   const item = value as Partial<Attempt>;
   return item.schemaVersion === 1 && (item.operation === "add" || item.operation === "subtract") &&
     integer(item.first as number) && integer(item.second as number) && integer(item.result as number) &&
-    typeof item.id === "string" && typeof item.createdAt === "string" && Array.isArray(item.frames) && item.frames.length >= 2 &&
+    typeof item.id === "string" && typeof item.createdAt === "string" && Array.isArray(item.frames) && item.frames.length >= minimumFrames &&
     item.frames.every((frame) => frame && typeof frame.equation === "string" && typeof frame.narration === "string" &&
       typeof frame.left === "number" && typeof frame.right === "number");
+}
+
+export function isAttempt(value: unknown): value is Attempt {
+  return hasValidRouteShape(value, 2);
+}
+
+export function isActiveRoute(value: unknown): value is ActiveRoute {
+  return hasValidRouteShape(value, 1) && typeof (value as Partial<ActiveRoute>).completed === "boolean";
 }

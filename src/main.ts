@@ -454,9 +454,10 @@ function bindSetup(): void {
     state.amount = state.operation === "add" ? (additionSuggestions(frame.left, frame.right, state.direction)[0] ?? 1) : (subtractionSuggestions(frame.left, frame.right)[0] ?? 1);
     state.error = ""; state.view = "work";
     history.replaceState(null, "", "#route");
-    await safelySaveActive();
+    const persistence = safelySaveActive();
     render();
     document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+    await persistence;
   });
 }
 
@@ -493,8 +494,10 @@ function bindWork(): void {
       state.error = "";
       const frame = currentFrame(route);
       state.amount = route.operation === "add" ? (additionSuggestions(frame.left, frame.right, state.direction)[0] ?? 1) : (subtractionSuggestions(frame.left, frame.right)[0] ?? 1);
-      await safelySaveActive(); render();
+      const persistence = safelySaveActive();
+      render();
       document.querySelector<HTMLButtonElement>(frame.right === 0 && route.operation === "subtract" ? "#finish-route" : "#apply-move")?.focus();
+      await persistence;
     } catch (error) { state.error = error instanceof Error ? error.message : "That move could not be made."; render(); document.querySelector<HTMLInputElement>("#chunk-amount")?.focus(); }
   };
   document.querySelector("#apply-move")?.addEventListener("click", () => { void applySelectedMove(); });
@@ -559,7 +562,11 @@ function bindWork(): void {
   });
   document.querySelector("#undo-move")?.addEventListener("click", async () => {
     if (route.frames.length > 1) route.frames.pop();
-    state.error = ""; await safelySaveActive(); render(); document.querySelector<HTMLButtonElement>("#apply-move")?.focus();
+    state.error = "";
+    const persistence = safelySaveActive();
+    render();
+    document.querySelector<HTMLButtonElement>("#apply-move")?.focus();
+    await persistence;
   });
   document.querySelector("#finish-route")?.addEventListener("click", async () => {
     try {

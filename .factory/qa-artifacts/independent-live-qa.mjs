@@ -1,7 +1,11 @@
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
+import { mkdir } from "node:fs/promises";
 
-const base = "https://arithmetic-steps.sociobot.in";
+const base = (process.argv[2] ?? "https://arithmetic-steps.sociobot.in").replace(/\/$/, "");
+const evidenceDir = process.argv[3] ?? ".factory/qa-artifacts";
+await mkdir(evidenceDir, { recursive: true });
+const artifact = (name) => `${evidenceDir}/${name}`;
 const evidence = { base, startedAt: new Date().toISOString(), checks: {}, errors: [] };
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 
@@ -39,7 +43,7 @@ async function runDesktop(browser) {
   };
   assert(firstRead.h1.length === 1, "landing must have one h1");
   assert(firstRead.sentence.includes("elementary children") && firstRead.sentence.includes("teacher or parent"), "first screen does not name audience");
-  await page.screenshot({ path: ".factory/qa-artifacts/live-desktop-landing.png", fullPage: true });
+  await page.screenshot({ path: artifact("desktop-landing.png"), fullPage: true });
   const landingAxe = await axe(page, "desktop landing");
 
   await page.getByRole("button", { name: "Try it with sample data" }).click();
@@ -55,7 +59,7 @@ async function runDesktop(browser) {
   assert(await page.getByRole("heading", { name: "52 − 18 = 34" }).isVisible(), "final equation missing");
   assert(await page.getByText("What stayed the same?").isVisible(), "discussion prompt missing");
   const completeAxe = await axe(page, "desktop completion");
-  await page.screenshot({ path: ".factory/qa-artifacts/live-desktop-complete.png", fullPage: true });
+  await page.screenshot({ path: artifact("desktop-complete.png"), fullPage: true });
 
   await page.getByRole("button", { name: "Previous" }).click();
   assert((await page.locator(".replay-narration").innerText()).includes("Take away"), "manual replay did not expose narration");
@@ -144,7 +148,7 @@ async function runMobile(browser) {
   const undersized = targetSizes.filter(item => item.width < 44 || item.height < 44);
   assert(undersized.length === 0, `390px target below 44px: ${JSON.stringify(undersized)}`);
   const mobileAxe = await axe(page, "390px demo");
-  await page.screenshot({ path: ".factory/qa-artifacts/live-mobile-demo.png", fullPage: true });
+  await page.screenshot({ path: artifact("mobile-demo.png"), fullPage: true });
   assert(observed.consoleErrors.length === 0 && observed.pageErrors.length === 0, "mobile emitted browser errors");
   await context.close();
   return { layout, mobileAxe, undersized, requestOrigins: [...new Set(observed.requests.map(url => new URL(url).origin))] };
