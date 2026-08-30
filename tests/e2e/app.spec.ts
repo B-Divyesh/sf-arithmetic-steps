@@ -59,7 +59,8 @@ async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<E
     await isolatedPage.goto("http://127.0.0.1:4173/#history");
 
     const exportButton = isolatedPage.getByRole("button", { name: "Export JSON" });
-    await expect(isolatedPage.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
+    await expect(isolatedPage.getByRole("heading", { name: "Saved problems" })).toBeVisible();
+    await expect(isolatedPage.locator(".history-list").getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
     await expect(exportButton).toBeEnabled();
 
     // Subscribe before the activation. Waiting after click loses the browser
