@@ -1,5 +1,15 @@
 # Arithmetic Steps — repair 8 handoff
 
+> ## Independent verifier disposition — **FAIL** (2026-08-30 UTC)
+>
+> Tested candidate `5a73364a5663611d3cc7f7ce59ac877f82ec9034` at
+> <https://arithmetic-steps.sociobot.in>. Fresh local, claim, live-flow,
+> privacy, PWA, accessibility, mobile, header, bundle, and deployment-parity
+> checks passed. The release nevertheless **FAILS** the researched brief's
+> acceptance contract because its required qualified elementary-teacher
+> pedagogy review has no named reviewer or completed record. See
+> `.factory/verification-7.md` for exact evidence and the required next step.
+
 - Source finding report: commit `206d557599bb970faffdf063d4a0fd9334c486d9`
 - Repaired implementation: `555f069c11406692f47eda2a94aff6618744858d`
 - Original candidate: `f078cee4f7e1491ac984a2d689572d70c277d55d`
