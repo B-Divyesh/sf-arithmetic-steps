@@ -80,6 +80,43 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('one station at a time');
   });
 
+  it("keeps the external pedagogy-review requirement honest until a qualified reviewer records it", async () => {
+    const [briefText, review, app, readme] = await Promise.all([
+      readFile(resolve(root, ".factory/brief.json"), "utf8"),
+      readFile(resolve(root, ".factory/pedagogy-review.md"), "utf8"),
+      readFile(resolve(root, "src/main.ts"), "utf8"),
+      readFile(resolve(root, "README.md"), "utf8")
+    ]);
+    const brief = JSON.parse(briefText) as { constraints: string[] };
+
+    expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
+    const fields = [
+      "Reviewer name and elementary-teaching qualification:",
+      "Review date:",
+      "Ages/grades considered:",
+      "Problems exercised (include addition and subtraction):",
+      "Direct-drag and keyboard-control observations:",
+      "Narration, replay, and discussion-card feedback:",
+      "Required changes:",
+      "Changes made and follow-up decision:"
+    ];
+    const reviewLines = review.split(/\r?\n/);
+    const hasCompletedReviewRecord = fields.every((field) => {
+      const line = reviewLines.find((candidate) => candidate.startsWith(`- ${field}`));
+      return line !== undefined && line.slice(`- ${field}`.length).trim().length > 0;
+    });
+    const publicTeacherReviewClaim = /teacher-reviewed pedagogy/i.test(`${app}\n${readme}`);
+
+    for (const field of fields) {
+      expect(review).toContain(field);
+    }
+    if (!hasCompletedReviewRecord) {
+      expect(review).toContain("No named elementary teacher has reviewed this release in the repository.");
+      expect(review).toContain("This file deliberately does **not** certify the product as teacher-reviewed.");
+    }
+    expect(hasCompletedReviewRecord || !publicTeacherReviewClaim).toBe(true);
+  });
+
   it("gives every registered public claim one exactly tagged browser regression", async () => {
     const [claimsText, browserTests] = await Promise.all([
       readFile(resolve(root, ".factory/claims.json"), "utf8"),
