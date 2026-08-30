@@ -110,6 +110,31 @@ test("has a clear, accessible route planner", async ({ page }) => {
   expect(results.violations).toEqual([]);
 });
 
+test("keeps the complete hero headline on paper at 1440px", async ({ page, isMobile }) => {
+  test.skip(isMobile, "exact desktop-width regression");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.reload();
+
+  const geometry = await page.locator(".hero h1").evaluate((heading) => {
+    const headingBox = heading.getBoundingClientRect();
+    const copyBox = heading.closest(".hero-copy")?.getBoundingClientRect();
+    const artBox = heading.closest(".hero")?.querySelector(".hero-art")?.getBoundingClientRect();
+    return {
+      text: heading.textContent,
+      clientWidth: heading.clientWidth,
+      scrollWidth: heading.scrollWidth,
+      headingRight: headingBox.right,
+      copyRight: copyBox?.right ?? 0,
+      artLeft: artBox?.left ?? 0
+    };
+  });
+
+  expect(geometry.text).toBe("Explore addition and subtraction steps");
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 1);
+  expect(geometry.headingRight).toBeLessThanOrEqual(geometry.copyRight + 1);
+  expect(geometry.headingRight).toBeLessThanOrEqual(geometry.artLeft + 1);
+});
+
 test("has no axe violations on the demo or completed-route screens", async ({ page }) => {
   await page.getByRole("button", { name: "Try it with sample data" }).click();
   expect((await new AxeBuilder({ page: page as never }).analyze()).violations).toEqual([]);

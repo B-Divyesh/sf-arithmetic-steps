@@ -178,6 +178,10 @@ main { min-height: calc(100vh - 76px); }
   letter-spacing: -0.045em;
   text-transform: uppercase;
 }
+.hero h1 {
+  max-width: 100%;
+  font-size: clamp(2.75rem, 4.7vw, 4.25rem);
+}
 .hero h1 em { color: var(--coral-dark); font-style: normal; }
 .lede { max-width: 52ch; margin-bottom: 24px; color: var(--muted); font-size: 1.15rem; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 24px; }

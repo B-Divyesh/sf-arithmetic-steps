@@ -28,7 +28,7 @@ All normal-size text combinations target WCAG AA ≥4.5:1; color never carries m
 
 - Display: `Arial Narrow`, `Roboto Condensed`, `Aptos Narrow`, sans-serif. All-caps, slightly tracked station headings evoke transit enamel signs without a font download.
 - Reading and controls: `Atkinson Hyperlegible`, `Verdana`, `Arial`, sans-serif. Installed-system fallbacks avoid a runtime font request and keep numerals highly distinguishable.
-- Scale: 16px body; 18/22px supporting headings; fluid 30–54px display; tabular numerals throughout the workbench.
+- Scale: 16px body; 18/22px supporting headings; fluid 36–68px hero display and 30–54px supporting display; tabular numerals throughout the workbench. The hero size is capped before its text rail meets the poster, with a single safe break point inside the longest operation word for text zoom and narrow fallbacks.
 
 ## Spacing and shape
 

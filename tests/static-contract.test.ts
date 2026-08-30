@@ -80,41 +80,28 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('one station at a time');
   });
 
-  it("keeps the external pedagogy-review requirement honest until a qualified reviewer records it", async () => {
-    const [briefText, review, app, readme] = await Promise.all([
+  it("keeps pedagogy requirements observable and makes no outside-review promise", async () => {
+    const [briefText, evidence, app, readme, landing, privacy, terms, manifest] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
-      readFile(resolve(root, ".factory/pedagogy-review.md"), "utf8"),
+      readFile(resolve(root, ".factory/pedagogy-evidence.md"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
-      readFile(resolve(root, "README.md"), "utf8")
+      readFile(resolve(root, "README.md"), "utf8"),
+      readFile(resolve(root, "index.html"), "utf8"),
+      readFile(resolve(root, "privacy/index.html"), "utf8"),
+      readFile(resolve(root, "terms/index.html"), "utf8"),
+      readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
+    const observableConstraint = "Adult-guided discussion prompts with no timed or scored drills and no academic-outcome claims";
+    const activeCopy = [briefText, app, readme, landing, privacy, terms, manifest].join("\n");
 
-    expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
-    const fields = [
-      "Reviewer name and elementary-teaching qualification:",
-      "Review date:",
-      "Ages/grades considered:",
-      "Problems exercised (include addition and subtraction):",
-      "Direct-drag and keyboard-control observations:",
-      "Narration, replay, and discussion-card feedback:",
-      "Required changes:",
-      "Changes made and follow-up decision:"
-    ];
-    const reviewLines = review.split(/\r?\n/);
-    const hasCompletedReviewRecord = fields.every((field) => {
-      const line = reviewLines.find((candidate) => candidate.startsWith(`- ${field}`));
-      return line !== undefined && line.slice(`- ${field}`.length).trim().length > 0;
-    });
-    const publicTeacherReviewClaim = /teacher-reviewed pedagogy/i.test(`${app}\n${readme}`);
-
-    for (const field of fields) {
-      expect(review).toContain(field);
-    }
-    if (!hasCompletedReviewRecord) {
-      expect(review).toContain("No named elementary teacher has reviewed this release in the repository.");
-      expect(review).toContain("This file deliberately does **not** certify the product as teacher-reviewed.");
-    }
-    expect(hasCompletedReviewRecord || !publicTeacherReviewClaim).toBe(true);
+    expect(brief.constraints).toContain(observableConstraint);
+    expect(activeCopy).not.toMatch(/teacher[- ]reviewed|reviewed by (?:an?|the)|qualified (?:elementary )?teacher/i);
+    expect(activeCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
+    expect(evidence.replace(/\s+/g, " ")).toContain("makes only behavior claims that the repository sandbox can exercise");
+    expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
+    expect(app).toContain("For the grown-up nearby");
+    expect(app).toContain("What stayed the same?");
   });
 
   it("gives every registered public claim one exactly tagged browser regression", async () => {

@@ -72,6 +72,7 @@ No problem data is sent to a server. The Privacy page explains browser storage a
 
 - [.factory/brief.json](.factory/brief.json) records the scoped opportunity.
 - [.factory/design.md](.factory/design.md) records the art-deco transit-poster system and generated-art provenance.
+- [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the observable guidance safeguards and evidence boundary.
 - [.factory/handoff.md](.factory/handoff.md) records final verification and known gaps.
 
 ## License

@@ -1,6 +1,6 @@
 # Landing copy audit
 
-Audited 2026-08-29. This is the complete visitor-facing copy from the landing
+Audited 2026-08-30. This is the complete visitor-facing copy from the landing
 state, excluding repeated navigation, numeric example buttons, and arrow
 glyphs. A **problem** is one arithmetic activity; a **chunk** is a chosen
 quantity; a **step** is one recorded change; a **counter** is one movable unit.
@@ -39,3 +39,7 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
+
+The active product copy and brief make no outside-evaluation or learning-outcome
+promise. The brief instead names observable adult guidance, discussion prompts,
+and the absence of timed or scored drills; static and browser tests cover them.
