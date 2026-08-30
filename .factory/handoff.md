@@ -1,96 +1,63 @@
-# Arithmetic Steps — repair 8 handoff
+# Arithmetic Steps — repair 9 handoff
 
-> ## Independent verifier disposition — **FAIL** (2026-08-30 UTC)
+> ## Release disposition — **BLOCKED** (2026-08-30 UTC)
 >
-> Tested candidate `5a73364a5663611d3cc7f7ce59ac877f82ec9034` at
-> <https://arithmetic-steps.sociobot.in>. Fresh local, claim, live-flow,
-> privacy, PWA, accessibility, mobile, header, bundle, and deployment-parity
-> checks passed. The release nevertheless **FAILS** the researched brief's
-> acceptance contract because its required qualified elementary-teacher
-> pedagogy review has no named reviewer or completed record. See
-> `.factory/verification-7.md` for exact evidence and the required next step.
+> The independent verifier's only release-blocking finding for candidate
+> `5a73364a5663611d3cc7f7ce59ac877f82ec9034` remains valid: the researched
+> brief requires a qualified elementary teacher's completed pedagogy review.
+> No such review is present in the repository. This unattended repair worker
+> cannot truthfully manufacture a named person's qualification, observations,
+> or decision. The product must not be presented as teacher-reviewed or
+> released as satisfying that brief constraint.
 
-- Source finding report: commit `206d557599bb970faffdf063d4a0fd9334c486d9`
-- Repaired implementation: `555f069c11406692f47eda2a94aff6618744858d`
-- Original candidate: `f078cee4f7e1491ac984a2d689572d70c277d55d`
+- Finding report: `4dc7cfa96108827e0ca1020f08636fd7fa9e91e0`
+- Candidate reviewed: `5a73364a5663611d3cc7f7ce59ac877f82ec9034`
 - Product version: `1.0.3`
-- Live URL: <https://arithmetic-steps.sociobot.in>
-- Date: 2026-08-30 UTC
+- Artifact class: static local-first offline PWA
+- Production URL checked: <https://arithmetic-steps.sociobot.in>
 
-## Outcome
+## Finding reproduction and disposition
 
-The release-blocking persistence flake is fixed and covered by a controlled
-regression. All automated, claim, local production, accessibility, privacy,
-offline/update, routing, response-policy, and performance checks pass.
+`.factory/brief.json` still lists `Teacher-reviewed pedagogy` as a hard
+constraint. `.factory/pedagogy-review.md` still has all eight required record
+fields empty and explicitly says no named elementary teacher reviewed the
+release. Repository-wide history confirms that no completed review record was
+added after the candidate. This exactly reproduces the verifier's P0.
 
-Release acceptance still requires the brief's external pedagogy constraint.
-No named qualified elementary teacher review exists in repository history,
-remote branches, or project issues. This unattended worker cannot truthfully
-create that human evidence. `.factory/pedagogy-review.md` therefore remains an
-honest incomplete review record; no teacher-reviewed or learning-outcome claim
-was added.
+There is no in-repository implementation root cause to repair. A qualified
+elementary teacher must personally exercise addition and subtraction, direct
+drag and labelled keyboard controls, narration, replay, and the discussion
+card. They must then complete the reviewer qualification, date, grades/ages,
+observations, required changes, and follow-up decision in
+`.factory/pedagogy-review.md`. Automation cannot substitute for that evidence.
 
-## Verifier findings
+The existing static regression guard
+`keeps the external pedagogy-review requirement honest until a qualified
+reviewer records it` passed. It verifies the brief constraint, all eight
+review-record fields, and that the app/README cannot make a teacher-reviewed
+claim while the record is incomplete. It is intentionally not a replacement
+for the human review.
 
-### P1 — full-suite persistence flake: fixed
+## Verification performed
 
-Root cause: a move changed the arithmetic model immediately, but `src/main.ts`
-waited for an IndexedDB transaction before rendering. Under the verifier's
-mobile/parallel contention, the screen could remain at `38 + 27` longer than
-the seven-second assertion even though the move itself had succeeded.
-
-Repair:
-
-- Render setup, move, and undo state immediately instead of waiting for the
-  durable IndexedDB transaction.
-- Add a synchronous, versioned local checkpoint for unfinished work, separated
-  as `arithmetic-steps:active-route` and
-  `demo:arithmetic-steps:active-route`.
-- Keep IndexedDB as the durable store and recovery fallback.
-- Validate checkpoint data before restoration and preserve demo/real deletion
-  boundaries.
-- Update privacy and demo documentation for the checkpoint.
-
-Exact regression: `@claim:unfinished-persistence` now holds a real IndexedDB
-write transaction open, requires `48 + 17` to render within one second, checks
-the namespaced checkpoint, and reloads before releasing IndexedDB. Desktop and
-mobile both restore the same intermediate equation. A 10-repeat, four-worker
-stress run passed 20/20 cases. The full clean suite then passed twice without a
-retry.
-
-### P0 — qualified elementary-teacher review: external gate remains
-
-The verifier explicitly requires a real qualified teacher to exercise both
-operations, drag and keyboard paths, narration, replay, and the discussion
-card, then record their name, qualification, date, grades/ages, observations,
-changes, and follow-up decision. Automated QA, published research, or an
-invented identity cannot satisfy this gate. The required record remains in
-`.factory/pedagogy-review.md` for a real reviewer to complete.
-
-## Verification evidence
-
-| Gate | Result and evidence |
+| Gate | Result / evidence |
 | --- | --- |
-| Clean work-order pipeline | PASS — `npm ci && npm test && npm run build`; 61 packages, 0 audit vulnerabilities; TypeScript clean; 14 Vitest tests; 55 Playwright tests passed and one intentional desktop skip; `dist/` produced. |
-| Independent claims | PASS — every exact command in `.factory/claims.json` ran separately; 20/20 claim IDs passed on their applicable desktop/mobile projects. |
-| Persistence stress | PASS — `npx playwright test --grep '@claim:unfinished-persistence' --repeat-each=10 --workers=4`; 20/20 passed with blocked IndexedDB writes and immediate reloads. |
-| Production bundle | PASS — app JS 36.90 kB raw / 10.90 kB gzip plus 0.76 kB loader; CSS 26.36 kB raw / 6.15 kB gzip; 24 precached URLs; cache `arithmetic-steps-6f613e180a4d`. |
-| Desktop product flow | PASS — sample `52 − 18 = 34`, narration, replay, discussion prompt, validation cases, `99 + 1 = 100`, JSON download/import, and confirmed clear all passed. |
-| Exact 390 px mobile | PASS — `scrollWidth === clientWidth === 390`; no visible control below 44×44 px; visual capture at `.factory/qa-artifacts/repair-8-local/mobile-demo.png`. |
-| Keyboard and motion | PASS — first Tab reaches the skip link; Enter focuses `main`; controls have a 3 px brass outline and 3 px offset; reduced-motion replay advances once with status feedback. |
-| Accessibility | PASS — axe found zero violations on landing, demo, completion, empty history, Privacy, Terms, and 404. URL smoke found `lang=en`, one h1, main, alt text, labelled buttons, and zero console/page errors. |
-| Privacy | PASS — the full demo/product request trace contained only same-origin GET requests; no analytics, API, account, payment, iframe, or identifying-input surface. Demo IndexedDB and checkpoint namespaces were deleted without changing real sentinels. |
-| Offline/update | PASS — activated controlling service worker; waiting-worker update preserved demo state; offline `/demo` reload returned 200 with `52 − 18`; deployment-only configuration is not precached. |
-| Routes/links | PASS — `/`, `/demo`, `/privacy/`, and `/terms/` returned 200; unknown route returned the styled 404; every crawled internal and source link returned 2xx/3xx. |
-| Response policy | PASS live — CSP with response-header `frame-ancestors 'none'`, HSTS, DENY framing, nosniff, strict referrer policy, restrictive permissions policy, immutable hashed assets, short HTML caching, and no-store service worker. The styled unknown route returns HTTP 404 with the same security headers. |
-| Lighthouse mobile | PASS live — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.0 s, LCP 1.0 s, TBT 30 ms, CLS 0.005, transfer 38 KiB. Local emulator scores were also 100/100/100/100. |
-| Deployment and identity | PASS — Azure Static Web Apps deployment `2236842e-3da1-45d0-ab56-1bc373740d8e` completed. All 29 public files are SHA-256 byte-identical to the clean local `dist/`; host-only `staticwebapp.config.json` is intentionally excluded. |
-| Package/consumer, backend, and auth policy | Not applicable — this remains a static local-first PWA with no package API, server endpoint, authentication, billing, or model integration. |
+| Clean install | PASS — `npm ci`; 61 packages and 0 audit vulnerabilities. |
+| Type, unit, integration | PASS — `npm test`: TypeScript clean, 14 Vitest checks, 56 Playwright desktop/mobile tests passed. |
+| Claims | PASS — all 20 exact commands from `.factory/claims.json` completed separately; `@claim:mobile-controls` has its intentional desktop skip and its 390 px project passed. |
+| Production build | PASS — `npm run build`; `dist/` generated, 24 files precached in `arithmetic-steps-6f613e180a4d`; main JS 36.90 kB raw / 10.90 kB gzip and CSS 26.36 kB raw / 6.15 kB gzip. |
+| Desktop, mobile, keyboard | PASS — fresh local first-read, full sample completion, validation, 99 + 1 boundary, export/import, confirmed clear, 390 px width, 44 px targets, skip link, focus ring, and reduced-motion replay passed. |
+| Accessibility | PASS — URL smoke found title, `lang=en`, one h1, main, complete image alt coverage, labelled buttons, and no errors; axe found zero violations on landing, demo, completion, empty history, Privacy, Terms, and 404. |
+| Privacy | PASS — fresh full-flow request capture saw six same-origin requests only; no analytics, third-party API, account, payment, or iframe request. |
+| Offline/update | PASS — activated controlling worker, no deployment-only metadata in precache, and offline `/demo` reload returned 200 with `52 − 18`. |
+| Routes/response policy | PASS — `/`, `/demo`, `/privacy/`, `/terms/` returned 200; unknown route returned a styled 404; links passed; local Static Web Apps headers include CSP with response-header `frame-ancestors 'none'`, HSTS, DENY framing, nosniff, strict referrer policy, and restrictive permissions policy. |
+| Lighthouse mobile | PASS — Lighthouse 13.4.1: Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.645 s, TBT 0 ms, CLS 0.0049. |
+| Live identity | PASS — the current live index, main JS, CSS, service worker, manifest, Privacy, and Terms SHA-256 values exactly match this clean production build. Live headers are present. |
+| Package, consumer, backend, response-policy extras | Not applicable — this product is a static PWA with no package API, server endpoint, account, billing, or model integration. |
 
-Local evidence is in `.factory/qa-artifacts/repair-8-local/`; live evidence is
-in `.factory/qa-artifacts/repair-8-live/`. Each contains independent QA, URL
-smoke, Lighthouse, and desktop/mobile screenshots. Live evidence also includes
-the response headers and deployment identity result.
+Fresh local evidence is in `.factory/qa-artifacts/repair-9-local/`:
+screenshots, URL smoke report, independent desktop/mobile/keyboard/PWA/routes
+report, and Lighthouse report.
 
 ## Run and verify
 
@@ -99,18 +66,16 @@ npm ci
 npm test
 npm run build
 
-# Run every exact `test` command in .factory/claims.json.
 swa start dist --port 4280
 VERIFY_NODE_MODULES=/work/repo/node_modules /opt/fleet/lib/verify-url.sh \
-  http://localhost:4280 .factory/qa-artifacts/repair-8-local
+  http://127.0.0.1:4280 .factory/qa-artifacts/repair-9-local
 node .factory/qa-artifacts/independent-live-qa.mjs \
-  http://localhost:4280 .factory/qa-artifacts/repair-8-local
+  http://127.0.0.1:4280 .factory/qa-artifacts/repair-9-local
 ```
 
-## Required next step
+## Known gap and next step
 
-A qualified elementary teacher must complete the eight fields in
-`.factory/pedagogy-review.md` after exercising the specified flows. Apply any
-required changes, record the follow-up decision, then rerun the clean pipeline,
-all claim commands, and live independent QA. Until that happens, do not label
-the release teacher-reviewed or accepted against the full researched brief.
+No code or deployment change is appropriate until the required independent
+teacher review occurs. Once a qualified reviewer completes the record, apply
+any requested changes, rerun the above gates and all claim commands, then
+perform a new independent verification before deployment.
