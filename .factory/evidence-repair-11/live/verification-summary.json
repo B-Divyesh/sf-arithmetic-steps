@@ -1,0 +1,51 @@
+{
+  "verifiedAt": "2026-08-30T05:30:00Z",
+  "url": "https://arithmetic-steps.sociobot.in",
+  "version": "1.0.5",
+  "deployedCommit": "b72bc1c35792d22e6028ec144721b47da88f3c32",
+  "urlSmoke": "pass; 709 ms; no console or page errors",
+  "browserMatrix": {
+    "status": "pass",
+    "blankOperandsRejected": true,
+    "validRecovery": "99 + 1 = 100",
+    "desktopCompletion": "52 - 18 = 34",
+    "jsonExport": "pass",
+    "mobile": "390x844; no overflow; no target below 44px",
+    "axe": "0 total violations on every scanned route and state",
+    "keyboard": "skip link first; 3px brass focus outline and 3px offset",
+    "reducedMotion": "manual one-step replay",
+    "privacy": "same-origin requests only",
+    "offlineReload": "200 with demo state retained",
+    "unknownRoute": 404,
+    "deadLinks": 0
+  },
+  "responsePolicy": {
+    "csp": "self-only with frame-ancestors none",
+    "xFrameOptions": "DENY",
+    "nosniff": true,
+    "hsts": true,
+    "permissionsPolicy": true,
+    "hashedAssetCache": "public, max-age=31536000, immutable",
+    "serviceWorkerCache": "no-cache, no-store, must-revalidate",
+    "manifestCache": "no-cache"
+  },
+  "deploymentIdentity": {
+    "deployableFiles": 29,
+    "sha256Matches": 29,
+    "mismatches": 0,
+    "mainAsset": "assets/main-DyEAKC1c.js",
+    "cssAsset": "assets/styles-BQoYZnj1.css",
+    "serviceWorkerCache": "arithmetic-steps-0be4cf63a607"
+  },
+  "lighthouseMobile": {
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcp": "0.9 s",
+    "lcp": "1.1 s",
+    "tbt": "0 ms",
+    "cls": 0.005,
+    "speedIndex": "0.9 s"
+  }
+}
