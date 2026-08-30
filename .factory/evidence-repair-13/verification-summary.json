@@ -1,0 +1,18 @@
+{
+  "workOrder": "arithmetic-steps-repair-13",
+  "candidate": "3264a19ec3274928b92e2bad9de031dfea873df8",
+  "releaseVersion": "1.0.7",
+  "rootCause": "The build wrote the release query into the tracked public manifest before Vite ran, failing under immutable source permissions.",
+  "repair": "Version only dist/manifest.webmanifest after Vite emits it, make that emitted file writable, then generate the service worker.",
+  "verification": {
+    "cleanBuild": "pass",
+    "immutableSourceOriginal": "fails with EACCES writing public/manifest.webmanifest",
+    "immutableSourceRepair": "pass; dist manifest start_url is /?source=pwa&v=1.0.7",
+    "unitStaticTests": 17,
+    "playwright": { "passed": 60, "intentionalProjectSkips": 2 },
+    "claimCommands": { "passed": 21, "total": 21 },
+    "urlSmoke": { "consoleErrors": 0, "h1": 1, "main": true, "imagesMissingAlt": 0, "buttonsUnlabeled": 0 },
+    "lighthouse": { "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100, "fcp": "1.1 s", "lcp": "1.5 s", "tbt": "0 ms", "cls": "0.005" }
+  },
+  "deployment": "pending"
+}
