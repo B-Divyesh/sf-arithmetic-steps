@@ -58,6 +58,7 @@ VERIFY_NODE_MODULES=/work/repo/node_modules /opt/fleet/lib/verify-url.sh \
 | Production build | PASS — `dist/`; app JS 36.22 kB raw / 10.62 kB gzip, CSS 26.36 kB raw / 6.15 kB gzip; service worker `arithmetic-steps-e639b0426049` precaches 24 URLs. |
 | Desktop/mobile/keyboard | PASS — completed `52 − 18 = 34`, exercised validation and `99 + 1 = 100` export; 390px was `390/390` with no targets below 44px; Tab first reaches the skip link, Enter reaches `main`, and reduced-motion replay advances one step. |
 | Accessibility | PASS — Axe found zero violations on landing, demo, completion, history, legal routes, and 404. URL smoke: title, `lang=en`, one h1, main, alt text, and labelled buttons; zero console/page errors. |
+| Lighthouse (live mobile) | PASS — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 0.9 s, LCP 1.1 s, TBT 0 ms, CLS 0.005, transfer 35 KiB. |
 | Offline/update | PASS — activated controlling worker, versioned cache, deployment-only config excluded from precache, and offline `/demo` reload returned 200 with `52 − 18`. |
 | Privacy/live identity | PASS — all observed browser requests were same-origin GETs; no account, payment, analytics, iframe, API, or third-party runtime surface. |
 | Response policy | PASS — live HTTPS 200 with CSP including response-header `frame-ancestors 'none'`, HSTS, `X-Frame-Options: DENY`, nosniff, strict referrer policy, permissions policy, short HTML cache, immutable assets, and no-store service worker. |
