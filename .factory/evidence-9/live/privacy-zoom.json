@@ -1,0 +1,261 @@
+{
+  "privacy": {
+    "requestCount": 30,
+    "origins": [
+      "https://arithmetic-steps.sociobot.in"
+    ],
+    "methods": [
+      "GET"
+    ],
+    "postBodies": 0,
+    "workerRequests": 25,
+    "requests": [
+      {
+        "url": "https://arithmetic-steps.sociobot.in/",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/",
+        "method": "GET",
+        "postData": null,
+        "worker": false
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/main-Dcot4Q9D.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/main-Dcot4Q9D.js",
+        "method": "GET",
+        "postData": null,
+        "worker": false
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/styles-CHES-hsj.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/styles-CHES-hsj.js",
+        "method": "GET",
+        "postData": null,
+        "worker": false
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/styles-BQoYZnj1.css",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/styles-BQoYZnj1.css",
+        "method": "GET",
+        "postData": null,
+        "worker": false
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.avif",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-1200.avif",
+        "method": "GET",
+        "postData": null,
+        "worker": false
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/sw.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/sw.js",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/404.html",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/404.html",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/app-icon.svg",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/app-icon.svg",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/icon-192.png",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/icon-192.png",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/icon-512.png",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/icon-512.png",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/icon-maskable-512.png",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/icon-maskable-512.png",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/legal-ieXG-pf-.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/legal-ieXG-pf-.js",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/main-Dcot4Q9D.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/main-Dcot4Q9D.js",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.avif",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-1200.avif",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.jpg",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-1200.jpg",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.webp",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-1200.webp",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-720.avif",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-720.avif",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-720.webp",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/number-line-limited-720.webp",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/social-preview.jpg",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/styles-BQoYZnj1.css",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/styles-BQoYZnj1.css",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/assets/styles-CHES-hsj.js",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/assets/styles-CHES-hsj.js",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/error.css",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/error.css",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/index.html",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/index.html",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/manifest.webmanifest",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/manifest.webmanifest",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/offline.html",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/offline.html",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/privacy/index.html",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/privacy/index.html",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/robots.txt",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/robots.txt",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/sitemap.xml",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/sitemap.xml",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      },
+      {
+        "url": "https://arithmetic-steps.sociobot.in/terms/index.html",
+        "origin": "https://arithmetic-steps.sociobot.in",
+        "path": "/terms/index.html",
+        "method": "GET",
+        "postData": null,
+        "worker": true
+      }
+    ],
+    "errors": []
+  },
+  "zoom": {
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "clipped": []
+  }
+}

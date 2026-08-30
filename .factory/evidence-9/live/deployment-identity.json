@@ -1,0 +1,304 @@
+{
+  "commit": "d35103815a4eda9487d57b5bbeb95176e5a71f80",
+  "base": "https://arithmetic-steps.sociobot.in",
+  "checked": 29,
+  "matched": 29,
+  "mismatches": [],
+  "rows": [
+    {
+      "file": "404.html",
+      "url": "https://arithmetic-steps.sociobot.in/404.html",
+      "status": 200,
+      "localBytes": 681,
+      "remoteBytes": 681,
+      "localSha256": "591ba331fe0bfc257fcf43e5f501e1e19130fd493447c0d17eb47b59c4ff9f97",
+      "remoteSha256": "591ba331fe0bfc257fcf43e5f501e1e19130fd493447c0d17eb47b59c4ff9f97",
+      "matched": true
+    },
+    {
+      "file": "assets/app-icon.svg",
+      "url": "https://arithmetic-steps.sociobot.in/assets/app-icon.svg",
+      "status": 200,
+      "localBytes": 923,
+      "remoteBytes": 923,
+      "localSha256": "79c8fd358c38fe65e97c28b3d8434343eac05ab77d36ba4e209058e58fca3b29",
+      "remoteSha256": "79c8fd358c38fe65e97c28b3d8434343eac05ab77d36ba4e209058e58fca3b29",
+      "matched": true
+    },
+    {
+      "file": "assets/icon-192.png",
+      "url": "https://arithmetic-steps.sociobot.in/assets/icon-192.png",
+      "status": 200,
+      "localBytes": 4632,
+      "remoteBytes": 4632,
+      "localSha256": "d3daa9d59497f4ebce2a0dee44c08b25d15bf89646b6bd75b69a3b58df2a6e0e",
+      "remoteSha256": "d3daa9d59497f4ebce2a0dee44c08b25d15bf89646b6bd75b69a3b58df2a6e0e",
+      "matched": true
+    },
+    {
+      "file": "assets/icon-512.png",
+      "url": "https://arithmetic-steps.sociobot.in/assets/icon-512.png",
+      "status": 200,
+      "localBytes": 16436,
+      "remoteBytes": 16436,
+      "localSha256": "0cd6da0c40e5708b2dd43ef7577028d0a60f8f468e8536e70906bfa96871bd20",
+      "remoteSha256": "0cd6da0c40e5708b2dd43ef7577028d0a60f8f468e8536e70906bfa96871bd20",
+      "matched": true
+    },
+    {
+      "file": "assets/icon-maskable-512.png",
+      "url": "https://arithmetic-steps.sociobot.in/assets/icon-maskable-512.png",
+      "status": 200,
+      "localBytes": 18810,
+      "remoteBytes": 18810,
+      "localSha256": "8ec7c5b57affdf5414a4d9a71fea957435a3eab650944742607ed67b82e146d8",
+      "remoteSha256": "8ec7c5b57affdf5414a4d9a71fea957435a3eab650944742607ed67b82e146d8",
+      "matched": true
+    },
+    {
+      "file": "assets/legal-ieXG-pf-.js",
+      "url": "https://arithmetic-steps.sociobot.in/assets/legal-ieXG-pf-.js",
+      "status": 200,
+      "localBytes": 73,
+      "remoteBytes": 73,
+      "localSha256": "3aaa32fcbde08f50cbbbc7d3e7ef6a5a73141b0c26413378394345a2756a2789",
+      "remoteSha256": "3aaa32fcbde08f50cbbbc7d3e7ef6a5a73141b0c26413378394345a2756a2789",
+      "matched": true
+    },
+    {
+      "file": "assets/legal-ieXG-pf-.js.map",
+      "url": "https://arithmetic-steps.sociobot.in/assets/legal-ieXG-pf-.js.map",
+      "status": 200,
+      "localBytes": 98,
+      "remoteBytes": 98,
+      "localSha256": "3c46c8e924c15e97a93bf0caa0a4dda13f8875091355a138eac676525e3e5d8f",
+      "remoteSha256": "3c46c8e924c15e97a93bf0caa0a4dda13f8875091355a138eac676525e3e5d8f",
+      "matched": true
+    },
+    {
+      "file": "assets/main-Dcot4Q9D.js",
+      "url": "https://arithmetic-steps.sociobot.in/assets/main-Dcot4Q9D.js",
+      "status": 200,
+      "localBytes": 36907,
+      "remoteBytes": 36907,
+      "localSha256": "6a3b8cafad32582f8380cf1e4adcedde87baa0842c4147c86037c85e33e9fa4c",
+      "remoteSha256": "6a3b8cafad32582f8380cf1e4adcedde87baa0842c4147c86037c85e33e9fa4c",
+      "matched": true
+    },
+    {
+      "file": "assets/main-Dcot4Q9D.js.map",
+      "url": "https://arithmetic-steps.sociobot.in/assets/main-Dcot4Q9D.js.map",
+      "status": 200,
+      "localBytes": 90541,
+      "remoteBytes": 90541,
+      "localSha256": "9432886077fdee30603b1d219f4debd141c55c49ef63aea31094ff67ec4cf850",
+      "remoteSha256": "9432886077fdee30603b1d219f4debd141c55c49ef63aea31094ff67ec4cf850",
+      "matched": true
+    },
+    {
+      "file": "assets/number-line-limited-1200.avif",
+      "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.avif",
+      "status": 200,
+      "localBytes": 40728,
+      "remoteBytes": 40728,
+      "localSha256": "945482f53a476adbf9742fea2943808b5ab84570361017d11e6367a07a895007",
+      "remoteSha256": "945482f53a476adbf9742fea2943808b5ab84570361017d11e6367a07a895007",
+      "matched": true
+    },
+    {
+      "file": "assets/number-line-limited-1200.jpg",
+      "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.jpg",
+      "status": 200,
+      "localBytes": 121598,
+      "remoteBytes": 121598,
+      "localSha256": "9e5f4658e1e384fd4f8fd7ff729fbc4f0fab926a3d37fe9637abfb3f6c5017c0",
+      "remoteSha256": "9e5f4658e1e384fd4f8fd7ff729fbc4f0fab926a3d37fe9637abfb3f6c5017c0",
+      "matched": true
+    },
+    {
+      "file": "assets/number-line-limited-1200.webp",
+      "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-1200.webp",
+      "status": 200,
+      "localBytes": 64540,
+      "remoteBytes": 64540,
+      "localSha256": "a56540c4f4740c42c936e47a630452898eb06e31939dcdf8870027b42c770a6f",
+      "remoteSha256": "a56540c4f4740c42c936e47a630452898eb06e31939dcdf8870027b42c770a6f",
+      "matched": true
+    },
+    {
+      "file": "assets/number-line-limited-720.avif",
+      "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-720.avif",
+      "status": 200,
+      "localBytes": 16183,
+      "remoteBytes": 16183,
+      "localSha256": "5e533d9175c9e35c09adb51155260783a27ee953a0bfb633a267e6708b504e2f",
+      "remoteSha256": "5e533d9175c9e35c09adb51155260783a27ee953a0bfb633a267e6708b504e2f",
+      "matched": true
+    },
+    {
+      "file": "assets/number-line-limited-720.webp",
+      "url": "https://arithmetic-steps.sociobot.in/assets/number-line-limited-720.webp",
+      "status": 200,
+      "localBytes": 28178,
+      "remoteBytes": 28178,
+      "localSha256": "85b684439ced815e59504cc34d38045bd75a19e43ececfc0376f37074fa811f6",
+      "remoteSha256": "85b684439ced815e59504cc34d38045bd75a19e43ececfc0376f37074fa811f6",
+      "matched": true
+    },
+    {
+      "file": "assets/privacy-CKtnJNah.js.map",
+      "url": "https://arithmetic-steps.sociobot.in/assets/privacy-CKtnJNah.js.map",
+      "status": 200,
+      "localBytes": 100,
+      "remoteBytes": 100,
+      "localSha256": "e1a93c5d6a948789439f8fa6e3b519d55e43e5574e3e9bdfe5177421794ee2e3",
+      "remoteSha256": "e1a93c5d6a948789439f8fa6e3b519d55e43e5574e3e9bdfe5177421794ee2e3",
+      "matched": true
+    },
+    {
+      "file": "assets/social-preview.jpg",
+      "url": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+      "status": 200,
+      "localBytes": 157876,
+      "remoteBytes": 157876,
+      "localSha256": "54864ec5b053b31949339ddcdd4d1142935ff76eea5df55266b716d7b97852fe",
+      "remoteSha256": "54864ec5b053b31949339ddcdd4d1142935ff76eea5df55266b716d7b97852fe",
+      "matched": true
+    },
+    {
+      "file": "assets/styles-BQoYZnj1.css",
+      "url": "https://arithmetic-steps.sociobot.in/assets/styles-BQoYZnj1.css",
+      "status": 200,
+      "localBytes": 26424,
+      "remoteBytes": 26424,
+      "localSha256": "b836fbe92e54231eb3594b194153956420d58298c06f606f26aade176a57714d",
+      "remoteSha256": "b836fbe92e54231eb3594b194153956420d58298c06f606f26aade176a57714d",
+      "matched": true
+    },
+    {
+      "file": "assets/styles-CHES-hsj.js",
+      "url": "https://arithmetic-steps.sociobot.in/assets/styles-CHES-hsj.js",
+      "status": 200,
+      "localBytes": 755,
+      "remoteBytes": 755,
+      "localSha256": "f4520df02a412b7695549b39bdb0680927cddcb5c0b621cc27444555491753e7",
+      "remoteSha256": "f4520df02a412b7695549b39bdb0680927cddcb5c0b621cc27444555491753e7",
+      "matched": true
+    },
+    {
+      "file": "assets/styles-CHES-hsj.js.map",
+      "url": "https://arithmetic-steps.sociobot.in/assets/styles-CHES-hsj.js.map",
+      "status": 200,
+      "localBytes": 99,
+      "remoteBytes": 99,
+      "localSha256": "abb128186693752fc48dafa52de8daa554ec05299380295a5b31ce811d061c21",
+      "remoteSha256": "abb128186693752fc48dafa52de8daa554ec05299380295a5b31ce811d061c21",
+      "matched": true
+    },
+    {
+      "file": "assets/terms-CKtnJNah.js.map",
+      "url": "https://arithmetic-steps.sociobot.in/assets/terms-CKtnJNah.js.map",
+      "status": 200,
+      "localBytes": 98,
+      "remoteBytes": 98,
+      "localSha256": "e6e4a7e78a0a54e98bb7955310beb0a2ee7c9c556f1a55742fc22b9f5cbc0d55",
+      "remoteSha256": "e6e4a7e78a0a54e98bb7955310beb0a2ee7c9c556f1a55742fc22b9f5cbc0d55",
+      "matched": true
+    },
+    {
+      "file": "error.css",
+      "url": "https://arithmetic-steps.sociobot.in/error.css",
+      "status": 200,
+      "localBytes": 712,
+      "remoteBytes": 712,
+      "localSha256": "fa482def8878d65453d3886c30f20ce0946a3eacb296625448990e688c90c6ee",
+      "remoteSha256": "fa482def8878d65453d3886c30f20ce0946a3eacb296625448990e688c90c6ee",
+      "matched": true
+    },
+    {
+      "file": "index.html",
+      "url": "https://arithmetic-steps.sociobot.in/",
+      "status": 200,
+      "localBytes": 3772,
+      "remoteBytes": 3772,
+      "localSha256": "e25aec2931be448bf918243e121d72e63d4b5045369275ee94f005f42a7f29d3",
+      "remoteSha256": "e25aec2931be448bf918243e121d72e63d4b5045369275ee94f005f42a7f29d3",
+      "matched": true
+    },
+    {
+      "file": "manifest.webmanifest",
+      "url": "https://arithmetic-steps.sociobot.in/manifest.webmanifest",
+      "status": 200,
+      "localBytes": 974,
+      "remoteBytes": 974,
+      "localSha256": "23166359377c5cd0facd646748cd0b7ada7ac266fd1218068b07d85399432494",
+      "remoteSha256": "23166359377c5cd0facd646748cd0b7ada7ac266fd1218068b07d85399432494",
+      "matched": true
+    },
+    {
+      "file": "offline.html",
+      "url": "https://arithmetic-steps.sociobot.in/offline.html",
+      "status": 200,
+      "localBytes": 615,
+      "remoteBytes": 615,
+      "localSha256": "18ee4645d464da6a734e8bc2068ae1e654cad66b1e8e0285a0efdbedb9c48dc1",
+      "remoteSha256": "18ee4645d464da6a734e8bc2068ae1e654cad66b1e8e0285a0efdbedb9c48dc1",
+      "matched": true
+    },
+    {
+      "file": "privacy/index.html",
+      "url": "https://arithmetic-steps.sociobot.in/privacy/",
+      "status": 200,
+      "localBytes": 3715,
+      "remoteBytes": 3715,
+      "localSha256": "1f86e29f390ffb333b2e2792e383dae4181c5804423e079c69407fd34b8629c9",
+      "remoteSha256": "1f86e29f390ffb333b2e2792e383dae4181c5804423e079c69407fd34b8629c9",
+      "matched": true
+    },
+    {
+      "file": "robots.txt",
+      "url": "https://arithmetic-steps.sociobot.in/robots.txt",
+      "status": 200,
+      "localBytes": 82,
+      "remoteBytes": 82,
+      "localSha256": "33138d61c80918ce08b8c588373bf63527c038435f53db95d0435c19bbaf488a",
+      "remoteSha256": "33138d61c80918ce08b8c588373bf63527c038435f53db95d0435c19bbaf488a",
+      "matched": true
+    },
+    {
+      "file": "sitemap.xml",
+      "url": "https://arithmetic-steps.sociobot.in/sitemap.xml",
+      "status": 200,
+      "localBytes": 310,
+      "remoteBytes": 310,
+      "localSha256": "dcf92e79329cdd0641197eeed5de6a7816f29bd3dd44a5f014eb9e0e2a207a49",
+      "remoteSha256": "dcf92e79329cdd0641197eeed5de6a7816f29bd3dd44a5f014eb9e0e2a207a49",
+      "matched": true
+    },
+    {
+      "file": "staticwebapp.config.json",
+      "scope": "deployment-only",
+      "matched": null
+    },
+    {
+      "file": "sw.js",
+      "url": "https://arithmetic-steps.sociobot.in/sw.js",
+      "status": 200,
+      "localBytes": 2175,
+      "remoteBytes": 2175,
+      "localSha256": "867b21c8c8af13e98ee3fe6b14fcb8e99d91e29232651037b9b23b39a2aa35dd",
+      "remoteSha256": "867b21c8c8af13e98ee3fe6b14fcb8e99d91e29232651037b9b23b39a2aa35dd",
+      "matched": true
+    },
+    {
+      "file": "terms/index.html",
+      "url": "https://arithmetic-steps.sociobot.in/terms/",
+      "status": 200,
+      "localBytes": 3400,
+      "remoteBytes": 3400,
+      "localSha256": "b3f953dd69f908e9c3cb30ef8525cf9d3d759cd7642321562af151e32d0eef25",
+      "remoteSha256": "b3f953dd69f908e9c3cb30ef8525cf9d3d759cd7642321562af151e32d0eef25",
+      "matched": true
+    }
+  ]
+}

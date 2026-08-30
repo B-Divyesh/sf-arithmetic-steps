@@ -1,0 +1,15 @@
+{
+  "before": {
+    "controller": "https://arithmetic-steps.sociobot.in/sw.js",
+    "h1": "52 − 18",
+    "sample": "42 − 8"
+  },
+  "toast": "An update is ready.",
+  "after": {
+    "controller": "https://arithmetic-steps.sociobot.in/sw.js?verification-9-update=1",
+    "h1": "52 − 18",
+    "sample": "42 − 8",
+    "banner": "Demo — sample data, nothing is saved."
+  },
+  "pass": true
+}

@@ -1,0 +1,143 @@
+URL https://arithmetic-steps.sociobot.in/
+HTTP/2 200 
+content-type: text/html
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: public, must-revalidate, max-age=30
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 3772
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/demo
+HTTP/2 200 
+content-type: text/html
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: public, must-revalidate, max-age=30
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 3772
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/privacy/
+HTTP/2 200 
+content-type: text/html
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: public, must-revalidate, max-age=30
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 3715
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/assets/main-Dcot4Q9D.js
+HTTP/2 200 
+content-type: text/javascript
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: public, max-age=31536000, immutable
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 36907
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/assets/styles-BQoYZnj1.css
+HTTP/2 200 
+content-type: text/css
+date: Sun, 30 Aug 2026 04:44:07 GMT
+accept-ranges: bytes
+cache-control: public, max-age=31536000, immutable
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 26424
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/manifest.webmanifest
+HTTP/2 200 
+content-type: application/octet-stream
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: no-cache
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 974
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/sw.js
+HTTP/2 200 
+content-type: text/javascript
+date: Sun, 30 Aug 2026 04:44:06 GMT
+accept-ranges: bytes
+cache-control: no-cache, no-store, must-revalidate
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 2175
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+URL https://arithmetic-steps.sociobot.in/definitely-not-a-route
+HTTP/2 404 
+content-type: text/html
+date: Sun, 30 Aug 2026 04:44:07 GMT
+cache-control: public, must-revalidate, max-age=30
+etag: "73918637"
+last-modified: Sun, 30 Aug 2026 04:11:19 GMT
+content-length: 681
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+content-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'
+x-frame-options: DENY
+permissions-policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+

@@ -1,0 +1,260 @@
+===== CLAIM demo-sandbox =====
+npm test -- --grep @claim:demo-sandbox
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM offline-reload =====
+npm test -- --grep @claim:offline-reload
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:offline-reload
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM local-only =====
+npm test -- --grep @claim:local-only
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:local-only
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM installable-pwa =====
+npm test -- --grep @claim:installable-pwa
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:installable-pwa
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM visible-focus =====
+npm test -- --grep @claim:visible-focus
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:visible-focus
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM tens-and-ones =====
+npm test -- --grep @claim:tens-and-ones
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:tens-and-ones
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM direct-manipulation =====
+npm test -- --grep @claim:direct-manipulation
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:direct-manipulation
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM narrated-steps =====
+npm test -- --grep @claim:narrated-steps
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:narrated-steps
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM replay-and-discussion =====
+npm test -- --grep @claim:replay-and-discussion
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:replay-and-discussion
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM free-no-account =====
+npm test -- --grep @claim:free-no-account
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:free-no-account
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM arithmetic-bounds =====
+npm test -- --grep @claim:arithmetic-bounds
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:arithmetic-bounds
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM keyboard-controls =====
+npm test -- --grep @claim:keyboard-controls
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:keyboard-controls
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM unfinished-persistence =====
+npm test -- --grep @claim:unfinished-persistence
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:unfinished-persistence
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM json-export =====
+npm test -- --grep @claim:json-export
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:json-export
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM json-import =====
+npm test -- --grep @claim:json-import
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:json-import
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM clear-data =====
+npm test -- --grep @claim:clear-data
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:clear-data
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM print-card =====
+npm test -- --grep @claim:print-card
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:print-card
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM reduced-motion =====
+npm test -- --grep @claim:reduced-motion
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:reduced-motion
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM mobile-controls =====
+npm test -- --grep @claim:mobile-controls
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:mobile-controls
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+
+===== CLAIM no-game-mechanics =====
+npm test -- --grep @claim:no-game-mechanics
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:no-game-mechanics
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+sh: 1: tsc: not found
+EXIT 127
+

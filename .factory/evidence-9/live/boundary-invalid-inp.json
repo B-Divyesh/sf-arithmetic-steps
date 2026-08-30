@@ -1,0 +1,101 @@
+{
+  "base": "https://arithmetic-steps.sociobot.in",
+  "blankInput": {
+    "entered": {
+      "first": "",
+      "second": "7"
+    },
+    "url": "https://arithmetic-steps.sociobot.in/#route",
+    "h1": "0 + 7",
+    "errorCount": 0,
+    "errorText": null,
+    "acceptedAsZero": true,
+    "errors": []
+  },
+  "boundary": {
+    "input": "100 − 100",
+    "heading": "100 − 100",
+    "equation": "100 − 100 = 0",
+    "resultZero": true
+  },
+  "eventTiming": {
+    "cpuThrottle": 4,
+    "eventCount": 9,
+    "interactionCount": 3,
+    "worstDurationMs": 80,
+    "events": [
+      {
+        "name": "pointerdown",
+        "duration": 80,
+        "interactionId": 8467,
+        "startTime": 848.3000000007451,
+        "processingStart": 852.6000000014901,
+        "processingEnd": 857.3000000007451
+      },
+      {
+        "name": "pointerup",
+        "duration": 80,
+        "interactionId": 8467,
+        "startTime": 848.4000000022352,
+        "processingStart": 858.1999999992549,
+        "processingEnd": 858.8000000007451
+      },
+      {
+        "name": "click",
+        "duration": 80,
+        "interactionId": 8467,
+        "startTime": 848.4000000022352,
+        "processingStart": 858.9000000022352,
+        "processingEnd": 892.5
+      },
+      {
+        "name": "pointerdown",
+        "duration": 16,
+        "interactionId": 8474,
+        "startTime": 991.6000000014901,
+        "processingStart": 995.8000000007451,
+        "processingEnd": 997.8000000007451
+      },
+      {
+        "name": "pointerup",
+        "duration": 16,
+        "interactionId": 8474,
+        "startTime": 991.6999999992549,
+        "processingStart": 998.3000000007451,
+        "processingEnd": 998.4000000022352
+      },
+      {
+        "name": "click",
+        "duration": 16,
+        "interactionId": 8474,
+        "startTime": 991.6999999992549,
+        "processingStart": 998.4000000022352,
+        "processingEnd": 1000.1999999992549
+      },
+      {
+        "name": "pointerdown",
+        "duration": 72,
+        "interactionId": 8481,
+        "startTime": 2661.900000002235,
+        "processingStart": 2664.199999999255,
+        "processingEnd": 2665.10000000149
+      },
+      {
+        "name": "pointerup",
+        "duration": 72,
+        "interactionId": 8481,
+        "startTime": 2661.900000002235,
+        "processingStart": 2666.199999999255,
+        "processingEnd": 2666.199999999255
+      },
+      {
+        "name": "click",
+        "duration": 72,
+        "interactionId": 8481,
+        "startTime": 2661.900000002235,
+        "processingStart": 2666.300000000745,
+        "processingEnd": 2667.199999999255
+      }
+    ]
+  }
+}

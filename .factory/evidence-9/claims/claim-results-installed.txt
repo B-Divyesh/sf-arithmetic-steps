@@ -1,0 +1,841 @@
+===== CLAIM demo-sandbox =====
+npm test -- --grep @claim:demo-sandbox
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 23ms
+ ✓ tests/models.test.ts (7 tests) 32ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:33:37
+   Duration  1.42s (transform 326ms, setup 0ms, collect 421ms, tests 54ms, environment 0ms, prepare 568ms)
+
+[WebServer] (node:1941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:1983) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:2002) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2001) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2002) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2001) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:208:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (4.4s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:208:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (5.3s)
+
+  2 passed (12.1s)
+EXIT 0
+
+===== CLAIM offline-reload =====
+npm test -- --grep @claim:offline-reload
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:offline-reload
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 7ms
+ ✓ tests/static-contract.test.ts (7 tests) 19ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:33:58
+   Duration  1.46s (transform 289ms, setup 0ms, collect 491ms, tests 26ms, environment 1ms, prepare 608ms)
+
+[WebServer] (node:2387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2429) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:2447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:273:1 › @claim:offline-reload works offline after the first visit from the demo entry point (3.0s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:273:1 › @claim:offline-reload works offline after the first visit from the demo entry point (3.3s)
+
+  2 passed (9.3s)
+EXIT 0
+
+===== CLAIM local-only =====
+npm test -- --grep @claim:local-only
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:local-only
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 23ms
+ ✓ tests/models.test.ts (7 tests) 82ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:34:17
+   Duration  1.39s (transform 352ms, setup 0ms, collect 366ms, tests 104ms, environment 0ms, prepare 616ms)
+
+[WebServer] (node:2805) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2847) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:2866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2865) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2865) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:306:1 › @claim:local-only keeps the complete cold-load and worker flow first-party (4.7s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:306:1 › @claim:local-only keeps the complete cold-load and worker flow first-party (5.1s)
+
+  2 passed (11.1s)
+EXIT 0
+
+===== CLAIM installable-pwa =====
+npm test -- --grep @claim:installable-pwa
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:installable-pwa
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 93ms
+ ✓ tests/models.test.ts (7 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:34:37
+   Duration  1.33s (transform 219ms, setup 0ms, collect 394ms, tests 102ms, environment 0ms, prepare 701ms)
+
+[WebServer] (node:3262) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:3325) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3325) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:339:1 › @claim:installable-pwa ships a valid manifest and controlling offline worker (2.5s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:339:1 › @claim:installable-pwa ships a valid manifest and controlling offline worker (2.5s)
+
+  2 passed (8.7s)
+EXIT 0
+
+===== CLAIM visible-focus =====
+npm test -- --grep @claim:visible-focus
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:visible-focus
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 20ms
+ ✓ tests/models.test.ts (7 tests) 74ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:34:54
+   Duration  1.38s (transform 288ms, setup 0ms, collect 359ms, tests 94ms, environment 0ms, prepare 672ms)
+
+[WebServer] (node:3684) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:3746) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3746) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:368:1 › @claim:visible-focus shows a designed focus ring during keyboard use (2.7s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:368:1 › @claim:visible-focus shows a designed focus ring during keyboard use (2.7s)
+
+  2 passed (8.9s)
+EXIT 0
+
+===== CLAIM tens-and-ones =====
+npm test -- --grep @claim:tens-and-ones
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:tens-and-ones
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 90ms
+ ✓ tests/models.test.ts (7 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:35:12
+   Duration  1.38s (transform 363ms, setup 0ms, collect 397ms, tests 99ms, environment 0ms, prepare 605ms)
+
+[WebServer] (node:4118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:4179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4179) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4178) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:394:1 › @claim:tens-and-ones shows each quantity as labelled tens and ones (2.8s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:394:1 › @claim:tens-and-ones shows each quantity as labelled tens and ones (3.3s)
+
+  2 passed (9.2s)
+EXIT 0
+
+===== CLAIM direct-manipulation =====
+npm test -- --grep @claim:direct-manipulation
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:direct-manipulation
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 7ms
+ ✓ tests/static-contract.test.ts (7 tests) 18ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:35:31
+   Duration  1.37s (transform 324ms, setup 0ms, collect 474ms, tests 25ms, environment 1ms, prepare 693ms)
+
+[WebServer] (node:4538) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:4600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4599) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4599) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:401:1 › @claim:direct-manipulation drags one-counters and ten-frames for both operations (5.5s)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:401:1 › @claim:direct-manipulation drags one-counters and ten-frames for both operations (5.8s)
+
+  2 passed (12.2s)
+EXIT 0
+
+===== CLAIM narrated-steps =====
+npm test -- --grep @claim:narrated-steps
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:narrated-steps
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 9ms
+ ✓ tests/static-contract.test.ts (7 tests) 95ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:35:52
+   Duration  1.47s (transform 337ms, setup 0ms, collect 467ms, tests 104ms, environment 0ms, prepare 520ms)
+
+[WebServer] (node:4981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:5043) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5043) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:454:1 › @claim:narrated-steps records a sentence for each chosen chunk (3.6s)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:454:1 › @claim:narrated-steps records a sentence for each chosen chunk (5.3s)
+
+  2 passed (11.5s)
+EXIT 0
+
+===== CLAIM replay-and-discussion =====
+npm test -- --grep @claim:replay-and-discussion
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:replay-and-discussion
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 7ms
+ ✓ tests/static-contract.test.ts (7 tests) 82ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:36:12
+   Duration  1.37s (transform 341ms, setup 0ms, collect 492ms, tests 89ms, environment 0ms, prepare 591ms)
+
+[WebServer] (node:5403) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5445) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:5463) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5463) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:463:1 › @claim:replay-and-discussion replays a route and shows discussion prompts (5.3s)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:463:1 › @claim:replay-and-discussion replays a route and shows discussion prompts (6.3s)
+
+  2 passed (12.3s)
+EXIT 0
+
+===== CLAIM free-no-account =====
+npm test -- --grep @claim:free-no-account
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:free-no-account
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 100ms
+ ✓ tests/models.test.ts (7 tests) 10ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:36:33
+   Duration  1.34s (transform 340ms, setup 0ms, collect 417ms, tests 109ms, environment 0ms, prepare 483ms)
+
+[WebServer] (node:5837) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5879) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:5897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5898) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5898) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:475:1 › @claim:free-no-account exposes no payment, account, or score path (2.3s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:475:1 › @claim:free-no-account exposes no payment, account, or score path (2.3s)
+
+  2 passed (8.7s)
+EXIT 0
+
+===== CLAIM arithmetic-bounds =====
+npm test -- --grep @claim:arithmetic-bounds
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:arithmetic-bounds
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 49ms
+ ✓ tests/models.test.ts (7 tests) 55ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:36:51
+   Duration  1.47s (transform 330ms, setup 0ms, collect 413ms, tests 103ms, environment 1ms, prepare 695ms)
+
+[WebServer] (node:6250) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6293) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:6311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:481:1 › @claim:arithmetic-bounds accepts only whole-number routes through 100 (3.3s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:481:1 › @claim:arithmetic-bounds accepts only whole-number routes through 100 (4.4s)
+
+  2 passed (10.4s)
+EXIT 0
+
+===== CLAIM keyboard-controls =====
+npm test -- --grep @claim:keyboard-controls
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:keyboard-controls
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 8ms
+ ✓ tests/static-contract.test.ts (7 tests) 16ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:37:10
+   Duration  1.36s (transform 374ms, setup 0ms, collect 449ms, tests 24ms, environment 0ms, prepare 608ms)
+
+[WebServer] (node:6664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6706) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:6725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:498:1 › @claim:keyboard-controls provides the same move without dragging (3.9s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:498:1 › @claim:keyboard-controls provides the same move without dragging (4.4s)
+
+  2 passed (10.5s)
+EXIT 0
+
+===== CLAIM unfinished-persistence =====
+npm test -- --grep @claim:unfinished-persistence
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:unfinished-persistence
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 98ms
+ ✓ tests/models.test.ts (7 tests) 7ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:37:29
+   Duration  1.39s (transform 258ms, setup 0ms, collect 389ms, tests 105ms, environment 0ms, prepare 600ms)
+
+[WebServer] (node:7097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7139) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:7157) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7158) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7157) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:510:1 › @claim:unfinished-persistence restores a route after a refresh (5.5s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:510:1 › @claim:unfinished-persistence restores a route after a refresh (5.8s)
+
+  2 passed (12.2s)
+EXIT 0
+
+===== CLAIM json-export =====
+npm test -- --grep @claim:json-export
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:json-export
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 8ms
+ ✓ tests/static-contract.test.ts (7 tests) 83ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:37:51
+   Duration  1.44s (transform 385ms, setup 0ms, collect 412ms, tests 90ms, environment 0ms, prepare 613ms)
+
+[WebServer] (node:7536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7578) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:7596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7597) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7597) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:552:1 › @claim:json-export deterministically downloads one completed route as JSON (13.0s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:552:1 › @claim:json-export deterministically downloads one completed route as JSON (13.6s)
+
+  2 passed (19.9s)
+EXIT 0
+
+===== CLAIM json-import =====
+npm test -- --grep @claim:json-import
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:json-import
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 52ms
+ ✓ tests/static-contract.test.ts (7 tests) 89ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:38:20
+   Duration  1.39s (transform 309ms, setup 0ms, collect 349ms, tests 140ms, environment 0ms, prepare 662ms)
+
+[WebServer] (node:8012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8054) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:8072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:582:1 › @claim:json-import restores valid routes chosen by the user (2.5s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:582:1 › @claim:json-import restores valid routes chosen by the user (2.9s)
+
+  2 passed (9.1s)
+EXIT 0
+
+===== CLAIM clear-data =====
+npm test -- --grep @claim:clear-data
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:clear-data
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 10ms
+ ✓ tests/static-contract.test.ts (7 tests) 20ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:38:38
+   Duration  1.47s (transform 462ms, setup 0ms, collect 404ms, tests 30ms, environment 0ms, prepare 659ms)
+
+[WebServer] (node:8448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8490) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:8508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8509) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8509) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:605:1 › @claim:clear-data keeps saved problems on cancel and deletes them on confirmation (5.5s)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:605:1 › @claim:clear-data keeps saved problems on cancel and deletes them on confirmation (6.2s)
+
+  2 passed (12.5s)
+EXIT 0
+
+===== CLAIM print-card =====
+npm test -- --grep @claim:print-card
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:print-card
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 88ms
+ ✓ tests/models.test.ts (7 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:38:59
+   Duration  1.40s (transform 253ms, setup 0ms, collect 481ms, tests 96ms, environment 0ms, prepare 509ms)
+
+[WebServer] (node:8880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:8942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:641:1 › @claim:print-card opens print and isolates a readable discussion card in print media (5.7s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:641:1 › @claim:print-card opens print and isolates a readable discussion card in print media (5.8s)
+
+  2 passed (12.0s)
+EXIT 0
+
+===== CLAIM reduced-motion =====
+npm test -- --grep @claim:reduced-motion
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:reduced-motion
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 91ms
+ ✓ tests/models.test.ts (7 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:39:20
+   Duration  1.35s (transform 294ms, setup 0ms, collect 406ms, tests 99ms, environment 1ms, prepare 571ms)
+
+[WebServer] (node:9302) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:9362) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9363) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9362) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9363) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:667:1 › @claim:reduced-motion makes replay manual (3.6s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:667:1 › @claim:reduced-motion makes replay manual (3.9s)
+
+  2 passed (10.1s)
+EXIT 0
+
+===== CLAIM mobile-controls =====
+npm test -- --grep @claim:mobile-controls
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:mobile-controls
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (7 tests) 9ms
+ ✓ tests/static-contract.test.ts (7 tests) 80ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:39:39
+   Duration  1.34s (transform 378ms, setup 0ms, collect 400ms, tests 89ms, environment 0ms, prepare 518ms)
+
+[WebServer] (node:9741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9783) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:9802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9801) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9801) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9802) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  2 [chromium] › tests/e2e/app.spec.ts:684:1 › @claim:mobile-controls fits the 390px viewport with 44px controls
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:684:1 › @claim:mobile-controls fits the 390px viewport with 44px controls (3.0s)
+
+  1 skipped
+  1 passed (9.2s)
+EXIT 0
+
+===== CLAIM no-game-mechanics =====
+npm test -- --grep @claim:no-game-mechanics
+
+> arithmetic-steps@1.0.4 test
+> npm run lint && vitest run && playwright test --grep @claim:no-game-mechanics
+
+
+> arithmetic-steps@1.0.4 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (7 tests) 19ms
+ ✓ tests/models.test.ts (7 tests) 82ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  04:39:57
+   Duration  1.38s (transform 313ms, setup 0ms, collect 415ms, tests 100ms, environment 0ms, prepare 600ms)
+
+[WebServer] (node:10156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:10198) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:10216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10217) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10217) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/app.spec.ts:679:1 › @claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser (2.3s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:679:1 › @claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser (2.2s)
+
+  2 passed (8.5s)
+EXIT 0
+
