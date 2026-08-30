@@ -112,7 +112,7 @@ describe("static hosting contract", () => {
   });
 
   it("derives every visible build identity and the PWA start URL from package.json", async () => {
-    const [packageText, manifestText, main, legal, landing, privacy, terms, viteConfig] = await Promise.all([
+    const [packageText, manifestText, main, legal, landing, privacy, terms, viteConfig, versionWriter] = await Promise.all([
       readFile(resolve(root, "package.json"), "utf8"),
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
@@ -120,12 +120,19 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "index.html"), "utf8"),
       readFile(resolve(root, "privacy/index.html"), "utf8"),
       readFile(resolve(root, "terms/index.html"), "utf8"),
-      readFile(resolve(root, "vite.config.ts"), "utf8")
+      readFile(resolve(root, "vite.config.ts"), "utf8"),
+      readFile(resolve(root, "scripts/sync-version.mjs"), "utf8")
     ]);
-    const packageInfo = JSON.parse(packageText) as { version: string };
+    const packageInfo = JSON.parse(packageText) as { version: string; scripts: Record<string, string> };
     const manifest = JSON.parse(manifestText) as { start_url: string };
 
-    expect(manifest.start_url).toBe(`/?source=pwa&v=${packageInfo.version}`);
+    // The source template is safe for the dev server. The production version
+    // query is written only after Vite emits dist/, so a build never edits a
+    // tracked source file (which fails in immutable build workspaces).
+    expect(manifest.start_url).toBe("/?source=pwa");
+    expect(versionWriter).toContain("../dist/manifest.webmanifest");
+    expect(versionWriter).not.toContain("../public/manifest.webmanifest");
+    expect(packageInfo.scripts.build).toMatch(/^vite build && node scripts\/sync-version\.mjs/);
     expect(viteConfig).toContain("package.json");
     expect(viteConfig).toContain("__ARITHMETIC_STEPS_VERSION__");
     expect(main).toContain("applyBuildVersion()");
