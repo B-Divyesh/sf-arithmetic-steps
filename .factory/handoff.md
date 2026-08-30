@@ -1,7 +1,7 @@
 # Arithmetic Steps — repair 8 handoff
 
 - Source finding report: commit `206d557599bb970faffdf063d4a0fd9334c486d9`
-- Repaired candidate: commit recorded after the final evidence update
+- Repaired implementation: `555f069c11406692f47eda2a94aff6618744858d`
 - Original candidate: `f078cee4f7e1491ac984a2d689572d70c277d55d`
 - Product version: `1.0.3`
 - Live URL: <https://arithmetic-steps.sociobot.in>
@@ -72,13 +72,15 @@ invented identity cannot satisfy this gate. The required record remains in
 | Privacy | PASS — the full demo/product request trace contained only same-origin GET requests; no analytics, API, account, payment, iframe, or identifying-input surface. Demo IndexedDB and checkpoint namespaces were deleted without changing real sentinels. |
 | Offline/update | PASS — activated controlling service worker; waiting-worker update preserved demo state; offline `/demo` reload returned 200 with `52 − 18`; deployment-only configuration is not precached. |
 | Routes/links | PASS — `/`, `/demo`, `/privacy/`, and `/terms/` returned 200; unknown route returned the styled 404; every crawled internal and source link returned 2xx/3xx. |
-| Response policy | PASS in the Static Web Apps emulator — CSP with response-header `frame-ancestors 'none'`, HSTS, DENY framing, nosniff, strict referrer policy, restrictive permissions policy, immutable hashed assets, short HTML caching, and no-store service worker. |
-| Lighthouse mobile | PASS — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.3 s, LCP 1.8 s, TBT 0 ms, CLS 0.005, transfer 96 KiB. |
-| Package/consumer, backend policy, identity | Not applicable — this remains a static local-first PWA with no package API, server endpoint, authentication, billing, or model integration. |
+| Response policy | PASS live — CSP with response-header `frame-ancestors 'none'`, HSTS, DENY framing, nosniff, strict referrer policy, restrictive permissions policy, immutable hashed assets, short HTML caching, and no-store service worker. The styled unknown route returns HTTP 404 with the same security headers. |
+| Lighthouse mobile | PASS live — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.0 s, LCP 1.0 s, TBT 30 ms, CLS 0.005, transfer 38 KiB. Local emulator scores were also 100/100/100/100. |
+| Deployment and identity | PASS — Azure Static Web Apps deployment `2236842e-3da1-45d0-ab56-1bc373740d8e` completed. All 29 public files are SHA-256 byte-identical to the clean local `dist/`; host-only `staticwebapp.config.json` is intentionally excluded. |
+| Package/consumer, backend, and auth policy | Not applicable — this remains a static local-first PWA with no package API, server endpoint, authentication, billing, or model integration. |
 
-Local evidence is in `.factory/qa-artifacts/repair-8-local/`:
-`independent-qa.json`, `verify.json`, `lighthouse.json`, and desktop/mobile
-screenshots.
+Local evidence is in `.factory/qa-artifacts/repair-8-local/`; live evidence is
+in `.factory/qa-artifacts/repair-8-live/`. Each contains independent QA, URL
+smoke, Lighthouse, and desktop/mobile screenshots. Live evidence also includes
+the response headers and deployment identity result.
 
 ## Run and verify
 

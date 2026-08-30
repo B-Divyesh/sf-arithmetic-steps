@@ -1,0 +1,190 @@
+{
+  "base": "https://arithmetic-steps.sociobot.in",
+  "startedAt": "2026-08-30T01:30:15.884Z",
+  "checks": {
+    "desktop": {
+      "firstRead": {
+        "title": "Arithmetic Steps — Explore addition and subtraction",
+        "h1": [
+          "Explore addition and subtraction steps"
+        ],
+        "sentence": "For elementary children with a teacher or parent, move counters to explain how each answer changes.",
+        "primaryAction": "Try it with sample data\n→",
+        "facts": [
+          "Works offline after the first visit.",
+          "Problems stay only on this device.",
+          "Free with no accounts or scores."
+        ]
+      },
+      "landingAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "demoAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "completeAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "historyAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "requestCount": 6,
+      "origins": [
+        "https://arithmetic-steps.sociobot.in"
+      ],
+      "invalidCases": 4,
+      "boundary": "99 + 1 = 100",
+      "exportDownload": true,
+      "exportPayload": "99 + 1 = 100"
+    },
+    "mobile": {
+      "layout": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "mobileAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "undersized": [],
+      "requestOrigins": [
+        "https://arithmetic-steps.sociobot.in"
+      ]
+    },
+    "keyboardMotion": {
+      "firstFocus": {
+        "text": "Skip to main content",
+        "outline": "rgb(214, 154, 45) solid 3px",
+        "offset": "3px"
+      },
+      "focused": {
+        "outline": "rgb(214, 154, 45) solid 3px",
+        "offset": "3px"
+      },
+      "reducedCss": {
+        "animationDuration": "1e-05s",
+        "scrollBehavior": "auto"
+      },
+      "replayAdvancedOneStep": true
+    },
+    "pwa": {
+      "states": [
+        "activated"
+      ],
+      "final": "activated",
+      "registrations": 1,
+      "caches": [
+        "arithmetic-steps-6f613e180a4d"
+      ],
+      "controlled": true,
+      "precachesDeploymentConfig": false,
+      "offline": {
+        "status": 200,
+        "h1": [
+          "52 − 18"
+        ]
+      }
+    },
+    "routes": {
+      "routes": [
+        {
+          "route": "/",
+          "status": 200,
+          "title": "Arithmetic Steps — Explore addition and subtraction",
+          "h1Count": 1,
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/demo",
+          "status": 200,
+          "title": "Demo — Arithmetic Steps",
+          "h1Count": 1,
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/privacy/",
+          "status": 200,
+          "title": "Privacy — Arithmetic Steps",
+          "h1Count": 1,
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/terms/",
+          "status": 200,
+          "title": "Terms — Arithmetic Steps",
+          "h1Count": 1,
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/definitely-not-a-route",
+          "status": 404,
+          "title": "Page not found — Arithmetic Steps",
+          "h1Count": 1,
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        }
+      ],
+      "links": [
+        {
+          "link": "https://arithmetic-steps.sociobot.in/#main",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/#learn",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/demo",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/#history",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/#problem-planner",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/privacy/",
+          "status": 200
+        },
+        {
+          "link": "https://arithmetic-steps.sociobot.in/terms/",
+          "status": 200
+        },
+        {
+          "link": "https://github.com/B-Divyesh/sf-arithmetic-steps",
+          "status": 200
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "verdict": "PASS",
+  "findings": [],
+  "finishedAt": "2026-08-30T01:30:29.090Z"
+}

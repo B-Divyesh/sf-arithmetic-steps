@@ -1,0 +1,1 @@
+PASS	29 public deployment files are byte-identical; staticwebapp.config.json is host metadata.
