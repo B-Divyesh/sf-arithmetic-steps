@@ -2,9 +2,10 @@
 
 ## Release disposition
 
-**Repair ready to deploy as `1.0.7`.** The artifact remains a static,
-local-first PWA. It has no backend, account, billing, model, tracking, or
-third-party runtime service.
+**Repair build ready as `1.0.7`; live publication is blocked by the static
+deployment control plane.** The artifact remains a static, local-first PWA.
+It has no backend, account, billing, model, tracking, or third-party runtime
+service.
 
 ## Root cause and repair
 
@@ -70,9 +71,21 @@ npm run build
 swa deploy ./dist --env production --swa-config-location ./dist --no-use-keychain
 ```
 
-Deploy `dist/` with its generated service worker and
-`dist/staticwebapp.config.json`. The deployment and live identity check are
-the next actions in this repair; record their result here after publish.
+The repair commits were pushed to `main` at `1c66540`. The standard command
+and the explicitly scoped command both authenticated:
+
+```sh
+swa deploy ./dist --app-name sf-arithmetic-steps --env production \
+  --swa-config-location ./dist --no-use-keychain
+```
+
+The CLI reached `Checking project "sf-arithmetic-steps" settings...` but
+neither produced an upload/deployment URL; the scoped request made no progress
+for two minutes and was stopped. A subsequent live identity check found the
+public edge still serving `Build 1.0.5` and
+`/?source=pwa&v=1.0.5`, rather than this repair's `1.0.7`. Local `dist/` is
+ready and verified; a factory deployment controller with the target's working
+project settings must publish it, then rerun the live identity check.
 
 ## Known gap
 
@@ -82,3 +95,6 @@ teacher-approval claim has been restored. The shipped local facilitator
 checklist is still only a tool for an educator to assess the product before
 classroom use. See `.factory/pedagogy-evidence.md` for the required evidence
 or waiver path.
+
+Live deployment is also a known external gap: the public static edge remains
+on `1.0.5` despite the authenticated, target-scoped deployment attempts above.
