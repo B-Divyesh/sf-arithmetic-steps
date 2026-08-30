@@ -132,6 +132,7 @@ describe("static hosting contract", () => {
     expect(manifest.start_url).toBe("/?source=pwa");
     expect(versionWriter).toContain("../dist/manifest.webmanifest");
     expect(versionWriter).not.toContain("../public/manifest.webmanifest");
+    expect(versionWriter).toContain("await chmod(manifestUrl, 0o644)");
     expect(packageInfo.scripts.build).toMatch(/^vite build && node scripts\/sync-version\.mjs/);
     expect(viteConfig).toContain("package.json");
     expect(viteConfig).toContain("__ARITHMETIC_STEPS_VERSION__");
