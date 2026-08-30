@@ -10,6 +10,26 @@ function failOnConsoleErrors(page: Page): void {
   });
 }
 
+async function waitForControllingServiceWorker(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (navigator.serviceWorker.controller) return;
+
+    // Subscribe before the second state check. The previous inline pattern
+    // could miss controllerchange between its first check and listener setup,
+    // leaving a valid offline install to time out in mobile Chromium.
+    await new Promise<void>((resolve) => {
+      const onControllerChange = (): void => {
+        if (!navigator.serviceWorker.controller) return;
+        navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+        resolve();
+      };
+      navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+      onControllerChange();
+    });
+  });
+}
+
 async function readSetting(page: Page, databaseName: string, key: string): Promise<unknown> {
   return page.evaluate(async ({ databaseName: name, settingKey }) => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -196,10 +216,7 @@ test("shows helpful validation without losing the entered problem", async ({ pag
 });
 
 test("works from the installed cache while offline", async ({ page, context }) => {
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
-  });
+  await waitForControllingServiceWorker(page);
   await context.setOffline(true);
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Explore addition and subtraction steps");
@@ -277,10 +294,7 @@ test("@claim:offline-reload works offline after the first visit from the demo en
   const workerRequests: string[] = [];
   page.on("request", (request) => workerRequests.push(new URL(request.url()).pathname));
   await page.goto("/demo");
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
-  });
+  await waitForControllingServiceWorker(page);
   await context.setOffline(true);
   await page.reload();
   await expect(page).toHaveURL(/\/demo$/);
@@ -291,10 +305,7 @@ test("@claim:offline-reload works offline after the first visit from the demo en
 
 test("offers and applies a waiting service-worker update without losing the demo", async ({ page }) => {
   await page.goto("/demo");
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
-  });
+  await waitForControllingServiceWorker(page);
   expect(await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL)).toMatch(/\/sw\.js$/);
   await page.evaluate(() => navigator.serviceWorker.register("/sw.js?test-update=1"));
   await expect(page.getByText("An update is ready.")).toBeVisible();
@@ -320,10 +331,7 @@ test("@claim:local-only keeps the complete cold-load and worker flow first-party
   failOnConsoleErrors(isolatedPage);
   try {
     await isolatedPage.goto("http://127.0.0.1:4173/");
-    await isolatedPage.evaluate(async () => {
-      await navigator.serviceWorker.ready;
-      if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
-    });
+    await waitForControllingServiceWorker(isolatedPage);
     await isolatedPage.getByRole("button", { name: "Try it with sample data" }).click();
     await isolatedPage.getByRole("button", { name: /Take away the chunk/ }).click();
     await expect(isolatedPage.getByText(/Nothing is left to take away/)).toBeVisible();
@@ -357,10 +365,7 @@ test("@claim:installable-pwa ships a valid manifest and controlling offline work
   ]));
   for (const icon of manifest.icons) expect((await page.request.get(icon.src)).ok()).toBe(true);
 
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) await new Promise<void>((resolve) => navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true }));
-  });
+  await waitForControllingServiceWorker(page);
   expect(await page.evaluate(() => navigator.serviceWorker.controller?.state)).toBe("activated");
 
   const session = await context.newCDPSession(page);
