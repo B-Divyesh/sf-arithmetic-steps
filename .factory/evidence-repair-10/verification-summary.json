@@ -1,0 +1,33 @@
+{
+  "workOrder": "arithmetic-steps-repair-10",
+  "verifiedAt": "2026-08-30T04:06:00Z",
+  "baseReportCommit": "1061c084faff0e22906c526fbe9b4eb65253236b",
+  "candidateCommit": "85a794a2baad81fb25b698ad0cdd70c2cbb01b6e",
+  "implementationCommit": "5797db7",
+  "liveUrl": "https://arithmetic-steps.sociobot.in",
+  "build": "1.0.4",
+  "serviceWorkerCache": "arithmetic-steps-3041ebf6ce4f",
+  "hero1440": {
+    "before": { "clientWidth": 468, "scrollWidth": 586, "overflowPx": 118 },
+    "after": { "clientWidth": 468, "scrollWidth": 468, "overflowPx": 0 }
+  },
+  "tests": {
+    "vitest": { "passed": 14, "failed": 0 },
+    "playwright": { "passed": 56, "failed": 0, "intentionalSkips": 2 },
+    "claimCommands": { "passed": 20, "failed": 0 },
+    "liveAxeViolations": 0,
+    "liveFilesSha256Matched": 29
+  },
+  "mobile390": { "clientWidth": 390, "scrollWidth": 390, "undersizedTargets": 0 },
+  "lighthouseLive": {
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcpSeconds": 0.9,
+    "lcpSeconds": 1.1,
+    "tbtMilliseconds": 40,
+    "cls": 0.005,
+    "speedIndexSeconds": 0.9
+  }
+}
