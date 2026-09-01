@@ -1,0 +1,46 @@
+{
+  "candidateVersion": "1.0.10",
+  "verifiedAt": "2026-09-01T21:31:00Z",
+  "cleanInstall": {
+    "command": "npm ci",
+    "packages": 61,
+    "vulnerabilities": 0,
+    "result": "PASS"
+  },
+  "qualityGates": {
+    "lint": "PASS",
+    "unitStatic": "17 passed",
+    "browser": "67 passed, 3 intended viewport-specific skips",
+    "claimCommands": "22 of 22 passed independently",
+    "productionBuild": "PASS; dist/index.html and 24 precached URLs"
+  },
+  "controllerRegressions": {
+    "optionalGuidance": "PASS; active brief and product surfaces use the testable optional-guidance boundary and reject outside-review/study claims",
+    "plain404": "PASS; emulator returns HTTP 404 with title Page not found — Arithmetic Steps and h1 Page not found"
+  },
+  "browserEvidence": {
+    "desktop": "PASS; end-to-end 52 − 18, invalid recovery, export, Axe, and no console errors",
+    "mobile390": "PASS; no overflow, no target below 44px, Axe serious/critical 0",
+    "textResize200": "PASS; headline and sample action visible with no horizontal overflow",
+    "keyboard": "PASS; skip link first, 3px focus outline with 3px offset, controls operable",
+    "privacy": "PASS; observed runtime requests were same-origin GET requests without bodies",
+    "pwa": "PASS; worker controlled the demo, update path passed, offline reload returned 200 with 52 − 18",
+    "routes": "PASS; root, demo, privacy, terms, and 404 each have one h1 and one main; links pass"
+  },
+  "budgets": {
+    "initialJavaScriptRawBytes": 41158,
+    "cssRawBytes": 28215,
+    "fontsBytes": 0,
+    "precacheUrls": 24
+  },
+  "lighthouseMobile": {
+    "performance": 99,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcpMs": 1406,
+    "lcpMs": 1735,
+    "tbtMs": 0,
+    "cls": 0.00486
+  }
+}

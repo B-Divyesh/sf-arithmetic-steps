@@ -33,8 +33,8 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | Ask “What stayed the same?” before offering a strategy. | 10 | Adult guidance |
 | Local checklist | 2 | Section label |
 | Review this tool before classroom use | 6 | `facilitator-review` |
-| Arithmetic Steps has not had a qualified educator review. | 9 | `educator-review-boundary` |
-| Use this checklist to decide whether it fits your setting. | 10 | `facilitator-review` |
+| This optional checklist is guidance, not evidence of learning outcomes. | 10 | `optional-review-guidance` |
+| Use it to decide whether the tool fits your setting. | 10 | `facilitator-review` |
 | Mark each check after you try it | 7 | Checklist instruction |
 | Finish the sample. | 3 | Checklist item |
 | Remove the final 8 in the supplied route. | 9 | Checklist instruction |
@@ -59,7 +59,7 @@ No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
 
-The active product copy explicitly says the product has not had a qualified
-educator review. It makes no outside-evaluation or learning-outcome promise.
-The researched brief keeps its teacher-review constraint. The product retains
-only the testable facilitator checklist and executable learning-flow claims.
+The active product copy labels the checklist as optional guidance. It makes no
+outside-review, study, validation, or learning-outcome promise. The researched
+brief retains only the testable facilitator checklist and executable
+learning-flow claims.

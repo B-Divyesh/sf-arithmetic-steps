@@ -3,7 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 
 const PRODUCT_VERSION = (JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string }).version;
-const QUALIFIED_REVIEW_DISCLOSURE = "Arithmetic Steps has not had a qualified educator review.";
+const OPTIONAL_REVIEW_GUIDANCE = "This optional checklist is guidance, not evidence of learning outcomes.";
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
@@ -787,20 +787,20 @@ test("@claim:facilitator-review provides a local pre-classroom review checklist"
   await expect(page.getByRole("checkbox").first()).not.toBeChecked();
 });
 
-test("@claim:educator-review-boundary discloses the missing qualified review", async ({ page }) => {
-  await expect(page.getByText(QUALIFIED_REVIEW_DISCLOSURE, { exact: true })).toBeVisible();
+test("@claim:optional-review-guidance labels the checklist as optional guidance", async ({ page }) => {
+  await expect(page.getByText(OPTIONAL_REVIEW_GUIDANCE, { exact: true })).toBeVisible();
 
   await page.goto("/terms/");
-  await expect(page.getByText(QUALIFIED_REVIEW_DISCLOSURE, { exact: false })).toBeVisible();
+  await expect(page.getByText(OPTIONAL_REVIEW_GUIDANCE, { exact: false })).toBeVisible();
 
   const publicSources = [
     readFileSync(new URL("../../src/main.ts", import.meta.url), "utf8"),
     readFileSync(new URL("../../README.md", import.meta.url), "utf8"),
     readFileSync(new URL("../../terms/index.html", import.meta.url), "utf8")
   ];
-  const unsupportedReviewClaim = /(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
-  for (const source of publicSources) expect(source).toContain(QUALIFIED_REVIEW_DISCLOSURE);
-  expect(publicSources.join("\n")).not.toMatch(unsupportedReviewClaim);
+  const unprovableReviewStatement = /teacher-reviewed pedagogy|qualified (?:teacher|educator) review|teacher study|(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
+  for (const source of publicSources) expect(source).toContain(OPTIONAL_REVIEW_GUIDANCE);
+  expect(publicSources.join("\n")).not.toMatch(unprovableReviewStatement);
   expect(publicSources.join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
 });
 
@@ -840,6 +840,19 @@ test("@claim:mobile-controls fits the 390px viewport with 44px controls", async 
   await expectVisibleTargetsAtLeast44();
 });
 
+test("keeps the first action usable at 200% text size on a narrow screen", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "mobile text-resize check");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+  await expect(page.getByRole("heading", { level: 1, name: "Explore addition and subtraction steps" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Try it with sample data" })).toBeVisible();
+  const layout = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth
+  }));
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1);
+});
+
 test("legal pages keep the same accessible shell", async ({ page }) => {
   for (const path of ["/privacy/", "/terms/"]) {
     await page.goto(path);
@@ -847,6 +860,15 @@ test("legal pages keep the same accessible shell", async ({ page }) => {
     const results = await new AxeBuilder({ page: page as never }).analyze();
     expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
   }
+});
+
+test("404 page names the missing-page state in plain words", async ({ page }) => {
+  await page.goto("/404.html");
+  await expect(page).toHaveTitle("Page not found — Arithmetic Steps");
+  await expect(page.locator("h1")).toHaveText("Page not found");
+  await expect(page.getByRole("link", { name: "Return to Arithmetic Steps" })).toHaveAttribute("href", "/");
+  const results = await new AxeBuilder({ page: page as never }).analyze();
+  expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
 });
 
 test("uses one build identity on app, legal, and manifest routes", async ({ page, request }) => {

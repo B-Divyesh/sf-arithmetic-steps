@@ -40,11 +40,11 @@ async function runDesktop(browser) {
     sentence: await page.locator(".lede").innerText(),
     primaryAction: await page.getByRole("button", { name: "Try it with sample data" }).innerText(),
     facts: await page.locator(".hero-facts li").allTextContents(),
-    reviewBoundary: await page.getByText("Arithmetic Steps has not had a qualified educator review.", { exact: true }).innerText()
+    optionalGuidance: await page.getByText("This optional checklist is guidance, not evidence of learning outcomes.", { exact: true }).innerText()
   };
   assert(firstRead.h1.length === 1, "landing must have one h1");
   assert(firstRead.sentence.includes("elementary children") && firstRead.sentence.includes("teacher or parent"), "first screen does not name audience");
-  assert(firstRead.reviewBoundary === "Arithmetic Steps has not had a qualified educator review.", "qualified educator review limitation is missing");
+  assert(firstRead.optionalGuidance === "This optional checklist is guidance, not evidence of learning outcomes.", "optional checklist boundary is missing");
   await page.screenshot({ path: artifact("desktop-landing.png"), fullPage: true });
   const landingAxe = await axe(page, "desktop landing");
 
@@ -243,10 +243,11 @@ async function runRoutes(browser) {
   const results = [];
   for (const route of routes) {
     const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
-    results.push({ route, status: response?.status(), title: await page.title(), h1Count: await page.locator("h1").count(), mainCount: await page.locator("main").count(), axe: await axe(page, route) });
+    results.push({ route, status: response?.status(), title: await page.title(), h1: await page.locator("h1").allTextContents(), mainCount: await page.locator("main").count(), axe: await axe(page, route) });
   }
   assert(results.at(-1).status === 404, "unknown route is not a real 404");
-  assert(results.every(item => item.h1Count === 1 && item.mainCount === 1), "route shell semantics failed");
+  assert(results.at(-1).h1.length === 1 && results.at(-1).h1[0] === "Page not found", "unknown route heading is not Page not found");
+  assert(results.every(item => item.h1.length === 1 && item.mainCount === 1), "route shell semantics failed");
   const links = await page.goto(base).then(async () => [...new Set(await page.locator("a[href]").evaluateAll(links => links.map(link => link.href)))]);
   const linkStatuses = [];
   for (const link of links) {

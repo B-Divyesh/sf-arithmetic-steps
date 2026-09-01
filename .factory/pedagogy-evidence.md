@@ -1,16 +1,17 @@
-# Pedagogy review boundary
+# Optional guidance boundary
 
-The researched brief retains its `Teacher-reviewed pedagogy` constraint.
-Arithmetic Steps has not had a qualified educator review. This release does
-not claim that one occurred. No study, reviewer identity, qualification, date,
-classroom observation, or academic outcome has been invented to fill that gap.
+The researched brief requires an optional facilitator review checklist with no
+learning-outcome claim.
 
-Arithmetic Steps is therefore presented as a tool for educator review before
-classroom use. The landing page includes an executable local checklist, and
+This optional checklist is guidance, not evidence of learning outcomes.
+
+The release makes no outside-review, classroom-study, approval, validation, or
+academic-outcome claim.
+
+The landing page includes an executable local checklist, and
 `.factory/facilitator-review.md` documents the same checks and expected
-observations. Its tagged browser regression proves the checklist can be
-completed and reset from a clean browser context; it does not represent an
-external pedagogical evaluation.
+observations. Its tagged browser regression proves only that the checklist can
+be completed and reset from a clean browser context.
 
 The observable safeguards implemented in the product are:
 
@@ -24,6 +25,6 @@ The observable safeguards implemented in the product are:
   regressions.
 
 The exact public claims and their sandbox commands remain in
-`.factory/claims.json`. The public review-boundary claim has its own regression.
-It requires the explicit limitation on each review-facing public surface and
-rejects educator-approval or learning-outcome wording.
+`.factory/claims.json`. The optional-guidance claim has its own regression. It
+requires the boundary on each review-facing public surface and rejects claims
+of outside review, validation, a study, or improved learning.

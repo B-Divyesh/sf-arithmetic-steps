@@ -289,7 +289,7 @@ function setupTemplate(): string {
         <span aria-hidden="true">02</span>
         <div><p>Local checklist</p><h2 id="facilitator-review-title">Review this tool before classroom use</h2></div>
       </div>
-      <p><strong>Arithmetic Steps has not had a qualified educator review.</strong> Use this checklist to decide whether it fits your setting.</p>
+      <p><strong>This optional checklist is guidance, not evidence of learning outcomes.</strong> Use it to decide whether the tool fits your setting.</p>
       <form id="facilitator-review-form">
         <fieldset>
           <legend>Mark each check after you try it</legend>

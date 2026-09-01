@@ -26,6 +26,8 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "public/offline.html"), "utf8")
     ]);
     expect(notFound).toContain("Page not found — Arithmetic Steps");
+    expect(notFound).toContain("<h1>Page not found</h1>");
+    expect(notFound).not.toContain("This stop is not on the line");
     expect(notFound).toContain('href="/"');
     expect(notFound).toContain('href="/error.css"');
     expect(offline).toContain('href="/error.css"');
@@ -80,7 +82,7 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('one station at a time');
   });
 
-  it("preserves the research review constraint without inventing a completed review", async () => {
+  it("keeps the optional facilitator checklist testable without claiming an outside review", async () => {
     const [briefText, claimsText, evidence, facilitatorReview, app, readme, landing, privacy, terms, manifest] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
       readFile(resolve(root, ".factory/claims.json"), "utf8"),
@@ -94,20 +96,20 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
-    const disclosure = "Arithmetic Steps has not had a qualified educator review.";
+    const guidanceBoundary = "This optional checklist is guidance, not evidence of learning outcomes.";
     const publicCopy = [app, readme, landing, privacy, terms, manifest].join("\n");
-    const unsupportedReviewClaim = /(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
+    const unprovableReviewStatement = /teacher-reviewed pedagogy|qualified (?:teacher|educator) review|teacher study|(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
 
-    expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
-    for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(disclosure);
-    expect(publicCopy).not.toMatch(unsupportedReviewClaim);
+    expect(brief.constraints).toContain("Optional facilitator review checklist with no learning-outcome claim");
+    expect(brief.constraints).not.toContain("Teacher-reviewed pedagogy");
+    for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(guidanceBoundary);
+    expect([briefText, publicCopy, claimsText, evidence, facilitatorReview].join("\n")).not.toMatch(unprovableReviewStatement);
     expect(publicCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
-    expect(claimsText).toContain('"id":"educator-review-boundary"');
-    expect(claimsText).toContain(`"claim":"${disclosure}"`);
-    expect(evidence).toContain(disclosure);
-    expect(evidence).toContain("No study, reviewer identity");
-    expect(facilitatorReview).toContain(disclosure);
-    expect(facilitatorReview).toContain("not a teacher study");
+    expect(claimsText).toContain('"id":"optional-review-guidance"');
+    expect(claimsText).toContain(`"claim":"${guidanceBoundary}"`);
+    expect(evidence).toContain(guidanceBoundary);
+    expect(facilitatorReview).toContain(guidanceBoundary);
+    expect(facilitatorReview).toContain("optional product check");
     expect(facilitatorReview).toContain("npm test -- --grep @claim:facilitator-review");
     expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
     expect(app).toContain("For the grown-up nearby");

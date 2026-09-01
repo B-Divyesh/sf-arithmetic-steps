@@ -2,9 +2,8 @@
 
 ## Purpose and boundary
 
-This is a local, repeatable product review aid for an educator or caregiver.
-Arithmetic Steps has not had a qualified educator review.
-This checklist is not a teacher study or evidence of learning outcomes.
+This is a local, repeatable product check for an educator or caregiver.
+This optional checklist is guidance, not evidence of learning outcomes.
 
 ## Run it in the product
 
@@ -16,7 +15,7 @@ This checklist is not a teacher study or evidence of learning outcomes.
 4. Use **Reset review checklist** to clear the four marks. Marks are not saved
    in browser storage.
 
-The review asks the facilitator to inspect direct manipulation and labelled
+The optional product check asks the facilitator to inspect direct manipulation and labelled
 chunk controls, reasoning narration and replay, discussion prompts, and
 keyboard access. The final decision about classroom fit stays with the
 educator.

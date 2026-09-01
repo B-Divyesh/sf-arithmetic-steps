@@ -10,8 +10,8 @@ It is for elementary teachers, parents, and children discussing the structure in
 
 ## Review before classroom use
 
-Arithmetic Steps has not had a qualified educator review. The in-product
-checklist lets educators inspect the supplied sample before classroom use. It
+This optional checklist is guidance, not evidence of learning outcomes. It lets
+educators and caregivers inspect the supplied sample before classroom use. It
 covers child-chosen chunks, reasoning prompts, and keyboard controls. Checklist
 marks stay only on the open page.
 
@@ -79,7 +79,7 @@ No problem data is sent to a server. The Privacy page explains browser storage a
 
 - [.factory/brief.json](.factory/brief.json) records the scoped opportunity.
 - [.factory/design.md](.factory/design.md) records the art-deco transit-poster system and generated-art provenance.
-- [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the review boundary and observable guidance safeguards.
+- [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the checklist boundary and observable guidance safeguards.
 - [.factory/facilitator-review.md](.factory/facilitator-review.md) documents the executable local review checklist.
 - [.factory/handoff.md](.factory/handoff.md) records final verification and known gaps.
 
