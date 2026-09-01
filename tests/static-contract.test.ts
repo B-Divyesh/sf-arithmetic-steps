@@ -81,8 +81,9 @@ describe("static hosting contract", () => {
   });
 
   it("preserves the research review constraint without inventing a completed review", async () => {
-    const [briefText, evidence, facilitatorReview, app, readme, landing, privacy, terms, manifest] = await Promise.all([
+    const [briefText, claimsText, evidence, facilitatorReview, app, readme, landing, privacy, terms, manifest] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
+      readFile(resolve(root, ".factory/claims.json"), "utf8"),
       readFile(resolve(root, ".factory/pedagogy-evidence.md"), "utf8"),
       readFile(resolve(root, ".factory/facilitator-review.md"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
@@ -93,14 +94,20 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
-    const activeCopy = [briefText, app, readme, landing, privacy, terms, manifest].join("\n");
+    const disclosure = "Arithmetic Steps has not had a qualified educator review.";
+    const publicCopy = [app, readme, landing, privacy, terms, manifest].join("\n");
+    const unsupportedReviewClaim = /(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
 
     expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
-    expect([app, readme, landing, privacy, terms, manifest].join("\n")).not.toMatch(/teacher[- ]reviewed|reviewed by (?:an?|the)|qualified (?:elementary )?teacher/i);
-    expect(activeCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
-    expect(evidence).toContain("does **not** contain a completed qualified educator review");
+    for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(disclosure);
+    expect(publicCopy).not.toMatch(unsupportedReviewClaim);
+    expect(publicCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
+    expect(claimsText).toContain('"id":"educator-review-boundary"');
+    expect(claimsText).toContain(`"claim":"${disclosure}"`);
+    expect(evidence).toContain(disclosure);
     expect(evidence).toContain("No study, reviewer identity");
-    expect(facilitatorReview).toContain("It is not a teacher study");
+    expect(facilitatorReview).toContain(disclosure);
+    expect(facilitatorReview).toContain("not a teacher study");
     expect(facilitatorReview).toContain("npm test -- --grep @claim:facilitator-review");
     expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
     expect(app).toContain("For the grown-up nearby");

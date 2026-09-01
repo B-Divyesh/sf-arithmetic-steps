@@ -3,9 +3,8 @@
 ## Purpose and boundary
 
 This is a local, repeatable product review aid for an educator or caregiver.
-It is not a teacher study, a completed external review, or evidence of learning
-outcomes. A completed qualified educator review is not recorded in this
-repository.
+Arithmetic Steps has not had a qualified educator review.
+This checklist is not a teacher study or evidence of learning outcomes.
 
 ## Run it in the product
 

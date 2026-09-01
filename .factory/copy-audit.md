@@ -1,6 +1,6 @@
 # Landing copy audit
 
-Audited 2026-08-30. This is the complete visitor-facing copy from the landing
+Audited 2026-09-01. This is the complete visitor-facing copy from the landing
 state, excluding repeated navigation, numeric example buttons, and arrow
 glyphs. A **problem** is one arithmetic activity; a **chunk** is a chosen
 quantity; a **step** is one recorded change; a **counter** is one movable unit.
@@ -31,9 +31,10 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | For the grown-up nearby | 5 | Adult guidance heading |
 | Let the child choose the chunk, even when it is not the shortest path. | 14 | Adult guidance |
 | Ask “What stayed the same?” before offering a strategy. | 10 | Adult guidance |
-| Educator review | 2 | Section label |
+| Local checklist | 2 | Section label |
 | Review this tool before classroom use | 6 | `facilitator-review` |
-| Use the supplied sample to check controls, explanations, and discussion prompts for your setting. | 14 | `facilitator-review` |
+| Arithmetic Steps has not had a qualified educator review. | 9 | `educator-review-boundary` |
+| Use this checklist to decide whether it fits your setting. | 10 | `facilitator-review` |
 | Mark each check after you try it | 7 | Checklist instruction |
 | Finish the sample. | 3 | Checklist item |
 | Remove the final 8 in the supplied route. | 9 | Checklist instruction |
@@ -58,7 +59,7 @@ No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
 
-The active product copy makes no outside-evaluation or learning-outcome
-promise. The researched brief keeps its teacher-review constraint. The product
-instead offers a testable facilitator checklist and asks for review before
-classroom use; it does not present that checklist as an outside evaluation.
+The active product copy explicitly says the product has not had a qualified
+educator review. It makes no outside-evaluation or learning-outcome promise.
+The researched brief keeps its teacher-review constraint. The product retains
+only the testable facilitator checklist and executable learning-flow claims.

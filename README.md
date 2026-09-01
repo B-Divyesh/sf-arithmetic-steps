@@ -10,7 +10,10 @@ It is for elementary teachers, parents, and children discussing the structure in
 
 ## Review before classroom use
 
-Educators can use the in-product review checklist with the supplied sample before classroom use. It covers the sample route, child-chosen chunks, reasoning prompts, and keyboard controls. Checklist marks stay only on the open page and are not a completed external review.
+Arithmetic Steps has not had a qualified educator review. The in-product
+checklist lets educators inspect the supplied sample before classroom use. It
+covers child-chosen chunks, reasoning prompts, and keyboard controls. Checklist
+marks stay only on the open page.
 
 ## Try the demo
 

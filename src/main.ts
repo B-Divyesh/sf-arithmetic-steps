@@ -283,9 +283,9 @@ function setupTemplate(): string {
     <section class="facilitator-review" id="facilitator-review" aria-labelledby="facilitator-review-title">
       <div class="section-sign">
         <span aria-hidden="true">02</span>
-        <div><p>Educator review</p><h2 id="facilitator-review-title">Review this tool before classroom use</h2></div>
+        <div><p>Local checklist</p><h2 id="facilitator-review-title">Review this tool before classroom use</h2></div>
       </div>
-      <p>Use the supplied sample to check controls, explanations, and discussion prompts for your setting.</p>
+      <p><strong>Arithmetic Steps has not had a qualified educator review.</strong> Use this checklist to decide whether it fits your setting.</p>
       <form id="facilitator-review-form">
         <fieldset>
           <legend>Mark each check after you try it</legend>

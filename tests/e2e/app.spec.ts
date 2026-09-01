@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 
 const PRODUCT_VERSION = (JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string }).version;
+const QUALIFIED_REVIEW_DISCLOSURE = "Arithmetic Steps has not had a qualified educator review.";
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
@@ -733,6 +734,23 @@ test("@claim:facilitator-review provides a local pre-classroom review checklist"
   await page.getByRole("button", { name: "Reset review checklist" }).click();
   await expect(page.getByRole("status")).toContainText("0 of 4 review checks marked. Marks are not stored.");
   await expect(page.getByRole("checkbox").first()).not.toBeChecked();
+});
+
+test("@claim:educator-review-boundary discloses the missing qualified review", async ({ page }) => {
+  await expect(page.getByText(QUALIFIED_REVIEW_DISCLOSURE, { exact: true })).toBeVisible();
+
+  await page.goto("/terms/");
+  await expect(page.getByText(QUALIFIED_REVIEW_DISCLOSURE, { exact: false })).toBeVisible();
+
+  const publicSources = [
+    readFileSync(new URL("../../src/main.ts", import.meta.url), "utf8"),
+    readFileSync(new URL("../../README.md", import.meta.url), "utf8"),
+    readFileSync(new URL("../../terms/index.html", import.meta.url), "utf8")
+  ];
+  const unsupportedReviewClaim = /(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
+  for (const source of publicSources) expect(source).toContain(QUALIFIED_REVIEW_DISCLOSURE);
+  expect(publicSources.join("\n")).not.toMatch(unsupportedReviewClaim);
+  expect(publicSources.join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
 });
 
 test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser", async ({ page }) => {

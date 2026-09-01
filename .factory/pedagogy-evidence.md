@@ -1,10 +1,9 @@
 # Pedagogy review boundary
 
-The researched brief retains its `Teacher-reviewed pedagogy` constraint. This
-repository does **not** contain a completed qualified educator review, and this
-release does not claim that one occurred. No study, reviewer identity,
-qualification, date, classroom observation, or academic outcome has been
-invented to fill that gap.
+The researched brief retains its `Teacher-reviewed pedagogy` constraint.
+Arithmetic Steps has not had a qualified educator review. This release does
+not claim that one occurred. No study, reviewer identity, qualification, date,
+classroom observation, or academic outcome has been invented to fill that gap.
 
 Arithmetic Steps is therefore presented as a tool for educator review before
 classroom use. The landing page includes an executable local checklist, and
@@ -25,6 +24,6 @@ The observable safeguards implemented in the product are:
   regressions.
 
 The exact public claims and their sandbox commands remain in
-`.factory/claims.json`. A real qualified educator review, including scope and
-disposition of feedback, remains required to satisfy the brief without a
-documented factory-owner waiver.
+`.factory/claims.json`. The public review-boundary claim has its own regression.
+It requires the explicit limitation on each review-facing public surface and
+rejects educator-approval or learning-outcome wording.
