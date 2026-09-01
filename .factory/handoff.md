@@ -1,89 +1,82 @@
-# Arithmetic Steps — repair 14 handoff
+# Arithmetic Steps — repair 15 handoff
 
 ## Release disposition
 
-**Repaired, published, and live as `1.0.8`.** This work repairs the P1 finding
-in independent verification commit `35165058229490b1d0cedae1445ab24ee76c9aee`
-for candidate `94ea6c6970d88e40c5a73a4b8f4b5f9f37c93f77`.
+**Repair 15 is built and ready to publish as `1.0.9`.** It fixes the
+controller's deterministic mobile `@claim:json-export` failure and preserves
+the static, local-first PWA artifact. There is no backend, account, billing,
+model, tracking, or third-party runtime service.
 
-The artifact remains a static, local-first PWA. It has no backend, account,
-billing, model, tracking, or third-party runtime service. The researched brief
-and all previously passing arithmetic, accessibility, privacy, demo, storage,
-and offline behavior remain in place.
+The researched brief is unchanged, including its `Teacher-reviewed pedagogy`
+constraint. The independent verifier report recorded at commit
+`35165058229490b1d0cedae1445ab24ee76c9aee` has one external P1 that this
+repository cannot honestly complete: there is still no qualified elementary
+teacher review or factory-owner waiver. The public limitation remains in the
+landing page, Terms, README, and review evidence; this repair does not claim
+that a review occurred. A qualified reviewer or explicit factory-owner waiver
+is still required for release acceptance.
 
-## Finding reproduced before repair
+## Reproduction and root cause
 
-The controller required the public product and brief-facing documentation to
-say plainly that qualified educator review has not happened. Before edits, the
-exact read-only audit failed:
+The mobile JSON-export flow opens a fresh page, completes `8 + 7`, then opens
+`/#history`. Completion used an async `saveAttempt()` and, after it settled,
+unconditionally called `history.replaceState(..., #route-<id>)` and rendered
+the completion screen. If navigation happened during that storage write, the
+late continuation replaced the already-open **Saved problems** page. The
+observed result was exactly the controller finding: the URL had returned to
+`#route-…` and the Saved problems heading was absent.
 
-```text
-REPRODUCED: src/main.ts does not tell readers that the product has not had qualified educator review.
-REPRODUCED: README.md does not tell readers that the product has not had qualified educator review.
-EXIT_CODE=1
-```
+The initial claim helper also started two isolated export contexts with
+`Promise.all`, creating unnecessary mobile contention despite Playwright's
+single-worker configuration.
 
-The old static review-boundary test still passed. It banned a few approval
-phrases, but it did not require an explicit public limitation. That was the
-regression gap.
+## Repair
 
-## Root cause and repair
-
-The prior release described the checklist as not being a completed external
-review, and repository evidence said no review was recorded. That wording did
-not directly tell a visitor whether the product itself had received qualified
-review. The checklist label could also be read without its boundary.
-
-The repair:
-
-- shows **“Arithmetic Steps has not had a qualified educator review.”** in the
-  landing-page checklist and Terms;
-- uses the same sentence in `README.md`, `.factory/pedagogy-evidence.md`, and
-  `.factory/facilitator-review.md`;
-- renames the decorative “Educator review” label to “Local checklist”;
-- preserves the brief's researched `Teacher-reviewed pedagogy` constraint
-  unchanged and retains only observable learning-flow claims;
-- registers `@claim:educator-review-boundary` in `.factory/claims.json`; and
-- adds browser and static regressions that require the limitation and reject
-  teacher-reviewed, educator-approved, validated-pedagogy, and learning-outcome
-  claims.
-
-The independent live checker now also fails if the deployed limitation is
-missing.
+- `src/main.ts` now checks the current route and view after `saveAttempt()`.
+  A settled completion save refreshes Saved problems when that is the active
+  view, and otherwise never overwrites a later navigation.
+- The JSON-export helper explicitly waits for the exact Saved problems heading
+  and URL before asserting storage/export state.
+- Its two fresh export contexts now run sequentially; each is closed before
+  the next opens. Playwright remains configured with `workers: 1` and
+  `fullyParallel: false`.
+- Added a deterministic browser regression: it holds the completion
+  IndexedDB write, navigates to Saved problems, releases the write, and proves
+  the heading, `#history` URL, and saved `8 + 7 = 15` route remain present.
+- Bumped the PWA version to `1.0.9`, which updates the manifest start URL and
+  service-worker cache identity.
 
 ## Verification
 
-All final checks ran from `/work/repo` on 2026-09-01 UTC.
+All checks below ran from `/work/repo` on 2026-09-01 UTC.
 
 | Check | Result |
 | --- | --- |
-| `npm ci` | PASS — lockfile install; 61 packages; zero reported vulnerabilities |
+| `npm ci` | PASS — 61 packages, zero reported vulnerabilities |
 | `npm run lint` | PASS — TypeScript no-emit check |
 | `npm run test:unit` | PASS — 17 unit/static tests |
-| `npm test` | PASS — 17 unit/static tests; 62 Playwright tests passed; 2 intended viewport skips |
-| review-boundary reproduction after repair | PASS — landing, README, Terms, and evidence carry the exact limitation |
-| every exact command in `.factory/claims.json` | PASS — 22/22, run independently in desktop/mobile projects where applicable |
-| `npm run build` | PASS — root `dist/index.html`; versioned manifest; 24 service-worker precache URLs |
-| asset budgets | PASS — initial JS 40,974 B raw / 12,253 B gzip; CSS 28,215 B raw / 6,425 B gzip |
-| factory `verify-url.sh` | PASS locally and live — title, lang, one h1, main, image alt, named controls, and no console errors |
-| accessibility and keyboard | PASS — zero axe violations on landing, demo, completion, saved-data, Privacy, Terms, and 404 states; designed focus and working skip link |
-| desktop and 390 px browser QA | PASS — complete arithmetic/export flow; exact 390 px width; no overflow; no target below 44 px |
-| privacy and response policy | PASS — observed requests were same-origin GETs; CSP, HSTS, nosniff, frame denial, referrer and permissions policy present |
-| PWA/offline/update | PASS — worker activated and controlled `/demo`; 24-item cache excludes deployment config; offline reload retained `52 − 18`; update regression passed |
-| route/link policy | PASS — `/`, `/demo`, `/privacy/`, `/terms/` returned 200; unknown route returned 404; no dead internal links |
-| Lighthouse local | PASS — Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1.9 s, TBT 0 ms, CLS 0.005 |
-| package/consumer check | Not applicable — this is a private static PWA, not a published package |
-| backend allowance/429/concurrency/identity | Not applicable — the product has no API, auth, billing, or model path |
+| `npm test` after clean install | PASS — 17 unit/static tests; 64 browser tests passed, 2 intended project-specific skips; one worker |
+| Desktop browser project | PASS — 32 passed, 1 intended mobile-only skip |
+| Pixel 5 browser project | PASS — 32 passed, 1 intended desktop-only skip |
+| Every literal command in `.factory/claims.json` | PASS — 22/22 commands independently; `mobile-controls` intentionally runs only in the mobile project |
+| JSON-export controller regression | PASS — desktop and mobile fresh contexts; deterministic held-write navigation regression passes |
+| `npm run build` | PASS — `dist/index.html`; PWA version `1.0.9`; 24 precached URLs |
+| Asset budget | PASS — JS 41,234 B raw / 12,384 B gzip; CSS 28,215 B raw / 6,425 B gzip |
+| Factory `verify-url.sh` against local production preview | PASS — 200, no console errors, title/lang/one h1/main/alt/named-control checks |
+| Accessibility / keyboard | PASS — Playwright Axe checks across landing, demo, completion, history, Privacy, Terms, and 404; skip-link/focus and keyboard controls covered |
+| Desktop and 390 px mobile | PASS — complete, export, exact mobile controls/overflow, touch manipulation, and 44px target checks |
+| Privacy / response policy | PASS locally for same-origin GET-only request claims and static policy contract; live header check follows deployment |
+| PWA / offline / update | PASS — controlling worker, manifest/installability, update, and offline demo reload claims on desktop and mobile |
+| Lighthouse local production preview | PASS — Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.1 s, LCP 1.4 s, TBT 0 ms, CLS 0.005 |
+| Package / consumer check | Not applicable — this is a private static PWA, not a published package |
+| Backend allowance / 429 / concurrency / identity | Not applicable — no API, authentication, billing, or model path exists |
 
-Committed evidence is under `.factory/evidence-repair-14/`, including local and
-live browser summaries, Lighthouse reports, and visual captures. The browser
-summary covers addition/subtraction, validation recovery, JSON export, desktop,
-390 px mobile, keyboard, motion, accessibility, PWA, privacy, routes, and links.
+Committed local evidence is in `.factory/evidence-repair-15/`, including the
+local URL smoke output, desktop/mobile captures, and Lighthouse JSON.
 
-## Deploy and live identity
+## Deployment and live follow-up
 
-Implementation commit `8e76bfe` was pushed to `main`. The scoped deployment
-command was:
+The scoped deployment target is only `sf-arithmetic-steps`:
 
 ```sh
 swa deploy ./dist --app-name sf-arithmetic-steps \
@@ -91,19 +84,14 @@ swa deploy ./dist --app-name sf-arithmetic-steps \
   --swa-config-location ./dist --no-use-keychain
 ```
 
-The CLI-created local `.env` credential file was removed without being read
-and was not committed. No other service or resource was inspected or changed.
+After deploy, verify the live build identifier, source hashes, static security
+headers, routes, offline worker, and 390px export flow before treating this
+handoff as release evidence. No other service, database, secret, or resource
+is in scope.
 
-Live verification at <https://arithmetic-steps.sociobot.in> reports build
-`1.0.8`, manifest start URL `/?source=pwa&v=1.0.8`, the explicit qualified
-review limitation, and zero console errors. SHA-256 values match the local
-artifact for `index.html`, manifest, service worker, app JS, version JS, and
-CSS. Live Lighthouse scored 100 for Performance, Accessibility, Best
-Practices, and SEO, with 1.1 s LCP, 0 ms TBT, and 0.005 CLS.
+## Known external boundary
 
-## Known boundary
-
-Arithmetic Steps has not had a qualified educator review. This release makes
-that limitation explicit and test-protected. The local checklist proves only
-that its controls and observable learning flow execute; it does not establish
-classroom effectiveness or academic outcomes.
+Arithmetic Steps has not had a qualified educator review. The in-product local
+checklist is useful before classroom use but is not an external review, study,
+or evidence of learning outcomes. This is the unresolved P1 from verification
+11 and requires authority or evidence outside this repository.

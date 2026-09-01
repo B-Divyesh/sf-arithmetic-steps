@@ -201,6 +201,10 @@ function equationLabel(route: Pick<Attempt, "first" | "second" | "operation">): 
   return `${route.first} ${route.operation === "add" ? "+" : "−"} ${route.second}`;
 }
 
+function isCurrentView(view: View): boolean {
+  return state.view === view;
+}
+
 type QuantityOptions = {
   source?: boolean;
   target?: boolean;
@@ -616,11 +620,22 @@ function bindWork(): void {
     await persistence;
   });
   document.querySelector("#finish-route")?.addEventListener("click", async () => {
+    const completedRouteId = route.id;
     try {
       finishRoute(route); state.view = "complete"; state.replayIndex = route.frames.length - 1; state.error = "";
-      await saveAttempt(route); history.replaceState(null, "", `#route-${route.id}`); render();
+      await saveAttempt(route);
+      // Saving completes asynchronously. Do not let a late completion replace
+      // a real navigation that happened while IndexedDB was writing.
+      if (state.route?.id !== completedRouteId) return;
+      if (isCurrentView("history")) { await renderHistory(); return; }
+      if (!isCurrentView("complete")) return;
+      history.replaceState(null, "", `#route-${route.id}`); render();
       document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
-    } catch (error) { state.error = error instanceof Error ? error.message : "This problem is not ready to finish."; render(); }
+    } catch (error) {
+      if (state.route?.id !== completedRouteId || !isCurrentView("complete")) return;
+      state.error = error instanceof Error ? error.message : "This problem is not ready to finish.";
+      render();
+    }
   });
   document.querySelector("#new-route")?.addEventListener("click", async () => {
     if (route.frames.length > 1 && !window.confirm("Leave this unfinished problem? Its steps will be removed.")) return;

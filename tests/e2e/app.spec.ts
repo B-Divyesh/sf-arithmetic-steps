@@ -65,13 +65,22 @@ type ExportPayload = {
   attempts: ExportedAttempt[];
 };
 
+async function openSavedProblems(page: Page): Promise<void> {
+  await page.goto("http://127.0.0.1:4173/#history");
+  await expect(page).toHaveURL(/#history$/);
+  // A direct, fresh navigation has to finish the app's asynchronous history
+  // setup before any export assertion. In particular, this is the point that
+  // regressed in mobile Chromium when two fresh contexts raced each other.
+  await expect(page.getByRole("heading", { name: "Saved problems", exact: true })).toBeVisible();
+}
+
 async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<ExportPayload> {
   const isolatedContext = await browser.newContext({ acceptDownloads: true });
   const isolatedPage = await isolatedContext.newPage();
   failOnConsoleErrors(isolatedPage);
 
   try {
-    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+    await openSavedProblems(isolatedPage);
     await expect(isolatedPage.getByRole("button", { name: "Export JSON" })).toBeDisabled();
 
     await isolatedPage.goto("http://127.0.0.1:4173/");
@@ -80,10 +89,10 @@ async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<E
     await isolatedPage.getByRole("button", { name: "2", exact: true }).click();
     await isolatedPage.getByRole("button", { name: /Move the chunk/ }).click();
     await isolatedPage.getByRole("button", { name: /Join the numbers and finish/ }).click();
-    await isolatedPage.goto("http://127.0.0.1:4173/#history");
+    await expect(isolatedPage.getByRole("heading", { name: "The answer is 15." })).toBeVisible();
+    await openSavedProblems(isolatedPage);
 
     const exportButton = isolatedPage.getByRole("button", { name: "Export JSON" });
-    await expect(isolatedPage.getByRole("heading", { name: "Saved problems" })).toBeVisible();
     await expect(isolatedPage.locator(".history-list").getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
     await expect(exportButton).toBeEnabled();
 
@@ -586,13 +595,12 @@ test("@claim:unfinished-persistence restores a route after a refresh", async ({ 
 });
 
 test("@claim:json-export deterministically downloads one completed route as JSON", async ({ browser }) => {
-  // Run the same action in two entirely new browser contexts. This catches a
-  // history leak from another demo/claim while making the route data and JSON
-  // key order deterministic apart from intentional route/timestamp metadata.
-  const [firstExport, secondExport] = await Promise.all([
-    exportCompletedRouteFromFreshContext(browser),
-    exportCompletedRouteFromFreshContext(browser)
-  ]);
+  // Run two independent fresh contexts in sequence. Each context is closed
+  // before the next opens: starting them concurrently created a mobile-only
+  // history setup/navigation race, despite the suite itself using one worker.
+  // The direct history visit in each flow is the regression checkpoint.
+  const firstExport = await exportCompletedRouteFromFreshContext(browser);
+  const secondExport = await exportCompletedRouteFromFreshContext(browser);
 
   for (const payload of [firstExport, secondExport]) {
     expect(payload.product).toBe("arithmetic-steps");
@@ -613,6 +621,49 @@ test("@claim:json-export deterministically downloads one completed route as JSON
   }
 
   expect(stableExport(firstExport)).toEqual(stableExport(secondExport));
+});
+
+test("keeps Saved problems open when completion storage finishes after navigation", async ({ page }) => {
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: /Start the problem/ }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: /Move the chunk/ }).click();
+
+  // Make the completion write wait, then navigate before its async handler
+  // resumes. The old handler replaced #history with #route-* and removed the
+  // Saved problems heading after the navigation had already succeeded.
+  await page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("arithmetic-steps", 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction("settings", "readwrite");
+    const store = transaction.objectStore("settings");
+    let hold = true;
+    const keepAlive = (): void => {
+      if (!hold) return;
+      const request = store.get("qa-completion-write-hold");
+      request.onsuccess = keepAlive;
+    };
+    keepAlive();
+    (window as Window & { releaseCompletionWriteHold?: () => void }).releaseCompletionWriteHold = () => {
+      hold = false;
+      // A same-document navigation may let Chromium complete this test-only
+      // transaction between callbacks. Either state releases the completion
+      // write, which is all this regression needs.
+      try { transaction.commit(); } catch { /* already completed */ }
+      database.close();
+    };
+  });
+
+  await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await openSavedProblems(page);
+  await page.evaluate(() => (window as Window & { releaseCompletionWriteHold?: () => void }).releaseCompletionWriteHold?.());
+
+  await expect(page.getByRole("heading", { name: "Saved problems", exact: true })).toBeVisible();
+  await expect(page.locator(".history-list").getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
+  await expect(page).toHaveURL(/#history$/);
 });
 
 test("@claim:json-import restores valid routes chosen by the user", async ({ page }) => {
