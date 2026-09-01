@@ -42,5 +42,15 @@
     "lcpMs": 1735,
     "tbtMs": 0,
     "cls": 0.00486
+  },
+  "deployment": {
+    "implementationCommit": "b81ff2a",
+    "target": "sf-arithmetic-steps production",
+    "customDomain": "https://arithmetic-steps.sociobot.in",
+    "result": "PASS",
+    "manifestVersion": "1.0.10",
+    "liveIdentity": "25 of 25 files matched: all 24 precached files plus sw.js",
+    "unknownRoute": "HTTP 404; title Page not found — Arithmetic Steps; h1 Page not found",
+    "liveLighthouse": "100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1059 ms; CLS 0.00486; TBT 0 ms"
   }
 }

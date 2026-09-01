@@ -2,7 +2,7 @@
 
 ## Release disposition
 
-**Version 1.0.10 is repaired, built, and ready for the scoped static publish.**
+**Version 1.0.10 is repaired, published, and live.**
 The artifact remains a local-first PWA. There is no backend, account, billing,
 model, tracking, or third-party runtime service.
 
@@ -76,9 +76,10 @@ Evidence is under `.factory/evidence-repair-16/`. The reusable independent
 browser run is `local-browser.json`; Lighthouse data is
 `lighthouse-local.json`; factory smoke output is under `local-url/`.
 
-## Deploy and post-deploy verification
+## Deployment and live verification
 
-Deploy only the scoped `sf-arithmetic-steps` static app:
+Implementation commit `b81ff2a` was pushed to `main`. The scoped production
+publish completed with:
 
 ```sh
 swa deploy ./dist --app-name sf-arithmetic-steps \
@@ -86,9 +87,32 @@ swa deploy ./dist --app-name sf-arithmetic-steps \
   --swa-config-location ./dist --no-use-keychain
 ```
 
-After publishing, rerun the URL smoke, independent browser exercise, live
-headers, artifact hashes, and offline worker check. Record those results here
-before final handoff.
+The CLI-created local `.env` credential file was removed unread immediately
+after deployment and was not committed.
+
+Live verification at <https://arithmetic-steps.sociobot.in> passed:
+
+- the manifest start URL is `/?source=pwa&v=1.0.10`;
+- all 24 precached files plus `sw.js` match the local production build by
+  SHA-256 and byte equality;
+- `/`, `/demo`, `/privacy/`, `/terms/`, `/404.html`, the manifest, and worker
+  are available; an unknown route is HTTP 404 with h1 “Page not found”;
+- root responses include self-only CSP with `frame-ancestors 'none'`, HSTS,
+  nosniff, frame denial, strict referrer policy, and restrictive permissions;
+- HTML revalidates, hashed assets are one-year immutable, the manifest is
+  `no-cache`, and `sw.js` is `no-cache, no-store`;
+- the independent desktop and exact-390 px browser run completed the sample,
+  invalid recovery, export, keyboard, reduced-motion, route/link, and privacy
+  checks with no browser errors or serious/critical Axe findings;
+- the live worker controlled `/demo`, and the `52 − 18` sample remained usable
+  after an offline reload; and
+- live mobile Lighthouse scored 100 performance, 100 accessibility, 100 best
+  practices, and 100 SEO; LCP 1.059 s, CLS 0.00486, and TBT 0 ms.
+
+Live evidence is in `live-browser.json`, `live-identity.json`,
+`lighthouse-live.json`, `live-headers/`, and `live-url/` under the repair
+evidence directory. No other product, service, database, secret, DNS record,
+storage account, or infrastructure resource was read or changed.
 
 ## Known gaps
 
