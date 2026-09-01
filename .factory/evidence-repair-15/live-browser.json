@@ -1,0 +1,33 @@
+{
+  "url": "https://arithmetic-steps.sociobot.in",
+  "version": "1.0.9",
+  "desktop": {
+    "title": "Arithmetic Steps — Explore addition and subtraction",
+    "heading": "Explore addition and subtraction steps",
+    "landingAxeViolations": 0,
+    "demoAxeViolations": 0,
+    "consoleOrPageErrors": []
+  },
+  "mobile390": {
+    "jsonExportFilename": "arithmetic-steps-2026-09-01.json",
+    "jsonExportFailure": null,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "axeViolations": 0,
+    "consoleOrPageErrors": []
+  },
+  "offlineDemo": {
+    "heading": "52 − 18",
+    "bannerVisible": true
+  },
+  "identity": {
+    "matchedLocalFiles": [
+      "index.html",
+      "manifest.webmanifest",
+      "sw.js",
+      "assets/main-BfqcAeM3.js",
+      "assets/version-B-Jbnln_.css",
+      "assets/version-BtVlXEU1.js"
+    ]
+  }
+}

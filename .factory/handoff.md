@@ -74,7 +74,7 @@ All checks below ran from `/work/repo` on 2026-09-01 UTC.
 Committed local evidence is in `.factory/evidence-repair-15/`, including the
 local URL smoke output, desktop/mobile captures, and Lighthouse JSON.
 
-## Deployment and live follow-up
+## Deployment and live verification
 
 The scoped deployment target is only `sf-arithmetic-steps`:
 
@@ -84,10 +84,30 @@ swa deploy ./dist --app-name sf-arithmetic-steps \
   --swa-config-location ./dist --no-use-keychain
 ```
 
-After deploy, verify the live build identifier, source hashes, static security
-headers, routes, offline worker, and 390px export flow before treating this
-handoff as release evidence. No other service, database, secret, or resource
-is in scope.
+Implementation commit `e886218` was pushed to `main` and deployed with the
+scoped command above. The CLI-created local `.env` credential file was removed
+without being read and was not committed.
+
+Live verification at <https://arithmetic-steps.sociobot.in> passed:
+
+- the manifest start URL is `/?source=pwa&v=1.0.9`;
+- SHA-256 values match the local `index.html`, manifest, service worker, main
+  JavaScript, version JavaScript, and CSS;
+- `/`, `/demo`, `/privacy/`, `/terms/`, `/404.html`, manifest, and worker are
+  200; an unknown route is 404;
+- live headers include self-only CSP with `frame-ancestors 'none'`, HSTS,
+  nosniff, frame denial, strict referrer policy, and the restrictive
+  Permissions Policy;
+- desktop and 390px live browser checks had zero console/page errors and zero
+  Axe violations; the mobile JSON export downloaded successfully with no
+  horizontal overflow; and
+- a fresh live worker controlled `/demo`, then retained the `52 − 18` sample
+  and demo banner after offline reload.
+
+Live screenshots and basic smoke data are under
+`.factory/evidence-repair-15/live-url/`; the exact browser/identity summary is
+`.factory/evidence-repair-15/live-browser.json`. No other service, database,
+secret, or resource was inspected or changed.
 
 ## Known external boundary
 
