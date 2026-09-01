@@ -1,0 +1,135 @@
+===== STANDALONE CLAIM RUN 1 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (8 tests) 51ms
+ ✓ tests/models.test.ts (9 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:30:29
+   Duration  632ms (transform 175ms, setup 0ms, collect 163ms, tests 59ms, environment 0ms, prepare 326ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.4s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.6s)
+
+  2 passed (7.8s)
+===== STANDALONE CLAIM RUN 2 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (8 tests) 46ms
+ ✓ tests/models.test.ts (9 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:30:42
+   Duration  630ms (transform 190ms, setup 0ms, collect 199ms, tests 53ms, environment 0ms, prepare 254ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.5s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.9s)
+
+  2 passed (8.0s)
+===== STANDALONE CLAIM RUN 3 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 28ms
+ ✓ tests/static-contract.test.ts (8 tests) 44ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:30:54
+   Duration  617ms (transform 133ms, setup 0ms, collect 190ms, tests 73ms, environment 0ms, prepare 248ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.6s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.9s)
+
+  2 passed (8.1s)
+===== STANDALONE CLAIM RUN 4 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 8ms
+ ✓ tests/static-contract.test.ts (8 tests) 31ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:31:07
+   Duration  650ms (transform 182ms, setup 0ms, collect 226ms, tests 39ms, environment 19ms, prepare 283ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.5s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.9s)
+
+  2 passed (8.1s)
+===== STANDALONE CLAIM RUN 5 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:demo-sandbox
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (8 tests) 36ms
+ ✓ tests/models.test.ts (9 tests) 8ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:31:20
+   Duration  632ms (transform 152ms, setup 0ms, collect 218ms, tests 44ms, environment 0ms, prepare 296ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.5s)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:245:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.7s)
+
+  2 passed (7.9s)

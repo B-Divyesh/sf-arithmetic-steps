@@ -1,0 +1,55 @@
+{
+  "base": "https://arithmetic-steps.sociobot.in",
+  "checkedAt": "2026-09-01T23:03:46.488Z",
+  "files": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "bytes": 3795,
+      "localSha256": "57a3763edea5d774b9492a3f5cb160a00c53078e30ccff29d8db3e8f90c2b758",
+      "liveSha256": "57a3763edea5d774b9492a3f5cb160a00c53078e30ccff29d8db3e8f90c2b758",
+      "identical": true
+    },
+    {
+      "file": "sw.js",
+      "status": 200,
+      "bytes": 2177,
+      "localSha256": "1ab282e9a1a9b33c835f156590d99b0536084228c03afd32f34b8c083e846022",
+      "liveSha256": "1ab282e9a1a9b33c835f156590d99b0536084228c03afd32f34b8c083e846022",
+      "identical": true
+    },
+    {
+      "file": "manifest.webmanifest",
+      "status": 200,
+      "bytes": 1203,
+      "localSha256": "6c6a0900f1232c478be67517f773abdd289ac053bc38c9d5498ed111c3edc4f3",
+      "liveSha256": "6c6a0900f1232c478be67517f773abdd289ac053bc38c9d5498ed111c3edc4f3",
+      "identical": true
+    },
+    {
+      "file": "assets/main-CY-vuZso.js",
+      "status": 200,
+      "bytes": 41565,
+      "localSha256": "04534006e7a58f55ed143bd5d35964680ad2b8b52fc3c4b5db07cf2e64080bd0",
+      "liveSha256": "04534006e7a58f55ed143bd5d35964680ad2b8b52fc3c4b5db07cf2e64080bd0",
+      "identical": true
+    },
+    {
+      "file": "assets/version-MSSKm5QQ.js",
+      "status": 200,
+      "bytes": 895,
+      "localSha256": "a6228594c809789452f9edc27d70e90468f396f8822684a20e43f936ad5ee5fb",
+      "liveSha256": "a6228594c809789452f9edc27d70e90468f396f8822684a20e43f936ad5ee5fb",
+      "identical": true
+    },
+    {
+      "file": "assets/version-B-Jbnln_.css",
+      "status": 200,
+      "bytes": 28215,
+      "localSha256": "9b0387d6ff62b0df80c5d119895e92c767f1b5739f942f22449951368bc02852",
+      "liveSha256": "9b0387d6ff62b0df80c5d119895e92c767f1b5739f942f22449951368bc02852",
+      "identical": true
+    }
+  ],
+  "allIdentical": true
+}

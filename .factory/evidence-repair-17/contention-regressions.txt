@@ -1,0 +1,40 @@
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep unfinished-persistence|keeps Saved problems open
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 10ms
+ ✓ tests/static-contract.test.ts (8 tests) 20ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:34:18
+   Duration  676ms (transform 119ms, setup 0ms, collect 216ms, tests 30ms, environment 0ms, prepare 270ms)
+
+[WebServer] (node:9623) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:9676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:9694) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9694) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:602:1 › @claim:unfinished-persistence restores a route after a refresh (2.7s)
+  ✓  2 [chromium] › tests/e2e/app.spec.ts:673:1 › keeps Saved problems open when completion storage finishes after navigation (2.5s)
+(node:9807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › tests/e2e/app.spec.ts:602:1 › @claim:unfinished-persistence restores a route after a refresh (3.0s)
+  ✓  4 [mobile] › tests/e2e/app.spec.ts:673:1 › keeps Saved problems open when completion storage finishes after navigation (2.9s)
+
+  4 passed (16.4s)

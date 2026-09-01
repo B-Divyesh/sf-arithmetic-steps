@@ -1,0 +1,15 @@
+
+> arithmetic-steps@1.0.11 test:unit
+> vitest run
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 9ms
+ ✓ tests/static-contract.test.ts (8 tests) 49ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:47:03
+   Duration  743ms (transform 154ms, setup 0ms, collect 206ms, tests 58ms, environment 0ms, prepare 327ms)
+

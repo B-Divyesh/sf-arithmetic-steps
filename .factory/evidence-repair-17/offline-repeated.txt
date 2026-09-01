@@ -1,0 +1,81 @@
+===== OFFLINE CLAIM RUN 1 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:offline-reload
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (8 tests) 43ms
+ ✓ tests/models.test.ts (9 tests) 10ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:38:17
+   Duration  617ms (transform 122ms, setup 0ms, collect 195ms, tests 54ms, environment 0ms, prepare 303ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (736ms)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (820ms)
+
+  2 passed (6.6s)
+===== OFFLINE CLAIM RUN 2 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:offline-reload
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 35ms
+ ✓ tests/static-contract.test.ts (8 tests) 54ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:38:28
+   Duration  648ms (transform 167ms, setup 0ms, collect 208ms, tests 89ms, environment 0ms, prepare 262ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (779ms)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (824ms)
+
+  2 passed (6.3s)
+===== OFFLINE CLAIM RUN 3 =====
+
+> arithmetic-steps@1.0.11 test
+> npm run lint && vitest run && playwright test --grep @claim:offline-reload
+
+
+> arithmetic-steps@1.0.11 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/static-contract.test.ts (8 tests) 21ms
+ ✓ tests/models.test.ts (9 tests) 14ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  22:38:39
+   Duration  652ms (transform 153ms, setup 0ms, collect 242ms, tests 35ms, environment 0ms, prepare 284ms)
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (768ms)
+  ✓  2 [mobile] › tests/e2e/app.spec.ts:349:1 › @claim:offline-reload works offline after the first visit from the demo entry point (821ms)
+
+  2 passed (6.3s)

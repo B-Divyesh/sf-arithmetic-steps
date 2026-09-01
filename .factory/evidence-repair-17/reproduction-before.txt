@@ -1,0 +1,34 @@
+Repair 17 pre-fix reproduction
+================================
+
+Candidate: ccd38111adb752b13f2522644702f3b37819da63
+Report commit: 3a6f3a260a7ce7cfee11ab61f36072877e9f99
+
+The literal claim command was run eight times after `npm ci`:
+
+  npm test -- --grep @claim:demo-sandbox
+
+The intermittent scheduler race did not occur in those eight attempts. To make
+the candidate's race deterministic without changing its source, the same
+desktop origin and browser flow were used with this ordering:
+
+1. Open `/offline.html` on the preview origin.
+2. Delete IndexedDB database `arithmetic-steps`.
+3. Call `indexedDB.open("arithmetic-steps")` without a version or upgrade
+   handler. Chromium creates an empty version-1 database.
+4. Navigate immediately to `/`, matching the standalone test's unguarded
+   navigation/open ordering.
+5. Open a transaction for the expected `settings` store.
+
+Observed result before any repair:
+
+  NotFoundError: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.
+
+Root cause: the test could win the race against asynchronous application
+bootstrap and create an empty version-1 database. The application also opened
+version 1, so no upgrade event ran and no `settings` store was created.
+
+The repaired regression now creates that malformed database deliberately and
+requires the application readiness marker before touching it. It asserts that
+both `attempts` and `settings` exist, exercises demo reset/exit, and verifies a
+project-specific real-data sentinel is never exposed to demo storage.

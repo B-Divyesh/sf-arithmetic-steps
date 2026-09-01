@@ -1,0 +1,202 @@
+{
+  "base": "http://127.0.0.1:4280",
+  "startedAt": "2026-09-01T22:49:52.132Z",
+  "checks": {
+    "desktop": {
+      "firstRead": {
+        "title": "Arithmetic Steps — Explore addition and subtraction",
+        "h1": [
+          "Explore addition and subtraction steps"
+        ],
+        "sentence": "For elementary children with a teacher or parent, move counters to explain how each answer changes.",
+        "primaryAction": "Try it with sample data\n→",
+        "facts": [
+          "Works offline after the first visit.",
+          "Problems stay only on this device.",
+          "Free with no accounts or scores."
+        ],
+        "optionalGuidance": "This optional checklist is guidance, not evidence of learning outcomes."
+      },
+      "landingAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "demoAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "completeAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "historyAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "requestCount": 7,
+      "origins": [
+        "http://127.0.0.1:4280"
+      ],
+      "invalidCases": 6,
+      "blankOperandsRejected": true,
+      "boundary": "99 + 1 = 100",
+      "exportDownload": true,
+      "exportPayload": "99 + 1 = 100"
+    },
+    "mobile": {
+      "layout": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "mobileAxe": {
+        "totalViolations": 0,
+        "seriousCritical": 0
+      },
+      "undersized": [],
+      "requestOrigins": [
+        "http://127.0.0.1:4280"
+      ]
+    },
+    "keyboardMotion": {
+      "firstFocus": {
+        "text": "Skip to main content",
+        "outline": "rgb(214, 154, 45) solid 3px",
+        "offset": "3px"
+      },
+      "focused": {
+        "outline": "rgb(214, 154, 45) solid 3px",
+        "offset": "3px"
+      },
+      "reducedCss": {
+        "animationDuration": "1e-05s",
+        "scrollBehavior": "auto"
+      },
+      "replayAdvancedOneStep": true
+    },
+    "pwa": {
+      "states": [
+        "activated"
+      ],
+      "final": "activated",
+      "registrations": 1,
+      "caches": [
+        "arithmetic-steps-c5035f85a55e"
+      ],
+      "controlled": true,
+      "precachesDeploymentConfig": false,
+      "offline": {
+        "status": 200,
+        "h1": [
+          "52 − 18"
+        ]
+      }
+    },
+    "routes": {
+      "routes": [
+        {
+          "route": "/",
+          "status": 200,
+          "title": "Arithmetic Steps — Explore addition and subtraction",
+          "h1": [
+            "Explore addition and subtraction steps"
+          ],
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/demo",
+          "status": 200,
+          "title": "Demo — Arithmetic Steps",
+          "h1": [
+            "52 − 18"
+          ],
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/privacy/",
+          "status": 200,
+          "title": "Privacy — Arithmetic Steps",
+          "h1": [
+            "Privacy"
+          ],
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/terms/",
+          "status": 200,
+          "title": "Terms — Arithmetic Steps",
+          "h1": [
+            "Terms"
+          ],
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        },
+        {
+          "route": "/definitely-not-a-route",
+          "status": 404,
+          "title": "Page not found — Arithmetic Steps",
+          "h1": [
+            "Page not found"
+          ],
+          "mainCount": 1,
+          "axe": {
+            "totalViolations": 0,
+            "seriousCritical": 0
+          }
+        }
+      ],
+      "links": [
+        {
+          "link": "http://127.0.0.1:4280/#main",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/#learn",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/demo",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/#history",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/#problem-planner",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/privacy/",
+          "status": 200
+        },
+        {
+          "link": "http://127.0.0.1:4280/terms/",
+          "status": 200
+        },
+        {
+          "link": "https://github.com/B-Divyesh/sf-arithmetic-steps",
+          "status": 200
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "verdict": "PASS",
+  "findings": [],
+  "finishedAt": "2026-09-01T22:50:07.406Z"
+}
