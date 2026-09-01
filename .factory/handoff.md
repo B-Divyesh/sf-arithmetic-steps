@@ -1,3 +1,23 @@
+# Arithmetic Steps — verification 11 handoff
+
+## Current independent verification disposition
+
+**FAIL — do not accept this candidate yet.** Independent verification of
+`94ea6c6970d88e40c5a73a4b8f4b5f9f37c93f77` at
+<https://arithmetic-steps.sociobot.in> on 2026-09-01 found all technical,
+privacy, PWA, accessibility, performance, claims, and live deployment checks
+passing. The release nevertheless fails the supplied researched brief's
+**Teacher-reviewed pedagogy** constraint: `.factory/pedagogy-evidence.md`
+explicitly confirms that no completed qualified educator review exists.
+
+This is a P1 acceptance finding. Obtain and document a qualified
+elementary-teacher review with feedback disposition, or record an explicit
+factory-owner waiver. See `.factory/verification-11.md` for exact evidence,
+the 21/21 claim-test results, live deployment hash comparison, and all other
+checks. No product code was changed by this verification.
+
+---
+
 # Arithmetic Steps — repair 13 handoff
 
 ## Release disposition
