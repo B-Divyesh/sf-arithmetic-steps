@@ -39,10 +39,12 @@ async function runDesktop(browser) {
     h1: await page.locator("h1").allTextContents(),
     sentence: await page.locator(".lede").innerText(),
     primaryAction: await page.getByRole("button", { name: "Try it with sample data" }).innerText(),
-    facts: await page.locator(".hero-facts li").allTextContents()
+    facts: await page.locator(".hero-facts li").allTextContents(),
+    reviewBoundary: await page.getByText("Arithmetic Steps has not had a qualified educator review.", { exact: true }).innerText()
   };
   assert(firstRead.h1.length === 1, "landing must have one h1");
   assert(firstRead.sentence.includes("elementary children") && firstRead.sentence.includes("teacher or parent"), "first screen does not name audience");
+  assert(firstRead.reviewBoundary === "Arithmetic Steps has not had a qualified educator review.", "qualified educator review limitation is missing");
   await page.screenshot({ path: artifact("desktop-landing.png"), fullPage: true });
   const landingAxe = await axe(page, "desktop landing");
 
