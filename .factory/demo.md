@@ -12,8 +12,9 @@ can see `42 − 8`, choose the last chunk, finish, and replay the steps.
 Demo problems use the IndexedDB database named `demo:arithmetic-steps` and the
 local checkpoint key `demo:arithmetic-steps:active-route`. Real problems use
 `arithmetic-steps` and `arithmetic-steps:active-route`; the app selects both
-demo namespaces before any problem data is read or written. The persistent
-banner identifies demo mode.
+demo namespaces before any problem data is read or written. Each database is
+opened and upgraded to the complete `attempts` and `settings` schema before
+the app marks storage ready. The persistent banner identifies demo mode.
 
 **Reset demo** deletes only the demo database and checkpoint, then reseeds the
 supplied problem. **Start for real**, the normal Arithmetic Steps home link,

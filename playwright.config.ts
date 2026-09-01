@@ -11,13 +11,14 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:4173",
     trace: "retain-on-failure",
     screenshot: "only-on-failure"
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 5"] } }
+    // Separate origins give each project an independent IndexedDB and service
+    // worker partition, even if a browser process is unexpectedly reused.
+    { name: "chromium", use: { ...devices["Desktop Chrome"], baseURL: "http://127.0.0.1:4173" } },
+    { name: "mobile", use: { ...devices["Pixel 5"], baseURL: "http://localhost:4173" } }
   ],
   webServer: {
     command: "npm run build && npm run preview -- --port 4173",

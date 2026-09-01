@@ -31,6 +31,10 @@ async function waitForControllingServiceWorker(page: Page): Promise<void> {
   });
 }
 
+async function waitForStorageReady(page: Page, databaseName = "arithmetic-steps"): Promise<void> {
+  await expect(page.locator("html")).toHaveAttribute("data-storage-ready", databaseName);
+}
+
 async function readSetting(page: Page, databaseName: string, key: string): Promise<unknown> {
   return page.evaluate(async ({ databaseName: name, settingKey }) => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -66,7 +70,8 @@ type ExportPayload = {
 };
 
 async function openSavedProblems(page: Page): Promise<void> {
-  await page.goto("http://127.0.0.1:4173/#history");
+  await page.goto("/#history");
+  await waitForStorageReady(page);
   await expect(page).toHaveURL(/#history$/);
   // A direct, fresh navigation has to finish the app's asynchronous history
   // setup before any export assertion. In particular, this is the point that
@@ -74,8 +79,8 @@ async function openSavedProblems(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { name: "Saved problems", exact: true })).toBeVisible();
 }
 
-async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<ExportPayload> {
-  const isolatedContext = await browser.newContext({ acceptDownloads: true });
+async function exportCompletedRouteFromFreshContext(browser: Browser, baseURL: string): Promise<ExportPayload> {
+  const isolatedContext = await browser.newContext({ acceptDownloads: true, baseURL });
   const isolatedPage = await isolatedContext.newPage();
   failOnConsoleErrors(isolatedPage);
 
@@ -83,7 +88,8 @@ async function exportCompletedRouteFromFreshContext(browser: Browser): Promise<E
     await openSavedProblems(isolatedPage);
     await expect(isolatedPage.getByRole("button", { name: "Export JSON" })).toBeDisabled();
 
-    await isolatedPage.goto("http://127.0.0.1:4173/");
+    await isolatedPage.goto("/");
+    await waitForStorageReady(isolatedPage);
     await isolatedPage.getByRole("button", { name: "8 + 7" }).click();
     await isolatedPage.getByRole("button", { name: /Start the problem/ }).click();
     await isolatedPage.getByRole("button", { name: "2", exact: true }).click();
@@ -129,6 +135,7 @@ function stableExport(payload: ExportPayload): object {
 test.beforeEach(async ({ page }) => {
   failOnConsoleErrors(page);
   await page.goto("/");
+  await waitForStorageReady(page);
 });
 
 test("has a clear, accessible route planner", async ({ page }) => {
@@ -235,22 +242,61 @@ test("works from the installed cache while offline", async ({ page, context }) =
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("8 + 7");
 });
 
-test("@claim:demo-sandbox opens an isolated sample route and can return to real storage", async ({ page }) => {
+test("@claim:demo-sandbox opens an isolated sample route and can return to real storage", async ({ page, baseURL }, testInfo) => {
+  const projectSentinel = `keep-real-data:${testInfo.project.name}`;
+
+  // Reproduce the verifier's failure deterministically: an unversioned open
+  // can create an empty version-1 database before app bootstrap. The repaired
+  // app must upgrade that database and advertise schema readiness before this
+  // setup opens the settings store.
+  await page.goto("/offline.html");
   await page.evaluate(async () => {
-    localStorage.setItem("arithmetic-steps:qa-sentinel", "keep-real-data");
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.deleteDatabase("arithmetic-steps");
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("arithmetic-steps");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    if (database.objectStoreNames.length !== 0 || database.version !== 1) {
+      throw new Error("The malformed version-1 reproduction database was not created.");
+    }
+    database.close();
+  });
+  await page.goto("/");
+  await waitForStorageReady(page);
+  expect(await page.evaluate(() => location.origin)).toBe(new URL(baseURL!).origin);
+  const repairedSchema = await page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("arithmetic-steps");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const schema = { version: database.version, stores: [...database.objectStoreNames] };
+    database.close();
+    return schema;
+  });
+  expect(repairedSchema.version).toBeGreaterThanOrEqual(2);
+  expect(repairedSchema.stores).toEqual(["attempts", "settings"]);
+
+  await page.evaluate(async (sentinel) => {
+    localStorage.setItem("arithmetic-steps:qa-sentinel", sentinel);
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open("arithmetic-steps");
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
     const transaction = database.transaction("settings", "readwrite");
-    transaction.objectStore("settings").put({ key: "real-sentinel", value: "keep-real-data" });
+    transaction.objectStore("settings").put({ key: "real-sentinel", value: sentinel });
     await new Promise<void>((resolve, reject) => {
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
     });
     database.close();
-  });
+  }, projectSentinel);
   await page.getByRole("button", { name: "Try it with sample data" }).click();
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
@@ -271,8 +317,8 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(initialDemoRoute).toMatchObject({ first: 52, second: 18 });
   expect(initialDemoRoute.frames).toHaveLength(2);
   expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).not.toBeNull();
-  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe("keep-real-data");
-  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
+  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe(projectSentinel);
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
   expect(await readSetting(page, "arithmetic-steps", "active-route")).toBeUndefined();
 
   await page.getByRole("button", { name: /Take away the chunk/ }).click();
@@ -287,7 +333,7 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   const names = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(names).toContain("demo:arithmetic-steps");
   expect(names).toContain("arithmetic-steps");
-  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
 
   await page.getByRole("link", { name: "Arithmetic Steps home" }).click();
   await expect(page).toHaveURL(/\/#learn$/);
@@ -296,13 +342,17 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(namesAfterLeaving).not.toContain("demo:arithmetic-steps");
   expect(namesAfterLeaving).toContain("arithmetic-steps");
   expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).toBeNull();
-  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe("keep-real-data");
-  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe("keep-real-data");
+  expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe(projectSentinel);
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
 });
 
 test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context }) => {
   const workerRequests: string[] = [];
   page.on("request", (request) => workerRequests.push(new URL(request.url()).pathname));
+  // Finish the first visit's install before navigating. Interrupting that
+  // install with an immediate /demo navigation can leave Chromium's `ready`
+  // promise pending even though every precache response succeeded.
+  await waitForControllingServiceWorker(page);
   await page.goto("/demo");
   await waitForControllingServiceWorker(page);
   await context.setOffline(true);
@@ -314,6 +364,7 @@ test("@claim:offline-reload works offline after the first visit from the demo en
 });
 
 test("offers and applies a waiting service-worker update without losing the demo", async ({ page }) => {
+  await waitForControllingServiceWorker(page);
   await page.goto("/demo");
   await waitForControllingServiceWorker(page);
   expect(await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL)).toMatch(/\/sw\.js$/);
@@ -327,8 +378,8 @@ test("offers and applies a waiting service-worker update without losing the demo
   await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
 });
 
-test("@claim:local-only keeps the complete cold-load and worker flow first-party", async ({ browser }) => {
-  const isolatedContext = await browser.newContext();
+test("@claim:local-only keeps the complete cold-load and worker flow first-party", async ({ browser, baseURL }) => {
+  const isolatedContext = await browser.newContext({ baseURL });
   const requests: Array<{ origin: string; path: string; method: string; postData: string | null; fromWorker: boolean }> = [];
   isolatedContext.on("request", (request) => requests.push({
     origin: new URL(request.url()).origin,
@@ -340,7 +391,8 @@ test("@claim:local-only keeps the complete cold-load and worker flow first-party
   const isolatedPage = await isolatedContext.newPage();
   failOnConsoleErrors(isolatedPage);
   try {
-    await isolatedPage.goto("http://127.0.0.1:4173/");
+    await isolatedPage.goto("/");
+    await waitForStorageReady(isolatedPage);
     await waitForControllingServiceWorker(isolatedPage);
     await isolatedPage.getByRole("button", { name: "Try it with sample data" }).click();
     await isolatedPage.getByRole("button", { name: /Take away the chunk/ }).click();
@@ -348,7 +400,7 @@ test("@claim:local-only keeps the complete cold-load and worker flow first-party
     expect(requests.length).toBeGreaterThan(10);
     expect(requests.some((request) => request.path === "/sw.js")).toBe(true);
     expect(requests.some((request) => request.fromWorker)).toBe(true);
-    expect(requests.every((request) => request.origin === "http://127.0.0.1:4173")).toBe(true);
+    expect(requests.every((request) => request.origin === new URL(baseURL!).origin)).toBe(true);
     expect(requests.every((request) => request.method === "GET" && request.postData === null)).toBe(true);
     await expect(isolatedPage.locator('input[type="text"], input[type="email"], input[type="password"], input[name*="name" i], input[name*="age" i], input[name*="school" i], iframe')).toHaveCount(0);
     await expect(isolatedPage.getByText(/score/i)).toHaveCount(0);
@@ -561,7 +613,7 @@ test("@claim:unfinished-persistence restores a route after a refresh", async ({ 
   // but the durable transaction cannot finish until this document unloads.
   await page.evaluate(async () => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open("arithmetic-steps", 1);
+      const request = indexedDB.open("arithmetic-steps");
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -594,13 +646,13 @@ test("@claim:unfinished-persistence restores a route after a refresh", async ({ 
   await expect(page.getByText("48 + 17", { exact: true }).first()).toBeVisible();
 });
 
-test("@claim:json-export deterministically downloads one completed route as JSON", async ({ browser }) => {
+test("@claim:json-export deterministically downloads one completed route as JSON", async ({ browser, baseURL }) => {
   // Run two independent fresh contexts in sequence. Each context is closed
   // before the next opens: starting them concurrently created a mobile-only
   // history setup/navigation race, despite the suite itself using one worker.
   // The direct history visit in each flow is the regression checkpoint.
-  const firstExport = await exportCompletedRouteFromFreshContext(browser);
-  const secondExport = await exportCompletedRouteFromFreshContext(browser);
+  const firstExport = await exportCompletedRouteFromFreshContext(browser, baseURL!);
+  const secondExport = await exportCompletedRouteFromFreshContext(browser, baseURL!);
 
   for (const payload of [firstExport, secondExport]) {
     expect(payload.product).toBe("arithmetic-steps");
@@ -634,7 +686,7 @@ test("keeps Saved problems open when completion storage finishes after navigatio
   // Saved problems heading after the navigation had already succeeded.
   await page.evaluate(async () => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open("arithmetic-steps", 1);
+      const request = indexedDB.open("arithmetic-steps");
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });

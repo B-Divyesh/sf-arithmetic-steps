@@ -21,6 +21,7 @@ import {
 import {
   clearActive,
   clearAttempts,
+  ensureStorageReady,
   importAttempts,
   listAttempts,
   loadActive,
@@ -85,6 +86,11 @@ const state: {
 
 if (state.isDemo) setStorageMode("demo");
 
+async function prepareCurrentStorage(): Promise<void> {
+  const databaseName = await ensureStorageReady();
+  document.documentElement.dataset.storageReady = databaseName;
+}
+
 function updateDemoBanner(): void {
   demoBanner.hidden = !state.isDemo;
   document.title = state.isDemo
@@ -101,6 +107,7 @@ function sampleRoute(): ActiveRoute {
 async function seedDemoRoute(reset = false): Promise<void> {
   setStorageMode("demo");
   if (reset) await resetCurrentStorage();
+  await prepareCurrentStorage();
   state.operation = "subtract";
   state.first = "52";
   state.second = "18";
@@ -154,6 +161,11 @@ async function leaveDemo(replaceLocation = true): Promise<void> {
   } catch {
     showToast("The sample could not be cleared. Close other Arithmetic Steps tabs, then try again.");
     return;
+  }
+  try {
+    await prepareCurrentStorage();
+  } catch {
+    showToast("Local storage is unavailable, but you can still practice while this page is open.");
   }
   state.isDemo = false;
   state.view = "setup";
@@ -794,6 +806,7 @@ async function registerServiceWorker(): Promise<void> {
 
 async function bootstrap(): Promise<void> {
   updateDemoBanner();
+  delete document.documentElement.dataset.storageReady;
   // A real-app load may follow an ordinary document navigation from /demo.
   // Await cleanup before rendering so the old sample cannot survive that exit
   // even if a browser did not run the preceding page's click handler.
@@ -803,6 +816,11 @@ async function bootstrap(): Promise<void> {
     } catch {
       showToast("A previous sample could not be cleared. Close other Arithmetic Steps tabs, then reload.");
     }
+  }
+  try {
+    await prepareCurrentStorage();
+  } catch {
+    showToast("Local storage is unavailable, but you can still practice while this page is open.");
   }
   if (location.hash === "#history") { await renderHistory(); void registerServiceWorker(); return; }
   try {
