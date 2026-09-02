@@ -6,6 +6,7 @@ const DB_VERSION = 2;
 const ATTEMPTS = "attempts";
 const SETTINGS = "settings";
 const ACTIVE_ROUTE = "active-route";
+const PENDING_ATTEMPTS = "pending-attempts";
 
 /**
  * Demo work must never share the learner's IndexedDB database. Keeping this
@@ -26,11 +27,16 @@ export function storageDatabaseName(): string {
 type StorageNamespace = {
   databaseName: string;
   checkpointKey: string;
+  pendingAttemptsKey: string;
 };
 
 function currentNamespace(): StorageNamespace {
   const databaseName = storageDatabaseName();
-  return { databaseName, checkpointKey: `${databaseName}:${ACTIVE_ROUTE}` };
+  return {
+    databaseName,
+    checkpointKey: `${databaseName}:${ACTIVE_ROUTE}`,
+    pendingAttemptsKey: `${databaseName}:${PENDING_ATTEMPTS}`
+  };
 }
 
 type ActiveCheckpoint = {
@@ -62,6 +68,52 @@ function loadCheckpoint(checkpointKey: string): { found: boolean; route: ActiveR
   }
   localStorage.removeItem(key);
   return { found: false, route: null };
+}
+
+type PendingAttemptsCheckpoint = {
+  schemaVersion: 1;
+  attempts: Attempt[];
+};
+
+function loadPendingAttempts(pendingAttemptsKey: string): Attempt[] {
+  let stored: string | null;
+  try {
+    stored = localStorage.getItem(pendingAttemptsKey);
+  } catch {
+    return [];
+  }
+  if (stored === null) return [];
+  try {
+    const checkpoint = JSON.parse(stored) as Partial<PendingAttemptsCheckpoint>;
+    if (checkpoint.schemaVersion === 1 && Array.isArray(checkpoint.attempts)) {
+      return checkpoint.attempts.filter(isAttempt);
+    }
+  } catch {
+    // A malformed recovery checkpoint cannot be used safely.
+  }
+  localStorage.removeItem(pendingAttemptsKey);
+  return [];
+}
+
+function savePendingAttempts(attempts: Attempt[], pendingAttemptsKey: string): boolean {
+  try {
+    if (attempts.length === 0) localStorage.removeItem(pendingAttemptsKey);
+    else localStorage.setItem(pendingAttemptsKey, JSON.stringify({ schemaVersion: 1, attempts } satisfies PendingAttemptsCheckpoint));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function stagePendingAttempt(attempt: Attempt, pendingAttemptsKey: string): boolean {
+  const attempts = loadPendingAttempts(pendingAttemptsKey).filter((item) => item.id !== attempt.id);
+  attempts.push(structuredClone(attempt));
+  return savePendingAttempts(attempts, pendingAttemptsKey);
+}
+
+function removePendingAttempt(id: string, pendingAttemptsKey: string): void {
+  const attempts = loadPendingAttempts(pendingAttemptsKey).filter((item) => item.id !== id);
+  savePendingAttempts(attempts, pendingAttemptsKey);
 }
 
 function requestDatabase(name: string, version?: number): Promise<IDBDatabase> {
@@ -130,7 +182,7 @@ export async function ensureStorageReady(): Promise<string> {
 /** Remove only the currently selected namespace. Used when resetting/leaving
  * the sample activity; it can never delete a learner's real saved routes. */
 export async function resetCurrentStorage(): Promise<void> {
-  const { databaseName, checkpointKey } = currentNamespace();
+  const { databaseName, checkpointKey, pendingAttemptsKey } = currentNamespace();
   await new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase(databaseName);
     request.onsuccess = () => resolve();
@@ -138,6 +190,7 @@ export async function resetCurrentStorage(): Promise<void> {
     request.onblocked = () => reject(new Error("Close other Arithmetic Steps tabs, then reset the sample again."));
   });
   localStorage.removeItem(checkpointKey);
+  localStorage.removeItem(pendingAttemptsKey);
 }
 
 function transactionDone(transaction: IDBTransaction): Promise<void> {
@@ -150,13 +203,26 @@ function transactionDone(transaction: IDBTransaction): Promise<void> {
 
 export async function saveAttempt(attempt: Attempt): Promise<void> {
   const namespace = currentNamespace();
-  const db = await openDatabase(namespace.databaseName);
-  const transaction = db.transaction([ATTEMPTS, SETTINGS], "readwrite");
-  transaction.objectStore(ATTEMPTS).put(attempt);
-  transaction.objectStore(SETTINGS).delete(ACTIVE_ROUTE);
-  await transactionDone(transaction);
-  db.close();
+  // Stage the completed route synchronously before IndexedDB work begins.
+  // A navigation can replace this document while its transaction is queued;
+  // Saved problems must still see the completed route in the next document.
+  const pendingSaved = stagePendingAttempt(attempt, namespace.pendingAttemptsKey);
   saveCheckpoint(null, namespace.checkpointKey);
+  let db: IDBDatabase | null = null;
+  try {
+    db = await openDatabase(namespace.databaseName);
+    const transaction = db.transaction([ATTEMPTS, SETTINGS], "readwrite");
+    transaction.objectStore(ATTEMPTS).put(attempt);
+    transaction.objectStore(SETTINGS).delete(ACTIVE_ROUTE);
+    await transactionDone(transaction);
+    removePendingAttempt(attempt.id, namespace.pendingAttemptsKey);
+  } catch (error) {
+    // The local checkpoint remains a valid saved problem and is merged by
+    // listAttempts. Report an error only if neither storage path accepted it.
+    if (!pendingSaved) throw error;
+  } finally {
+    db?.close();
+  }
 }
 
 export async function saveActive(route: ActiveRoute): Promise<void> {
@@ -203,15 +269,25 @@ export async function clearActive(): Promise<void> {
 }
 
 export async function listAttempts(): Promise<Attempt[]> {
-  const { databaseName } = currentNamespace();
-  const db = await openDatabase(databaseName);
-  const values = await new Promise<Attempt[]>((resolve, reject) => {
-    const request = db.transaction(ATTEMPTS).objectStore(ATTEMPTS).getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-  db.close();
-  return values.filter(isAttempt).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const { databaseName, pendingAttemptsKey } = currentNamespace();
+  const pending = loadPendingAttempts(pendingAttemptsKey);
+  let values: Attempt[] = [];
+  let db: IDBDatabase | null = null;
+  try {
+    db = await openDatabase(databaseName);
+    values = await new Promise<Attempt[]>((resolve, reject) => {
+      const request = db!.transaction(ATTEMPTS).objectStore(ATTEMPTS).getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (error) {
+    if (pending.length === 0) throw error;
+  } finally {
+    db?.close();
+  }
+  const attempts = new Map(values.filter(isAttempt).map((attempt) => [attempt.id, attempt]));
+  pending.forEach((attempt) => attempts.set(attempt.id, attempt));
+  return [...attempts.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function importAttempts(values: unknown[]): Promise<number> {
@@ -228,10 +304,11 @@ export async function importAttempts(values: unknown[]): Promise<number> {
 }
 
 export async function clearAttempts(): Promise<void> {
-  const { databaseName } = currentNamespace();
+  const { databaseName, pendingAttemptsKey } = currentNamespace();
   const db = await openDatabase(databaseName);
   const transaction = db.transaction(ATTEMPTS, "readwrite");
   transaction.objectStore(ATTEMPTS).clear();
   await transactionDone(transaction);
   db.close();
+  localStorage.removeItem(pendingAttemptsKey);
 }

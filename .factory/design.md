@@ -36,7 +36,7 @@ All normal-size text combinations target WCAG AA ≥4.5:1; color never carries m
 - A 1120px content rail; reading measure ≤68ch.
 - 44px minimum targets and 8px separation.
 - Corners are clipped or modest (0–12px), never pill-card dashboards. Double-line borders, offset shadows, station circles, and stepped frames build the poster identity.
-- On phones, the route ledger stacks beneath the workbench; secondary header copy drops; the manipulation controls become full-width. No fixed bottom bar obscures content.
+- On phones, the route ledger stacks beneath the workbench, the three main links form a compact station strip, and manipulation controls become full-width. No fixed bottom bar obscures content.
 
 ## Interaction grammar
 

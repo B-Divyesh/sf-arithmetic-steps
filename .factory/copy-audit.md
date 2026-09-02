@@ -91,3 +91,8 @@ for people verifying isolation.
 No audited README sentence exceeds 22 words. No audited sentence contains a
 banned marketing term. The prior storage and install jargon was replaced with
 the useful result for a teacher, parent, or child.
+
+## Catalog description
+
+**Move counters to explain addition and subtraction steps with a child.** —
+11 words, 69 characters, verb first, and no banned term.

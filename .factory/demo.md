@@ -10,9 +10,10 @@ can see `42 − 8`, choose the last chunk, finish, and replay the steps.
 ## Isolation and reset
 
 Demo problems use the IndexedDB database named `demo:arithmetic-steps` and the
-local checkpoint key `demo:arithmetic-steps:active-route`. Real problems use
-`arithmetic-steps` and `arithmetic-steps:active-route`; the app selects both
-demo namespaces before any problem data is read or written. Each database is
+local checkpoint keys `demo:arithmetic-steps:active-route` and
+`demo:arithmetic-steps:pending-attempts`. Real problems use `arithmetic-steps`
+with the matching unprefixed checkpoint keys; the app selects every demo
+namespace before any problem data is read or written. Each database is
 opened and upgraded to the complete `attempts` and `settings` schema before
 the app marks storage ready. The persistent banner identifies demo mode.
 

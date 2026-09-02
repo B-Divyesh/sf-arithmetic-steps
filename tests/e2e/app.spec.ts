@@ -703,7 +703,7 @@ test("@claim:json-export deterministically downloads one completed route as JSON
   expect(stableExport(firstExport)).toEqual(stableExport(secondExport));
 });
 
-test("keeps Saved problems open when completion storage finishes after navigation", async ({ page }) => {
+test("@claim:completed-persistence keeps Saved problems open when completion storage finishes after navigation", async ({ page }) => {
   await page.getByRole("button", { name: "8 + 7" }).click();
   await page.getByRole("button", { name: /Start the problem/ }).click();
   await page.getByRole("button", { name: "2", exact: true }).click();
@@ -738,6 +738,7 @@ test("keeps Saved problems open when completion storage finishes after navigatio
   });
 
   await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("arithmetic-steps:pending-attempts"))).not.toBeNull();
   await openSavedProblems(page);
   await page.evaluate(() => (window as Window & { releaseCompletionWriteHold?: () => void }).releaseCompletionWriteHold?.());
 

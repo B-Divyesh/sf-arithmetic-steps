@@ -163,6 +163,17 @@ describe("static hosting contract", () => {
     }
   });
 
+  it("uses real product routes in install shortcuts", async () => {
+    const manifest = JSON.parse(await readFile(resolve(root, "public/manifest.webmanifest"), "utf8")) as {
+      shortcuts: Array<{ name: string; url: string }>;
+    };
+    expect(manifest.shortcuts).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: "Start a problem", url: "/practice" }),
+      expect.objectContaining({ name: "Saved problems", url: "/saved-problems" })
+    ]));
+    expect(manifest.shortcuts.every((shortcut) => !shortcut.url.includes("#"))).toBe(true);
+  });
+
   it("gives every registered public claim one exactly tagged browser regression", async () => {
     const [claimsText, browserTests] = await Promise.all([
       readFile(resolve(root, ".factory/claims.json"), "utf8"),

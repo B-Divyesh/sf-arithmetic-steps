@@ -67,8 +67,8 @@ async function runDesktop(browser) {
   assert((await page.locator(".replay-narration").innerText()).includes("Take away"), "manual replay did not expose narration");
 
   await page.getByRole("button", { name: "Start for real" }).click();
-  await page.waitForURL(/\/#learn$/);
-  assert(page.url().endsWith("/#learn"), "Start for real did not leave demo");
+  await page.waitForURL(url => url.pathname === "/");
+  assert(new URL(page.url()).pathname === "/", "Start for real did not leave demo");
 
   const invalidCases = [
     { op: "add", first: "90", second: "20", expected: "total of 100 or less" },
@@ -96,7 +96,7 @@ async function runDesktop(browser) {
   await page.getByLabel("Second number").fill("7");
   await page.getByRole("button", { name: "Start the problem" }).click();
   assert((await page.locator("#form-error").innerText()) === "Enter the first number before starting the problem.", "blank first operand did not show its required-field error");
-  assert(new URL(page.url()).hash !== "#route", "blank first operand opened a route");
+  assert(new URL(page.url()).pathname !== "/practice", "blank first operand opened a route");
   assert((await page.getByLabel("First number").inputValue()) === "", "blank first operand was not retained");
   assert((await page.getByLabel("Second number").inputValue()) === "7", "second operand was not retained after a blank-first error");
   assert((await page.evaluate(() => document.activeElement?.id)) === "first-number", "blank first operand did not receive focus");
@@ -106,7 +106,7 @@ async function runDesktop(browser) {
   await page.getByLabel("Second number").fill("");
   await page.getByRole("button", { name: "Start the problem" }).click();
   assert((await page.locator("#form-error").innerText()) === "Enter the second number before starting the problem.", "blank second operand did not show its required-field error");
-  assert(new URL(page.url()).hash !== "#route", "blank second operand opened a route");
+  assert(new URL(page.url()).pathname !== "/practice", "blank second operand opened a route");
   assert((await page.getByLabel("First number").inputValue()) === "99", "first operand was not retained after a blank-second error");
   assert((await page.evaluate(() => document.activeElement?.id)) === "second-number", "blank second operand did not receive focus");
 
@@ -117,7 +117,7 @@ async function runDesktop(browser) {
   await page.getByRole("button", { name: "Join the numbers and finish" }).click();
   await page.getByRole("heading", { name: "The answer is 100." }).waitFor();
 
-  await page.goto(`${base}/#history`);
+  await page.goto(`${base}/saved-problems`);
   await page.getByText("99 + 1 = 100").waitFor();
   const exportButton = page.getByRole("button", { name: "Export JSON" });
   await exportButton.waitFor({ state: "visible" });
@@ -169,6 +169,12 @@ async function runMobile(browser) {
   assert(undersized.length === 0, `390px target below 44px: ${JSON.stringify(undersized)}`);
   const mobileAxe = await axe(page, "390px demo");
   await page.screenshot({ path: artifact("mobile-demo.png"), fullPage: true });
+  await page.goto(`${base}/saved-problems`);
+  const practiceLink = page.getByRole("link", { name: "Practice" });
+  assert(await practiceLink.isVisible(), "mobile Saved problems does not expose Practice");
+  await practiceLink.click();
+  await page.waitForURL(url => url.pathname === "/practice");
+  assert((await page.evaluate(() => document.activeElement?.id)) === "page-title", "mobile Practice navigation did not focus its heading");
   assert(observed.consoleErrors.length === 0 && observed.pageErrors.length === 0, "mobile emitted browser errors");
   await context.close();
   return { layout, mobileAxe, undersized, requestOrigins: [...new Set(observed.requests.map(url => new URL(url).origin))] };
@@ -239,7 +245,7 @@ async function runPwa(browser) {
 async function runRoutes(browser) {
   const context = await browser.newContext();
   const page = await context.newPage();
-  const routes = ["/", "/demo", "/privacy/", "/terms/", "/definitely-not-a-route"];
+  const routes = ["/", "/practice", "/demo", "/saved-problems", "/privacy/", "/terms/", "/definitely-not-a-route"];
   const results = [];
   for (const route of routes) {
     const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });

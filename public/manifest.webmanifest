@@ -36,7 +36,7 @@
   "shortcuts": [
     {
       "name": "Start a problem",
-      "url": "/#learn",
+      "url": "/practice",
       "icons": [
         {
           "src": "/assets/icon-192.png",
@@ -46,7 +46,7 @@
     },
     {
       "name": "Saved problems",
-      "url": "/#history",
+      "url": "/saved-problems",
       "icons": [
         {
           "src": "/assets/icon-192.png",

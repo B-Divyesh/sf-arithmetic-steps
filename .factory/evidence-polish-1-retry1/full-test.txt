@@ -1,0 +1,109 @@
+
+> arithmetic-steps@1.0.13 test
+> npm run lint && vitest run && playwright test
+
+
+> arithmetic-steps@1.0.13 lint
+> tsc --noEmit
+
+
+ RUN  v3.2.7 /work/repo
+
+ ✓ tests/models.test.ts (9 tests) 8ms
+ ✓ tests/static-contract.test.ts (9 tests) 34ms
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  02:03:32
+   Duration  688ms (transform 223ms, setup 0ms, collect 258ms, tests 41ms, environment 0ms, prepare 301ms)
+
+[WebServer] (node:2260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 72 tests using 1 worker
+
+(node:2332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/app.spec.ts:143:1 › has a clear, accessible route planner (1.6s)
+  ✓   2 [chromium] › tests/e2e/app.spec.ts:156:1 › keeps the complete hero headline on paper at 1440px (707ms)
+  ✓   3 [chromium] › tests/e2e/app.spec.ts:181:1 › has no axe violations on the demo or completed-route screens (2.0s)
+  ✓   4 [chromium] › tests/e2e/app.spec.ts:189:1 › completes, narrates, replays, and saves an addition route (4.2s)
+  ✓   5 [chromium] › tests/e2e/app.spec.ts:212:1 › uses a real saved-problems route with a title, focused heading, and route announcement (810ms)
+  ✓   6 [chromium] › tests/e2e/app.spec.ts:238:1 › supports a child-chosen multi-step subtraction route (4.4s)
+  ✓   7 [chromium] › tests/e2e/app.spec.ts:255:1 › shows helpful validation without losing the entered problem (833ms)
+  ✓   8 [chromium] › tests/e2e/app.spec.ts:263:1 › works from the installed cache while offline (648ms)
+  ✓   9 [chromium] › tests/e2e/app.spec.ts:273:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.4s)
+  ✓  10 [chromium] › tests/e2e/app.spec.ts:377:1 › @claim:offline-reload works offline after the first visit from the demo entry point (633ms)
+  ✓  11 [chromium] › tests/e2e/app.spec.ts:394:1 › offers and applies a waiting service-worker update without losing the demo (1.9s)
+  ✓  12 [chromium] › tests/e2e/app.spec.ts:409:1 › @claim:local-only keeps the complete cold-load and worker flow first-party (1.1s)
+  ✓  13 [chromium] › tests/e2e/app.spec.ts:440:1 › @claim:installable-pwa ships a valid manifest and controlling offline worker (501ms)
+  ✓  14 [chromium] › tests/e2e/app.spec.ts:466:1 › @claim:visible-focus shows a designed focus ring during keyboard use (553ms)
+  ✓  15 [chromium] › tests/e2e/app.spec.ts:492:1 › @claim:tens-and-ones shows each quantity as labelled tens and ones (593ms)
+  ✓  16 [chromium] › tests/e2e/app.spec.ts:499:1 › @claim:direct-manipulation drags one-counters and ten-frames for both operations (4.0s)
+  ✓  17 [chromium] › tests/e2e/app.spec.ts:552:1 › @claim:narrated-steps records a sentence for each chosen chunk (2.4s)
+  ✓  18 [chromium] › tests/e2e/app.spec.ts:561:1 › @claim:replay-and-discussion replays a route and shows discussion prompts (3.9s)
+  ✓  19 [chromium] › tests/e2e/app.spec.ts:573:1 › @claim:free-no-account exposes no payment, account, or score path (471ms)
+  ✓  20 [chromium] › tests/e2e/app.spec.ts:579:1 › @claim:arithmetic-bounds accepts only whole-number routes through 100 (1.5s)
+  ✓  21 [chromium] › tests/e2e/app.spec.ts:623:1 › @claim:keyboard-controls provides the same move without dragging (711ms)
+  ✓  22 [chromium] › tests/e2e/app.spec.ts:635:1 › @claim:unfinished-persistence restores a route after a refresh (2.5s)
+  ✓  23 [chromium] › tests/e2e/app.spec.ts:677:1 › @claim:json-export deterministically downloads one completed route as JSON (6.2s)
+  ✓  24 [chromium] › tests/e2e/app.spec.ts:706:1 › @claim:completed-persistence keeps Saved problems open when completion storage finishes after navigation (2.5s)
+  ✓  25 [chromium] › tests/e2e/app.spec.ts:750:1 › @claim:json-import restores valid routes chosen by the user (491ms)
+  ✓  26 [chromium] › tests/e2e/app.spec.ts:773:1 › @claim:clear-data keeps saved problems on cancel and deletes them on confirmation (2.9s)
+  ✓  27 [chromium] › tests/e2e/app.spec.ts:809:1 › @claim:print-card opens print and isolates a readable discussion card in print media (4.0s)
+  ✓  28 [chromium] › tests/e2e/app.spec.ts:835:1 › @claim:reduced-motion makes replay manual (789ms)
+  ✓  29 [chromium] › tests/e2e/app.spec.ts:847:1 › @claim:facilitator-checklist provides four local checks that reset without storage (2.9s)
+  ✓  30 [chromium] › tests/e2e/app.spec.ts:871:1 › @claim:self-guided-checklist-guidance forbids unsupported external-review claims (473ms)
+  ✓  31 [chromium] › tests/e2e/app.spec.ts:897:1 › @claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser (426ms)
+  -  32 [chromium] › tests/e2e/app.spec.ts:902:1 › @claim:mobile-controls fits the 390px viewport with 44px controls
+  -  33 [chromium] › tests/e2e/app.spec.ts:933:1 › keeps the first action usable at 200% text size on a narrow screen
+  ✓  34 [chromium] › tests/e2e/app.spec.ts:946:1 › legal pages keep the same accessible shell (1.5s)
+  ✓  35 [chromium] › tests/e2e/app.spec.ts:955:1 › 404 page names the missing-page state in plain words (828ms)
+  ✓  36 [chromium] › tests/e2e/app.spec.ts:964:1 › uses one build identity on app, legal, and manifest routes (617ms)
+(node:3117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  37 [mobile] › tests/e2e/app.spec.ts:143:1 › has a clear, accessible route planner (1.4s)
+  -  38 [mobile] › tests/e2e/app.spec.ts:156:1 › keeps the complete hero headline on paper at 1440px
+  ✓  39 [mobile] › tests/e2e/app.spec.ts:181:1 › has no axe violations on the demo or completed-route screens (2.4s)
+  ✓  40 [mobile] › tests/e2e/app.spec.ts:189:1 › completes, narrates, replays, and saves an addition route (4.4s)
+  ✓  41 [mobile] › tests/e2e/app.spec.ts:212:1 › uses a real saved-problems route with a title, focused heading, and route announcement (710ms)
+  ✓  42 [mobile] › tests/e2e/app.spec.ts:238:1 › supports a child-chosen multi-step subtraction route (4.6s)
+  ✓  43 [mobile] › tests/e2e/app.spec.ts:255:1 › shows helpful validation without losing the entered problem (1.9s)
+  ✓  44 [mobile] › tests/e2e/app.spec.ts:263:1 › works from the installed cache while offline (645ms)
+  ✓  45 [mobile] › tests/e2e/app.spec.ts:273:1 › @claim:demo-sandbox opens an isolated sample route and can return to real storage (1.6s)
+  ✓  46 [mobile] › tests/e2e/app.spec.ts:377:1 › @claim:offline-reload works offline after the first visit from the demo entry point (683ms)
+  ✓  47 [mobile] › tests/e2e/app.spec.ts:394:1 › offers and applies a waiting service-worker update without losing the demo (2.0s)
+  ✓  48 [mobile] › tests/e2e/app.spec.ts:409:1 › @claim:local-only keeps the complete cold-load and worker flow first-party (1.3s)
+  ✓  49 [mobile] › tests/e2e/app.spec.ts:440:1 › @claim:installable-pwa ships a valid manifest and controlling offline worker (474ms)
+  ✓  50 [mobile] › tests/e2e/app.spec.ts:466:1 › @claim:visible-focus shows a designed focus ring during keyboard use (555ms)
+  ✓  51 [mobile] › tests/e2e/app.spec.ts:492:1 › @claim:tens-and-ones shows each quantity as labelled tens and ones (620ms)
+  ✓  52 [mobile] › tests/e2e/app.spec.ts:499:1 › @claim:direct-manipulation drags one-counters and ten-frames for both operations (1.1s)
+  ✓  53 [mobile] › tests/e2e/app.spec.ts:552:1 › @claim:narrated-steps records a sentence for each chosen chunk (2.6s)
+  ✓  54 [mobile] › tests/e2e/app.spec.ts:561:1 › @claim:replay-and-discussion replays a route and shows discussion prompts (4.1s)
+  ✓  55 [mobile] › tests/e2e/app.spec.ts:573:1 › @claim:free-no-account exposes no payment, account, or score path (379ms)
+  ✓  56 [mobile] › tests/e2e/app.spec.ts:579:1 › @claim:arithmetic-bounds accepts only whole-number routes through 100 (3.1s)
+  ✓  57 [mobile] › tests/e2e/app.spec.ts:623:1 › @claim:keyboard-controls provides the same move without dragging (692ms)
+  ✓  58 [mobile] › tests/e2e/app.spec.ts:635:1 › @claim:unfinished-persistence restores a route after a refresh (2.8s)
+  ✓  59 [mobile] › tests/e2e/app.spec.ts:677:1 › @claim:json-export deterministically downloads one completed route as JSON (6.7s)
+  ✓  60 [mobile] › tests/e2e/app.spec.ts:706:1 › @claim:completed-persistence keeps Saved problems open when completion storage finishes after navigation (2.8s)
+  ✓  61 [mobile] › tests/e2e/app.spec.ts:750:1 › @claim:json-import restores valid routes chosen by the user (651ms)
+  ✓  62 [mobile] › tests/e2e/app.spec.ts:773:1 › @claim:clear-data keeps saved problems on cancel and deletes them on confirmation (3.3s)
+  ✓  63 [mobile] › tests/e2e/app.spec.ts:809:1 › @claim:print-card opens print and isolates a readable discussion card in print media (4.6s)
+  ✓  64 [mobile] › tests/e2e/app.spec.ts:835:1 › @claim:reduced-motion makes replay manual (809ms)
+  ✓  65 [mobile] › tests/e2e/app.spec.ts:847:1 › @claim:facilitator-checklist provides four local checks that reset without storage (2.9s)
+  ✓  66 [mobile] › tests/e2e/app.spec.ts:871:1 › @claim:self-guided-checklist-guidance forbids unsupported external-review claims (630ms)
+  ✓  67 [mobile] › tests/e2e/app.spec.ts:897:1 › @claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser (377ms)
+  ✓  68 [mobile] › tests/e2e/app.spec.ts:902:1 › @claim:mobile-controls fits the 390px viewport with 44px controls (769ms)
+  ✓  69 [mobile] › tests/e2e/app.spec.ts:933:1 › keeps the first action usable at 200% text size on a narrow screen (553ms)
+  ✓  70 [mobile] › tests/e2e/app.spec.ts:946:1 › legal pages keep the same accessible shell (1.7s)
+  ✓  71 [mobile] › tests/e2e/app.spec.ts:955:1 › 404 page names the missing-page state in plain words (824ms)
+  ✓  72 [mobile] › tests/e2e/app.spec.ts:964:1 › uses one build identity on app, legal, and manifest routes (724ms)
+
+  3 skipped
+  69 passed (2.2m)
