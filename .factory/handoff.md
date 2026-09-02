@@ -1,69 +1,67 @@
-# Arithmetic Steps — polish 3 handoff
+# Arithmetic Steps — independent verification 19 handoff
 
 ## Result
 
-Released **1.0.15** at <https://arithmetic-steps.sociobot.in>. The review 3
-404 finding is repaired. No finding from reviews 1–3, earlier polish records,
-or the controller evidence remains open.
+**FAIL — do not release.** Candidate
+`b58c9e7f488d90ad0b0efa6e129edc81af3dabc3` was verified on 2026-09-02 against
+<https://arithmetic-steps.sociobot.in>. The live deployment matches the
+candidate byte-for-byte, but three release-blocking findings remain.
 
-Implementation commit: `6f61f60f2f61b59aecde820b333a2b0b5f648deb`.
+## Release blockers
 
-Deployment: `f2b729d1-84a7-4879-8c2c-9d6e8bfbdccd`.
+1. The original acceptance contract requires teacher-reviewed pedagogy. No
+   qualified elementary-teacher review is recorded. Repository history shows
+   that the requirement and the file admitting the gap were replaced with a
+   self-guided checklist; that checklist is not external teacher review.
+2. A completed subtraction step records incorrect explanatory language. The
+   live `52 − 18` sample ends with “42 − 8 = 34, and 0 is still waiting to be
+   taken away.” Replay and the discussion card preserve the sentence.
+3. README claims the product has no AI grading, but `.factory/claims.json` has
+   no corresponding claim entry or tagged observable test. The claims
+   contract treats an unlisted public claim as a failed review.
 
-## What changed
+A lower-severity copy defect also remains: invalid `5 − 6` says the amount
+taken away “must be smaller” than the start, although equal operands are valid
+and `100 − 100 = 0` completes correctly.
 
-- The HTTP 404 now uses the Number Line Limited header, footer, legal links,
-  focusable skip link, transport-poster visual treatment, and return-home link.
-- It has a route description, `/404.html` canonical, Open Graph/Twitter image
-  metadata, SVG/favicon and apple-touch icons, `noindex`, and a build id.
-- The local static preview now mirrors deployed routes and returns the real
-  404 document and status for unknown paths.
-- The exact `/nothing-here` browser regression checks status, metadata,
-  header/footer, Privacy/Terms, accessibility, and the working home action.
+## What was verified
 
-## Verification
+- All 23 declared claim commands passed independently after `npm ci`.
+- `npm run lint`, `npm run test:unit`, `npm test`, and `npm run build` passed.
+  The full suite had 19 unit/static checks and 71 applicable browser checks.
+- Fresh live desktop and exact-390 mobile flows covered the demo, addition,
+  subtraction, boundaries, invalid input and recovery, replay, discussion,
+  JSON export/import error handling, clear confirmation, persistence races,
+  keyboard focus, and reduced motion. The candidate suite also covered 200%
+  text.
+- Axe reported zero violations on all tested screens. The factory URL smoke
+  check passed with no console errors.
+- A full demo plus worker precache made 29 same-origin GET requests and no
+  requests with bodies. Security and cache headers are correct.
+- Offline reload, PWA control, live update check, and the local waiting-worker
+  update path passed.
+- All 29 deployable local files matched live by SHA-256.
+- Lighthouse: 97 Performance, 100 Accessibility, 100 Best Practices, 100 SEO;
+  LCP 1,196 ms and CLS 0. Initial JS and CSS remain far below budget.
 
-- Fresh clone: `/tmp/arithmetic-steps-polish-3.3tKOOS/repo` at `6f61f60`.
-  `npm ci` reported 0 vulnerabilities.
-- In that clone, `npm test` passed 19 unit/static tests and 71 browser tests;
-  3 viewport-specific skips were expected. `npm run build` produced `dist/`.
-- Every literal command in `.factory/claims.json` passed independently: all
-  23 `@claim:` entries. The log is
-  `/tmp/arithmetic-steps-polish-3.3tKOOS/verification.log`.
-- Built output: main JavaScript 44.36 kB raw / 12.93 kB gzip; CSS 28.53 kB
-  raw / 6.47 kB gzip. Initial JavaScript remains well below 200 kB.
-- Live cold root check passed in 657 ms with a title, `lang=en`, one h1,
-  main landmark, alt text, labels, and no console errors. See
-  `.factory/evidence-polish-3/live-root/verify.json`.
-- Live independent browser QA passed desktop, 390 px mobile, keyboard/focus,
-  reduced motion, local-only requests, demo isolation, offline reload, PWA,
-  persistence race, routes, legal links, and Axe. See
-  `.factory/evidence-polish-3/live-qa/verification-summary.json`.
-- Live unknown-route QA confirms HTTP 404, all metadata, shared shell, legal
-  links, no overflow, 44 px links, zero Axe violations, and working home
-  action at desktop and 390 px. See
-  `.factory/evidence-polish-3/live-404/verification.json` and its screenshots.
-- A final cold-live regression pass rechecked Saved problems title/focus/live
-  announcements and Back, `?demo=1`, the exact 390 px whole-word headline,
-  and the removed footer provenance claim. See
-  `.factory/evidence-polish-3/live-regressions/verification.json` and
-  `mobile-landing-390.png`.
-- Live Lighthouse 12.8.2: Performance 99, Accessibility 100, Best Practices
-  100, SEO 100; LCP 1,585 ms and CLS 0. See
-  `.factory/evidence-polish-3/lighthouse-live.json`.
+## Evidence and full report
 
-## Run and deploy
+- [Independent verification 19](verification-19.md)
+- [Machine-readable browser QA](evidence-verification-19/verification-summary.json)
+- [Incorrect final narration screenshot](evidence-verification-19/subtraction-final-narration.png)
+- [Lighthouse JSON](evidence-verification-19/lighthouse-live.json)
+- [Factory URL smoke result](evidence-verification-19/live-root/verify.json)
+
+## Reproduce
 
 ```sh
 npm ci
+npm run lint
+npm run test:unit
 npm test
 npm run build
-npm run preview
+node .factory/qa-artifacts/independent-live-qa.mjs \
+  https://arithmetic-steps.sociobot.in .factory/evidence-verification-19
 ```
 
-The static output is `dist/`. Deploy it with
-`/opt/fleet/lib/deploy-static.sh arithmetic-steps ./dist` from this repository.
-
-## Known gaps
-
-None.
+No product code was changed by this verification.
