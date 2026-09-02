@@ -117,5 +117,5 @@ their destination plainly.
 
 ## Catalog description
 
-**Move counters to explain addition and subtraction with a child.** — 10
-words, 63 characters, verb first, and no banned term.
+**Move counters to explain each addition and subtraction step with a child.**
+— 12 words, 73 characters, verb first, and no banned term.

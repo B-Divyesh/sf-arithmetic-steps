@@ -1,0 +1,66 @@
+[
+  {
+    "name": "desktop",
+    "status": 404,
+    "metadata": {
+      "title": "Page not found — Arithmetic Steps",
+      "description": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "canonical": "https://arithmetic-steps.sociobot.in/404.html",
+      "favicon": "/assets/app-icon.svg",
+      "appleTouch": "/assets/icon-192.png",
+      "ogTitle": "Page not found — Arithmetic Steps",
+      "ogDescription": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "ogImage": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+      "twitterTitle": "Page not found — Arithmetic Steps",
+      "twitterDescription": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "twitterImage": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+      "h1Count": 1,
+      "h1": "Page not found",
+      "mainCount": 1,
+      "headerCount": 1,
+      "footerCount": 1,
+      "privacyHref": "/privacy/",
+      "termsHref": "/terms/",
+      "returnHref": "/",
+      "scrollWidth": 1366,
+      "clientWidth": 1366,
+      "undersizedTargets": [],
+      "returnHomeResult": {
+        "url": "https://arithmetic-steps.sociobot.in/",
+        "h1Text": "Explore addition and subtraction steps"
+      }
+    },
+    "consoleErrors": [],
+    "axeViolations": []
+  },
+  {
+    "name": "mobile",
+    "status": 404,
+    "metadata": {
+      "title": "Page not found — Arithmetic Steps",
+      "description": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "canonical": "https://arithmetic-steps.sociobot.in/404.html",
+      "favicon": "/assets/app-icon.svg",
+      "appleTouch": "/assets/icon-192.png",
+      "ogTitle": "Page not found — Arithmetic Steps",
+      "ogDescription": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "ogImage": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+      "twitterTitle": "Page not found — Arithmetic Steps",
+      "twitterDescription": "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.",
+      "twitterImage": "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg",
+      "h1Count": 1,
+      "h1": "Page not found",
+      "mainCount": 1,
+      "headerCount": 1,
+      "footerCount": 1,
+      "privacyHref": "/privacy/",
+      "termsHref": "/terms/",
+      "returnHref": "/",
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "undersizedTargets": []
+    },
+    "consoleErrors": [],
+    "axeViolations": []
+  }
+]
