@@ -63,7 +63,7 @@ Counters move only when their quantity changes (220ms transform/opacity); route 
 
 **Hero prompt:** “Wide landscape 1930s art-deco transit poster for a children’s arithmetic journey. Two small geometric counter trains, one signal coral and one brass gold, travel on distinct deep-petrol rails through square ten-frame station grids and merge into a single teal destination station. Warm cream paper grain, rhythmic stepped skyline shapes, flat screen-printed ink, precise circles and rectangles, generous clear center-left negative space, optimistic civic design, limited five-color palette. No words, no letters, no numerals, no watermark, no logos, no brands, no people, no photorealism, no gradients, no faux interface, no illegible markings.”
 
-Generated with the factory `factory-image` deployment on 2026-08-28. The selected output and prompt sidecar live in `assets/src/`; optimized WebP derivatives live in `public/assets/`. Generated imagery is original to this product and disclosed in the footer.
+Generated with the factory `factory-image` deployment on 2026-08-28. The selected output and prompt sidecar live in `assets/src/`; optimized WebP derivatives live in `public/assets/`. Generated imagery is original to this product; this design record preserves its provenance.
 
 The social preview at `public/assets/social-preview.jpg` is a 1200×630,
 center-cropped derivative of the selected hero illustration. It introduces no

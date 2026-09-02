@@ -178,6 +178,40 @@ test("keeps the complete hero headline on paper at 1440px", async ({ page, isMob
   expect(geometry.headingRight).toBeLessThanOrEqual(geometry.artLeft + 1);
 });
 
+test("keeps every hero headline word whole at exactly 390px", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+
+  const layout = await page.locator(".hero h1").evaluate((heading) => {
+    const text = heading.firstChild;
+    if (!text) throw new Error("The hero heading has no text node.");
+    const words = [...(text.textContent ?? "").matchAll(/\S+/g)].map((match) => {
+      const range = document.createRange();
+      range.setStart(text, match.index ?? 0);
+      range.setEnd(text, (match.index ?? 0) + match[0].length);
+      const lines = [...range.getClientRects()].map((rect) => Math.round(rect.top));
+      return { word: match[0], lines: [...new Set(lines)] };
+    });
+    return {
+      clientWidth: heading.clientWidth,
+      scrollWidth: heading.scrollWidth,
+      words
+    };
+  });
+
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1);
+  expect(layout.words).toEqual([
+    { word: "Explore", lines: expect.any(Array) },
+    { word: "addition", lines: expect.any(Array) },
+    { word: "and", lines: expect.any(Array) },
+    { word: "subtraction", lines: expect.any(Array) },
+    { word: "steps", lines: expect.any(Array) }
+  ]);
+  for (const { word, lines } of layout.words) {
+    expect(lines, `${word} must stay on one rendered line at 390px`).toHaveLength(1);
+  }
+});
+
 test("has no axe violations on the demo or completed-route screens", async ({ page }) => {
   await page.getByRole("button", { name: "Try it with sample data" }).click();
   expect((await new AxeBuilder({ page: page as never }).analyze()).violations).toEqual([]);

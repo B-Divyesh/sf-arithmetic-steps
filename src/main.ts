@@ -298,7 +298,7 @@ function setupTemplate(): string {
   return `<section class="hero" aria-labelledby="page-title">
     <div class="hero-copy">
       <p class="eyebrow">Addition and subtraction to 100</p>
-      <h1 id="page-title" tabindex="-1">Explore addition and subtrac<wbr>tion steps</h1>
+      <h1 id="page-title" tabindex="-1">Explore addition and subtraction steps</h1>
       <p class="lede">For elementary children with a teacher or parent, move counters to explain how each answer changes.</p>
       <div class="hero-actions">
         <button class="primary-button" id="try-sample" type="button">Try it with sample data <span aria-hidden="true">→</span></button>

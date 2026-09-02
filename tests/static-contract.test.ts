@@ -39,6 +39,18 @@ describe("static hosting contract", () => {
     expect(source).not.toContain('style="--i:');
   });
 
+  it("keeps generated-art provenance in the design record, not as an unregistered footer claim", async () => {
+    const [landing, design, claims] = await Promise.all([
+      readFile(resolve(root, "index.html"), "utf8"),
+      readFile(resolve(root, ".factory/design.md"), "utf8"),
+      readFile(resolve(root, ".factory/claims.json"), "utf8")
+    ]);
+    expect(landing).not.toContain("Poster artwork was generated for this project.");
+    expect(design).toContain("Generated with the factory `factory-image` deployment");
+    expect(design).toContain("this design record preserves its provenance");
+    expect(claims).not.toContain('"id":"artwork-provenance"');
+  });
+
   it("keeps deployment-only metadata out of the production precache", async () => {
     const generator = await readFile(resolve(root, "scripts/generate-sw.mjs"), "utf8");
     expect(generator).toContain('deploymentOnlyFiles');

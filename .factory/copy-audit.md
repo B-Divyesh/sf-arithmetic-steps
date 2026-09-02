@@ -1,6 +1,6 @@
 # Landing copy audit
 
-Audited 2026-09-01. This is the complete visitor-facing copy from the landing
+Audited 2026-09-02. This is the complete visitor-facing copy from the landing
 state, excluding repeated navigation, numeric example buttons, and arrow
 glyphs. A **problem** is one arithmetic activity; a **chunk** is a chosen
 quantity; a **step** is one recorded change; a **counter** is one movable unit.
@@ -59,6 +59,10 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
+
+The footer contains the factory attribution and build identifier only. Generated
+art provenance remains in `.factory/design.md`, so it is not an unregistered
+visitor-facing product claim.
 
 The active product copy labels the checklist as self-guided guidance. It makes
 no outside-review, study, validation, or learning-outcome promise. The
