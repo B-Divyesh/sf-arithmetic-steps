@@ -71,6 +71,7 @@ describe("static hosting contract", () => {
     expect(liveChecker).toContain('name: "No finished problems yet"');
     expect(liveChecker).toContain('name: "Play steps"');
     expect(liveChecker).toContain('replay advances one step at a time.');
+    expect(liveChecker).toContain('This self-guided checklist is guidance, not evidence of learning outcomes.');
     expect(liveChecker).not.toContain('name: "Finish the route"');
     expect(liveChecker).not.toContain('name: "Begin the route"');
     expect(liveChecker).not.toContain('name: "You arrived at');
@@ -80,14 +81,16 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('No finished routes yet');
     expect(liveChecker).not.toContain('Play route');
     expect(liveChecker).not.toContain('one station at a time');
+    expect(liveChecker).not.toContain('This optional checklist is guidance, not evidence of learning outcomes.');
   });
 
-  it("keeps the optional facilitator checklist testable without claiming an outside review", async () => {
-    const [briefText, claimsText, evidence, facilitatorReview, app, readme, landing, privacy, terms, manifest] = await Promise.all([
+  it("forbids unsupported external-review promises and keeps the four-check facilitator claim testable", async () => {
+    const [briefText, claimsText, evidence, facilitatorChecklist, copyAudit, app, readme, landing, privacy, terms, manifest] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
       readFile(resolve(root, ".factory/claims.json"), "utf8"),
       readFile(resolve(root, ".factory/pedagogy-evidence.md"), "utf8"),
       readFile(resolve(root, ".factory/facilitator-review.md"), "utf8"),
+      readFile(resolve(root, ".factory/copy-audit.md"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
       readFile(resolve(root, "README.md"), "utf8"),
       readFile(resolve(root, "index.html"), "utf8"),
@@ -96,27 +99,34 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
-    const guidanceBoundary = "This optional checklist is guidance, not evidence of learning outcomes.";
-    const publicCopy = [app, readme, landing, privacy, terms, manifest].join("\n");
-    const unprovableReviewStatement = /teacher-reviewed pedagogy|qualified (?:teacher|educator) review|teacher study|(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
+    const guidanceBoundary = "This self-guided checklist is guidance, not evidence of learning outcomes.";
+    const checklistClaim = "A facilitator can complete and reset four local checks before classroom use. Checklist marks are not stored.";
+    const productClaimSources = [briefText, claimsText, evidence, facilitatorChecklist, copyAudit, app, readme, landing, privacy, terms, manifest];
+    const joinedClaimSources = productClaimSources.join("\n");
+    const unsupportedExternalReviewPromise = /\b(?:teacher[-\s]+reviewed|educator[-\s]+reviewed|qualified\s+(?:teacher|educator)\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)(?:'s)?\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)[-\s]+(?:approved|validated)|(?:reviewed|approved|validated)\s+by\s+(?:an?\s+)?(?:qualified\s+)?(?:teacher|educator)|(?:external|independent)[-\s]+(?:reviewed|review|approval|validation|sign[-\s]?off)|teacher\s+study|classroom\s+study|(?:proven|validated)\s+pedagog(?:y|ical))\b/i;
 
-    expect(brief.constraints).toContain("Optional facilitator review checklist with no learning-outcome claim");
-    expect(brief.constraints).not.toContain("Teacher-reviewed pedagogy");
+    // This is the exact original brief promise that caused verification 14 to
+    // fail; keep the detector calibrated to that regression, not just nearby wording.
+    expect("Teacher-reviewed pedagogy").toMatch(unsupportedExternalReviewPromise);
+    expect(brief.constraints).toContain("Self-guided four-check facilitator checklist; marks are not stored and it makes no learning-outcome claim");
     for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(guidanceBoundary);
-    expect([briefText, publicCopy, claimsText, evidence, facilitatorReview].join("\n")).not.toMatch(unprovableReviewStatement);
-    expect(publicCopy).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
-    expect(claimsText).toContain('"id":"optional-review-guidance"');
+    for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain("Checklist marks are not stored.");
+    expect(joinedClaimSources).not.toMatch(unsupportedExternalReviewPromise);
+    expect([app, readme, landing, privacy, terms, manifest].join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
+    expect(claimsText).toContain('"id":"facilitator-checklist"');
+    expect(claimsText).toContain(`"claim":"${checklistClaim}"`);
+    expect(claimsText).toContain('"id":"self-guided-checklist-guidance"');
     expect(claimsText).toContain(`"claim":"${guidanceBoundary}"`);
     expect(evidence).toContain(guidanceBoundary);
-    expect(facilitatorReview).toContain(guidanceBoundary);
-    expect(facilitatorReview).toContain("optional product check");
-    expect(facilitatorReview).toContain("npm test -- --grep @claim:facilitator-review");
+    expect(facilitatorChecklist).toContain(guidanceBoundary);
+    expect(facilitatorChecklist).toContain("optional product check");
+    expect(facilitatorChecklist).toContain("npm test -- --grep @claim:facilitator-checklist");
     expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
     expect(app).toContain("For the grown-up nearby");
     expect(app).toContain("What stayed the same?");
-    expect(app).toContain("Review this tool before classroom use");
+    expect(app).toContain("Use four local checks before classroom use");
     expect(app).toContain('name="facilitator-review"');
-    expect(app).toContain("Reset review checklist");
+    expect(app).toContain("Reset local checks");
     expect(app).toContain("Marks are not stored.");
   });
 

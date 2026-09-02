@@ -1,0 +1,28 @@
+Release-blocking teacher-review contract reproduction
+====================================================
+
+The independent verifier at commit 40216db1b36f9e1a1cc5e6a7876bfe3eee125e5e
+failed candidate cbcf6da1a60584414944f377a8a8fcbf0d8b9f59 because the original
+research brief required "Teacher-reviewed pedagogy" without any review evidence
+that a sandbox could prove.
+
+The original, unsupported requirement is reproducible from the repository
+history (before b81ff2a reworded it):
+
+  git show 9de52a9985bf40cc18d0da7ff6091509af0312e9:.factory/brief.json
+
+Observed constraint from that command:
+
+  "Teacher-reviewed pedagogy"
+
+That promise required a named qualified elementary teacher, date, learner
+range, exercised flows, observations, required changes, and a release decision.
+None can be supplied or verified honestly by this static PWA's browser sandbox.
+
+Repair 18 replaces that promise with the directly observable behavior declared
+in .factory/claims.json: a facilitator can complete and reset four local checks
+before classroom use, and checklist marks are not stored. The exact copy/claim
+regression is:
+
+  npm test -- --grep @claim:self-guided-checklist-guidance
+

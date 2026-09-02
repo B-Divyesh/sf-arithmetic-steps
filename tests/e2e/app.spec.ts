@@ -3,7 +3,9 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 
 const PRODUCT_VERSION = (JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as { version: string }).version;
-const OPTIONAL_REVIEW_GUIDANCE = "This optional checklist is guidance, not evidence of learning outcomes.";
+const SELF_GUIDED_CHECKLIST_GUIDANCE = "This self-guided checklist is guidance, not evidence of learning outcomes.";
+const FACILITATOR_CHECKLIST_CLAIM = "A facilitator can complete and reset four local checks before classroom use. Checklist marks are not stored.";
+const UNSUPPORTED_EXTERNAL_REVIEW_PROMISE = /\b(?:teacher[-\s]+reviewed|educator[-\s]+reviewed|qualified\s+(?:teacher|educator)\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)(?:'s)?\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)[-\s]+(?:approved|validated)|(?:reviewed|approved|validated)\s+by\s+(?:an?\s+)?(?:qualified\s+)?(?:teacher|educator)|(?:external|independent)[-\s]+(?:reviewed|review|approval|validation|sign[-\s]?off)|teacher\s+study|classroom\s+study|(?:proven|validated)\s+pedagog(?:y|ical))\b/i;
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
@@ -815,8 +817,8 @@ test("@claim:reduced-motion makes replay manual", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Play steps" })).toBeVisible();
 });
 
-test("@claim:facilitator-review provides a local pre-classroom review checklist", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Review this tool before classroom use" })).toBeVisible();
+test("@claim:facilitator-checklist provides four local checks that reset without storage", async ({ page }) => {
+  await expect(page.getByRole("heading", { name: "Use four local checks before classroom use" })).toBeVisible();
   const checks = page.getByRole("checkbox", { name: /Finish the sample|Try a child-chosen chunk|Read the reasoning trail|Check access for your setting/ });
   await expect(checks).toHaveCount(4);
   await expect(page.getByRole("link", { name: "Open 52 − 18 sample" })).toHaveAttribute("href", "/demo");
@@ -827,33 +829,42 @@ test("@claim:facilitator-review provides a local pre-classroom review checklist"
   await page.goto("/");
   const reviewChecks = page.getByRole("checkbox");
   for (let index = 0; index < 4; index += 1) await reviewChecks.nth(index).check();
-  await expect(page.getByRole("status")).toContainText("All 4 review checks marked. Decide whether it fits your setting before classroom use.");
+  await expect(page.getByRole("status")).toContainText("All 4 local checks marked. Decide whether it fits your setting before classroom use.");
 
   await page.reload();
-  await expect(page.getByRole("status")).toContainText("0 of 4 review checks marked. Marks are not stored.");
+  await expect(page.getByRole("status")).toContainText("0 of 4 local checks marked. Marks are not stored.");
   for (let index = 0; index < 4; index += 1) await expect(page.getByRole("checkbox").nth(index)).not.toBeChecked();
 
   await page.getByRole("checkbox").first().check();
-  await page.getByRole("button", { name: "Reset review checklist" }).click();
-  await expect(page.getByRole("status")).toContainText("0 of 4 review checks marked. Marks are not stored.");
+  await page.getByRole("button", { name: "Reset local checks" }).click();
+  await expect(page.getByRole("status")).toContainText("0 of 4 local checks marked. Marks are not stored.");
   await expect(page.getByRole("checkbox").first()).not.toBeChecked();
 });
 
-test("@claim:optional-review-guidance labels the checklist as optional guidance", async ({ page }) => {
-  await expect(page.getByText(OPTIONAL_REVIEW_GUIDANCE, { exact: true })).toBeVisible();
+test("@claim:self-guided-checklist-guidance forbids unsupported external-review claims", async ({ page }) => {
+  await expect(page.getByText(SELF_GUIDED_CHECKLIST_GUIDANCE, { exact: true })).toBeVisible();
 
   await page.goto("/terms/");
-  await expect(page.getByText(OPTIONAL_REVIEW_GUIDANCE, { exact: false })).toBeVisible();
+  await expect(page.getByText(SELF_GUIDED_CHECKLIST_GUIDANCE, { exact: false })).toBeVisible();
 
-  const publicSources = [
+  const productClaimSources = [
+    readFileSync(new URL("../../.factory/brief.json", import.meta.url), "utf8"),
+    readFileSync(new URL("../../.factory/claims.json", import.meta.url), "utf8"),
+    readFileSync(new URL("../../.factory/pedagogy-evidence.md", import.meta.url), "utf8"),
+    readFileSync(new URL("../../.factory/facilitator-review.md", import.meta.url), "utf8"),
+    readFileSync(new URL("../../.factory/copy-audit.md", import.meta.url), "utf8"),
     readFileSync(new URL("../../src/main.ts", import.meta.url), "utf8"),
     readFileSync(new URL("../../README.md", import.meta.url), "utf8"),
-    readFileSync(new URL("../../terms/index.html", import.meta.url), "utf8")
+    readFileSync(new URL("../../index.html", import.meta.url), "utf8"),
+    readFileSync(new URL("../../privacy/index.html", import.meta.url), "utf8"),
+    readFileSync(new URL("../../terms/index.html", import.meta.url), "utf8"),
+    readFileSync(new URL("../../public/manifest.webmanifest", import.meta.url), "utf8")
   ];
-  const unprovableReviewStatement = /teacher-reviewed pedagogy|qualified (?:teacher|educator) review|teacher study|(?:teacher|educator)[ -](?:reviewed|approved|validated)|reviewed by (?:an? )?(?:qualified )?(?:teacher|educator)|(?:proven|validated) pedagog(?:y|ical)/i;
-  for (const source of publicSources) expect(source).toContain(OPTIONAL_REVIEW_GUIDANCE);
-  expect(publicSources.join("\n")).not.toMatch(unprovableReviewStatement);
-  expect(publicSources.join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
+  const reviewFacingSurfaces = productClaimSources.slice(5, 6).concat(productClaimSources.slice(6, 7), productClaimSources.slice(9, 10));
+  for (const source of reviewFacingSurfaces) expect(source).toContain(SELF_GUIDED_CHECKLIST_GUIDANCE);
+  expect(productClaimSources.join("\n")).not.toMatch(UNSUPPORTED_EXTERNAL_REVIEW_PROMISE);
+  expect(productClaimSources.join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
+  expect(productClaimSources[1]).toContain(`"claim":"${FACILITATOR_CHECKLIST_CLAIM}"`);
 });
 
 test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser", async ({ page }) => {

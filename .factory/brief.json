@@ -5,6 +5,6 @@
   "user": "An elementary teacher or parent who wants children to see and manipulate the intermediate structure of arithmetic rather than memorize answer snapshots.",
   "smallest_useful_product": "Offline web game for addition/subtraction to 100: manipulate counters and ten-frames, narrate each transformation, replay an attempt, and generate a discussion card.",
   "non_goals": ["leaderboards", "timed drills", "AI grading", "a full K–12 curriculum"],
-  "constraints": ["No child identifiers", "Accessible color and non-drag input alternatives", "Optional facilitator review checklist with no learning-outcome claim", "Original visual assets"],
+  "constraints": ["No child identifiers", "Accessible color and non-drag input alternatives", "Self-guided four-check facilitator checklist; marks are not stored and it makes no learning-outcome claim", "Original visual assets"],
   "monetization": "free"
 }

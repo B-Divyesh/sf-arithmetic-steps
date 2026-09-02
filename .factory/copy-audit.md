@@ -32,9 +32,10 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | Let the child choose the chunk, even when it is not the shortest path. | 14 | Adult guidance |
 | Ask “What stayed the same?” before offering a strategy. | 10 | Adult guidance |
 | Local checklist | 2 | Section label |
-| Review this tool before classroom use | 6 | `facilitator-review` |
-| This optional checklist is guidance, not evidence of learning outcomes. | 10 | `optional-review-guidance` |
-| Use it to decide whether the tool fits your setting. | 10 | `facilitator-review` |
+| Use four local checks before classroom use | 7 | `facilitator-checklist` |
+| This self-guided checklist is guidance, not evidence of learning outcomes. | 10 | `self-guided-checklist-guidance` |
+| Complete and reset its four local checks before classroom use. | 10 | `facilitator-checklist` |
+| Checklist marks are not stored. | 5 | `facilitator-checklist` |
 | Mark each check after you try it | 7 | Checklist instruction |
 | Finish the sample. | 3 | Checklist item |
 | Remove the final 8 in the supplied route. | 9 | Checklist instruction |
@@ -45,7 +46,7 @@ quantity; a **step** is one recorded change; a **counter** is one movable unit.
 | Finish a route, replay it, and read the discussion prompts. | 10 | Checklist instruction |
 | Check access for your setting. | 6 | Checklist item |
 | Use keyboard controls and decide how you will support the learner. | 11 | Checklist instruction |
-| Reset review checklist | 3 | Clears local checklist marks |
+| Reset local checks | 3 | Clears local checklist marks |
 | How it works | 3 | Process label |
 | Move, explain, and replay each step | 6 | Process heading |
 | Move | 1 | Step one heading |
@@ -59,7 +60,7 @@ No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
 
-The active product copy labels the checklist as optional guidance. It makes no
-outside-review, study, validation, or learning-outcome promise. The researched
-brief retains only the testable facilitator checklist and executable
-learning-flow claims.
+The active product copy labels the checklist as self-guided guidance. It makes
+no outside-review, study, validation, or learning-outcome promise. The
+researched brief retains only the testable four-check facilitator behavior and
+executable learning-flow claims.

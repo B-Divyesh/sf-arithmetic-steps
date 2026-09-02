@@ -1,9 +1,9 @@
 # Optional guidance boundary
 
-The researched brief requires an optional facilitator review checklist with no
-learning-outcome claim.
+The researched brief requires a self-guided four-check facilitator checklist.
+Its marks are not stored and it makes no learning-outcome claim.
 
-This optional checklist is guidance, not evidence of learning outcomes.
+This self-guided checklist is guidance, not evidence of learning outcomes.
 
 The release makes no outside-review, classroom-study, approval, validation, or
 academic-outcome claim.
@@ -25,6 +25,6 @@ The observable safeguards implemented in the product are:
   regressions.
 
 The exact public claims and their sandbox commands remain in
-`.factory/claims.json`. The optional-guidance claim has its own regression. It
-requires the boundary on each review-facing public surface and rejects claims
-of outside review, validation, a study, or improved learning.
+`.factory/claims.json`. The self-guided-guidance claim has its own regression.
+It requires the boundary on each product claim surface and rejects unsupported
+third-party endorsement, validation, study, or learning promises.

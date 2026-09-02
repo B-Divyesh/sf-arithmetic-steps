@@ -40,11 +40,11 @@ async function runDesktop(browser) {
     sentence: await page.locator(".lede").innerText(),
     primaryAction: await page.getByRole("button", { name: "Try it with sample data" }).innerText(),
     facts: await page.locator(".hero-facts li").allTextContents(),
-    optionalGuidance: await page.getByText("This optional checklist is guidance, not evidence of learning outcomes.", { exact: true }).innerText()
+    selfGuidedGuidance: await page.getByText("This self-guided checklist is guidance, not evidence of learning outcomes.", { exact: true }).innerText()
   };
   assert(firstRead.h1.length === 1, "landing must have one h1");
   assert(firstRead.sentence.includes("elementary children") && firstRead.sentence.includes("teacher or parent"), "first screen does not name audience");
-  assert(firstRead.optionalGuidance === "This optional checklist is guidance, not evidence of learning outcomes.", "optional checklist boundary is missing");
+  assert(firstRead.selfGuidedGuidance === "This self-guided checklist is guidance, not evidence of learning outcomes.", "self-guided checklist boundary is missing");
   await page.screenshot({ path: artifact("desktop-landing.png"), fullPage: true });
   const landingAxe = await axe(page, "desktop landing");
 

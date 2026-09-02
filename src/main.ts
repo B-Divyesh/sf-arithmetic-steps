@@ -299,9 +299,9 @@ function setupTemplate(): string {
     <section class="facilitator-review" id="facilitator-review" aria-labelledby="facilitator-review-title">
       <div class="section-sign">
         <span aria-hidden="true">02</span>
-        <div><p>Local checklist</p><h2 id="facilitator-review-title">Review this tool before classroom use</h2></div>
+        <div><p>Local checklist</p><h2 id="facilitator-review-title">Use four local checks before classroom use</h2></div>
       </div>
-      <p><strong>This optional checklist is guidance, not evidence of learning outcomes.</strong> Use it to decide whether the tool fits your setting.</p>
+      <p><strong>This self-guided checklist is guidance, not evidence of learning outcomes.</strong> Complete and reset its four local checks before classroom use. Checklist marks are not stored.</p>
       <form id="facilitator-review-form">
         <fieldset>
           <legend>Mark each check after you try it</legend>
@@ -312,7 +312,7 @@ function setupTemplate(): string {
             <li><label><input type="checkbox" name="facilitator-review" value="access" /><span><strong>Check access for your setting.</strong> Use keyboard controls and decide how you will support the learner.</span></label></li>
           </ol>
         </fieldset>
-        <div class="facilitator-review-footer"><p id="facilitator-review-status" role="status" aria-live="polite">0 of 4 review checks marked. Marks are not stored.</p><button class="secondary-button" id="reset-facilitator-review" type="button">Reset review checklist</button></div>
+        <div class="facilitator-review-footer"><p id="facilitator-review-status" role="status" aria-live="polite">0 of 4 local checks marked. Marks are not stored.</p><button class="secondary-button" id="reset-facilitator-review" type="button">Reset local checks</button></div>
       </form>
     </section>
   </section>
@@ -514,8 +514,8 @@ function bindSetup(): void {
   const updateReviewStatus = (): void => {
     const marked = reviewChecks.filter((check) => check.checked).length;
     if (reviewStatus) reviewStatus.textContent = marked === reviewChecks.length
-      ? `All ${marked} review checks marked. Decide whether it fits your setting before classroom use.`
-      : `${marked} of ${reviewChecks.length} review checks marked. Marks are not stored.`;
+      ? `All ${marked} local checks marked. Decide whether it fits your setting before classroom use.`
+      : `${marked} of ${reviewChecks.length} local checks marked. Marks are not stored.`;
   };
   reviewChecks.forEach((check) => check.addEventListener("change", updateReviewStatus));
   document.querySelector<HTMLButtonElement>("#reset-facilitator-review")?.addEventListener("click", () => {

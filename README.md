@@ -8,12 +8,12 @@ Live product: [arithmetic-steps.sociobot.in](https://arithmetic-steps.sociobot.i
 
 It is for elementary teachers, parents, and children discussing the structure inside a calculation. An adult can let the child choose each chunk, then ask what changed and what stayed the same.
 
-## Review before classroom use
+## Use four local checks before classroom use
 
-This optional checklist is guidance, not evidence of learning outcomes. It lets
-educators and caregivers inspect the supplied sample before classroom use. It
-covers child-chosen chunks, reasoning prompts, and keyboard controls. Checklist
-marks stay only on the open page.
+This self-guided checklist is guidance, not evidence of learning outcomes. A
+facilitator can complete and reset four local checks before classroom use.
+Checklist marks are not stored. The checks cover the supplied sample,
+child-chosen chunks, reasoning prompts, and keyboard controls.
 
 ## Try the demo
 
@@ -80,7 +80,7 @@ No problem data is sent to a server. The Privacy page explains browser storage a
 - [.factory/brief.json](.factory/brief.json) records the scoped opportunity.
 - [.factory/design.md](.factory/design.md) records the art-deco transit-poster system and generated-art provenance.
 - [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the checklist boundary and observable guidance safeguards.
-- [.factory/facilitator-review.md](.factory/facilitator-review.md) documents the executable local review checklist.
+- [.factory/facilitator-review.md](.factory/facilitator-review.md) documents the executable self-guided checklist.
 - [.factory/handoff.md](.factory/handoff.md) records final verification and known gaps.
 
 ## License
