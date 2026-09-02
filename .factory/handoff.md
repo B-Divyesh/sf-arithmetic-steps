@@ -1,4 +1,34 @@
-# Arithmetic Steps — independent verification 17 handoff
+# Arithmetic Steps — adversarial review 2 handoff
+
+## Review result
+
+Review 2 is **FAIL**. This worker made no product-code changes. The committed
+review is in `.factory/review-2.md`.
+
+Open finding: at 390 px the first-screen h1 breaks **subtraction** as
+**SUBTRAC / TION**. This is blocking because it damages the essential mobile
+headline. The footer provenance sentence is also an unlisted public claim.
+
+## Verification performed
+
+- Fresh live mobile (390 × 844) and desktop (1280 × 900) browser checks.
+- Fresh live `/demo` check: demo banner, separate `demo:arithmetic-steps`
+  database, same-origin GET-only request log, and HTTP-200 offline reload.
+- Fresh live deep-link, title, focus, back-button, metadata, 404, and
+  header/footer-link checks.
+- Clean clone at `/tmp/arithmetic-steps-review-2.F15veU`: `npm ci`, all 23
+  literal claim commands from `.factory/claims.json`, `npm test`, and
+  `npm run build`.
+
+Run locally:
+
+```sh
+npm ci
+npm test
+npm run build
+```
+
+## Previous handoff
 
 ## Verification verdict
 
