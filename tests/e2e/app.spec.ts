@@ -72,9 +72,9 @@ type ExportPayload = {
 };
 
 async function openSavedProblems(page: Page): Promise<void> {
-  await page.goto("/#history");
+  await page.goto("/saved-problems");
   await waitForStorageReady(page);
-  await expect(page).toHaveURL(/#history$/);
+  await expect(page).toHaveURL(/\/saved-problems$/);
   // A direct, fresh navigation has to finish the app's asynchronous history
   // setup before any export assertion. In particular, this is the point that
   // regressed in mobile Chromium when two fresh contexts raced each other.
@@ -203,10 +203,36 @@ test("completes, narrates, replays, and saves an addition route", async ({ page 
   await page.getByRole("button", { name: "Previous" }).click();
   await expect(page.locator(".replay-narration")).toContainText("Move 2 from 7 to 8");
 
-  await page.goto("/#history");
+  await page.goto("/saved-problems");
   await expect(page.getByText("8 + 7 = 15")).toBeVisible();
   await page.getByRole("button", { name: "Replay steps" }).click();
   await expect(page.getByRole("button", { name: "Play steps" })).toBeVisible();
+});
+
+test("uses a real saved-problems route with a title, focused heading, and route announcement", async ({ page }) => {
+  await page.goto("/saved-problems");
+  await waitForStorageReady(page);
+  await expect(page).toHaveURL(/\/saved-problems$/);
+  await expect(page).toHaveTitle("Saved problems — Arithmetic Steps");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Saved problems");
+
+  await page.getByRole("link", { name: "Practice" }).click();
+  await expect(page).toHaveURL(/\/practice$/);
+  await expect(page).toHaveTitle("Practice arithmetic steps — Arithmetic Steps");
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect(page.locator("#route-announcement")).toHaveText("Practice arithmetic steps — Arithmetic Steps opened.");
+
+  await page.getByRole("link", { name: "Saved problems" }).click();
+  await expect(page).toHaveURL(/\/saved-problems$/);
+  await expect(page).toHaveTitle("Saved problems — Arithmetic Steps");
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect(page.locator("#route-announcement")).toHaveText("Saved problems — Arithmetic Steps opened.");
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/practice$/);
+  await expect(page).toHaveTitle("Practice arithmetic steps — Arithmetic Steps");
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect(page.locator("#route-announcement")).toHaveText("Practice arithmetic steps — Arithmetic Steps opened.");
 });
 
 test("supports a child-chosen multi-step subtraction route", async ({ page }) => {
@@ -303,7 +329,7 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
   await page.getByRole("button", { name: "Start for real" }).click();
-  await expect(page).toHaveURL(/\/#learn$/);
+  await expect(page).toHaveURL(/\/$/);
 
   // Regression: this used to pass only through the Start for real button.
   // Going directly to /demo, then following the normal home link, left the
@@ -338,7 +364,7 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
 
   await page.getByRole("link", { name: "Arithmetic Steps home" }).click();
-  await expect(page).toHaveURL(/\/#learn$/);
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Explore addition and subtraction steps");
   const namesAfterLeaving = await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name));
   expect(namesAfterLeaving).not.toContain("demo:arithmetic-steps");
@@ -684,7 +710,7 @@ test("keeps Saved problems open when completion storage finishes after navigatio
   await page.getByRole("button", { name: /Move the chunk/ }).click();
 
   // Make the completion write wait, then navigate before its async handler
-  // resumes. The old handler replaced #history with #route-* and removed the
+  // resumes. The old handler replaced the saved route and removed the
   // Saved problems heading after the navigation had already succeeded.
   await page.evaluate(async () => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -717,11 +743,11 @@ test("keeps Saved problems open when completion storage finishes after navigatio
 
   await expect(page.getByRole("heading", { name: "Saved problems", exact: true })).toBeVisible();
   await expect(page.locator(".history-list").getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
-  await expect(page).toHaveURL(/#history$/);
+  await expect(page).toHaveURL(/\/saved-problems$/);
 });
 
 test("@claim:json-import restores valid routes chosen by the user", async ({ page }) => {
-  await page.goto("/#history");
+  await page.goto("/saved-problems");
   await page.getByLabel("Import JSON").setInputFiles({
     name: "routes.json",
     mimeType: "application/json",
@@ -750,7 +776,7 @@ test("@claim:clear-data keeps saved problems on cancel and deletes them on confi
   await page.getByRole("button", { name: /Move the chunk/ }).click();
   await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("The answer is 15.");
-  await page.goto("/#history");
+  await page.goto("/saved-problems");
   await expect(page.getByRole("heading", { name: "Saved problems" })).toBeVisible();
   await expect(page.getByText("8 + 7 = 15", { exact: true })).toHaveCount(1);
 

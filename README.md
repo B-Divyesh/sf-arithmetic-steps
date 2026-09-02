@@ -31,9 +31,9 @@ demo. See
 - Interactive ten-frames and one-counters with equivalent screen-reader descriptions
 - Direct counter dragging plus labelled keyboard controls for the same moves
 - Plain-language reasoning steps, replay, and a print-ready discussion card
-- IndexedDB persistence for completed history, with a local checkpoint for unfinished work
+- Completed problems stay in this browser. Unfinished work remains after a refresh.
 - JSON export/import, confirmed clear controls, and no accounts or child identifiers
-- Installable PWA with an app-shell cache and tested offline operation
+- Install the activity and use it offline after the first visit.
 - Responsive 390 px layout, visible keyboard focus, reduced-motion behavior, and tested print styles
 
 The product intentionally has no timer, score, streak, leaderboard, answer guessing, AI grading, or third-party analytics.
@@ -56,7 +56,9 @@ npm test
 npm run build
 ```
 
-`npm test` runs unit tests plus Playwright flows in desktop Chromium and a 393 px mobile viewport, including an offline reload and axe accessibility scan. Playwright 1.58.2 is pinned; if its browser is missing locally, run `npx playwright install chromium` once.
+`npm test` runs unit tests and Playwright in desktop Chromium and a 393 px mobile viewport. It includes an offline reload and an Axe accessibility scan.
+
+Playwright 1.58.2 is pinned. If its browser is missing locally, run `npx playwright install chromium` once.
 
 Every public product claim is declared in [.factory/claims.json](.factory/claims.json).
 Each may be run from a clean demo context with its listed command, for example:
@@ -65,7 +67,7 @@ Each may be run from a clean demo context with its listed command, for example:
 npm test -- --grep @claim:offline-reload
 ```
 
-The exact production command is `npm run build`. It creates the static deployment at `dist/`, with `dist/index.html` at its root, legal pages, immutable hashed application assets, and a versioned precache service worker. Preview it with:
+The exact production command is `npm run build`. It creates `dist/` with the app, legal pages, hashed assets, and offline service worker. Preview it with:
 
 ```sh
 npm run preview

@@ -64,3 +64,30 @@ The active product copy labels the checklist as self-guided guidance. It makes
 no outside-review, study, validation, or learning-outcome promise. The
 researched brief retains only the testable four-check facilitator behavior and
 executable learning-flow claims.
+
+## README copy audit
+
+Audited 2026-09-02 after the saved-problems route repair. The README uses the
+same terms as the activity: **problem**, **chunk**, **step**, **counter**, and
+**saved problems**. Implementation names appear only in the demo-storage note
+for people verifying isolation.
+
+| Copy | Words |
+| --- | ---: |
+| Arithmetic Steps is an offline addition and subtraction activity for children learning numbers to 100. | 15 |
+| A child moves counters in chunks, explains each step, replays the work, and prints a discussion card. | 17 |
+| It is for elementary teachers, parents, and children discussing the structure inside a calculation. | 15 |
+| An adult can let the child choose each chunk, then ask what changed and what stayed the same. | 18 |
+| Open the sample problem, or press Try it with sample data on the landing page. | 15 |
+| It starts a part-complete 52 − 18 problem so a learner can finish the last chunk and replay the steps right away. | 21 |
+| Completed problems stay in this browser. | 6 |
+| Unfinished work remains after a refresh. | 6 |
+| Install the activity and use it offline after the first visit. | 11 |
+| npm test runs unit tests and Playwright in desktop Chromium and a 393 px mobile viewport. | 15 |
+| It includes an offline reload and an Axe accessibility scan. | 10 |
+| The exact production command is npm run build. | 9 |
+| It creates dist/ with the app, legal pages, hashed assets, and offline service worker. | 14 |
+
+No audited README sentence exceeds 22 words. No audited sentence contains a
+banned marketing term. The prior storage and install jargon was replaced with
+the useful result for a teacher, parent, or child.

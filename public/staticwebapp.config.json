@@ -12,6 +12,18 @@
       "rewrite": "/index.html"
     },
     {
+      "route": "/practice",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/saved-problems/*",
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/saved-problems",
+      "rewrite": "/index.html"
+    },
+    {
       "route": "/assets/*",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable"

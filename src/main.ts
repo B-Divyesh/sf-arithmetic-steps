@@ -41,8 +41,17 @@ const app = requiredElement<HTMLDivElement>("#app");
 const toast = requiredElement<HTMLDivElement>("#toast");
 const networkBanner = requiredElement<HTMLDivElement>("#network-banner");
 const demoBanner = requiredElement<HTMLDivElement>("#demo-banner");
+const mainLandmark = requiredElement<HTMLElement>("#main");
 
 applyBuildVersion();
+
+// Browsers scroll to an in-page target but do not consistently move keyboard
+// focus there. A skip link must do both, especially in a route-rendered app.
+document.querySelector<HTMLAnchorElement>(".skip-link")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  mainLandmark.focus();
+  mainLandmark.scrollIntoView({ block: "start" });
+});
 
 function urlIsDemo(url: URL): boolean {
   return url.pathname === "/demo" || url.searchParams.get("demo") === "1";
@@ -53,6 +62,23 @@ function locationIsDemo(): boolean {
 }
 
 type View = "setup" | "work" | "complete" | "history";
+
+type AppRoute = "landing" | "practice" | "saved" | "saved-detail" | "demo";
+
+function appRoute(url = new URL(location.href)): AppRoute {
+  if (urlIsDemo(url)) return "demo";
+  if (url.pathname === "/saved-problems") return "saved";
+  if (url.pathname.startsWith("/saved-problems/")) return "saved-detail";
+  if (url.pathname === "/practice") return "practice";
+  return "landing";
+}
+
+function savedAttemptId(url = new URL(location.href)): string | null {
+  if (appRoute(url) !== "saved-detail") return null;
+  const value = url.pathname.slice("/saved-problems/".length);
+  try { return value ? decodeURIComponent(value) : null; }
+  catch { return null; }
+}
 
 const state: {
   view: View;
@@ -93,9 +119,29 @@ async function prepareCurrentStorage(): Promise<void> {
 
 function updateDemoBanner(): void {
   demoBanner.hidden = !state.isDemo;
-  document.title = state.isDemo
+  const route = appRoute();
+  document.title = state.isDemo || route === "demo"
     ? "Demo — Arithmetic Steps"
-    : "Arithmetic Steps — Explore addition and subtraction";
+    : route === "saved"
+      ? "Saved problems — Arithmetic Steps"
+      : route === "saved-detail"
+        ? "Saved problem — Arithmetic Steps"
+        : state.view === "complete"
+          ? "Problem complete — Arithmetic Steps"
+          : state.view === "work" || route === "practice"
+            ? "Practice arithmetic steps — Arithmetic Steps"
+            : "Arithmetic Steps — Explain arithmetic steps";
+  const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (canonical) canonical.href = `https://arithmetic-steps.sociobot.in${location.pathname}`;
+}
+
+function announceRouteChange(): void {
+  updateDemoBanner();
+  window.requestAnimationFrame(() => {
+    document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
+    const announcer = document.querySelector<HTMLElement>("#route-announcement");
+    if (announcer) announcer.textContent = `${document.title} opened.`;
+  });
 }
 
 function sampleRoute(): ActiveRoute {
@@ -174,7 +220,7 @@ async function leaveDemo(replaceLocation = true): Promise<void> {
   state.first = "8";
   state.second = "7";
   state.error = "";
-  if (replaceLocation) history.replaceState(null, "", "/#learn");
+  if (replaceLocation) history.replaceState(null, "", "/");
   updateDemoBanner();
   render();
   document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
@@ -453,7 +499,7 @@ function historyTemplate(attempts: Attempt[], error = ""): string {
   return `<section class="history-page" aria-labelledby="page-title">
     <div class="history-heading"><p class="eyebrow">Stored on this device</p><h1 id="page-title" tabindex="-1">Saved problems</h1><p>Finished reasoning steps stay only in this browser. Replay one for a conversation, or export your data.</p></div>
     <div class="history-tools">
-      <a class="primary-button" href="/#learn">Start a new problem</a>
+      <a class="primary-button" href="/practice">Start a new problem</a>
       <button class="secondary-button" id="export-history" type="button" ${attempts.length ? "" : "disabled"}>Export JSON</button>
       <label class="secondary-button file-button">Import JSON<input id="import-history" type="file" accept="application/json,.json" /></label>
     </div>
@@ -461,7 +507,7 @@ function historyTemplate(attempts: Attempt[], error = ""): string {
     ${attempts.length ? `<ol class="history-list">${attempts.map((attempt) => `<li>
       <div class="history-route"><span class="station-dot" aria-hidden="true"></span><div><strong>${escapeHtml(equationLabel(attempt))} = ${attempt.result}</strong><p>${attempt.frames.length} steps · ${escapeHtml(new Date(attempt.createdAt).toLocaleDateString())}</p></div></div>
       <button class="quiet-button" type="button" data-replay-id="${escapeHtml(attempt.id)}">Replay steps</button>
-    </li>`).join("")}</ol>` : `<div class="empty-state"><span class="empty-rails" aria-hidden="true"></span><h2>No finished problems yet</h2><p>Complete a problem and its reasoning steps will wait here for the next conversation.</p><a href="/#learn">Choose the first problem</a></div>`}
+    </li>`).join("")}</ol>` : `<div class="empty-state"><span class="empty-rails" aria-hidden="true"></span><h2>No finished problems yet</h2><p>Complete a problem and its reasoning steps will wait here for the next conversation.</p><a href="/practice">Choose the first problem</a></div>`}
     ${attempts.length ? `<div class="clear-zone">${state.confirmingClear ? `<p><strong>Remove all ${attempts.length} saved ${attempts.length === 1 ? "problem" : "problems"} from this browser?</strong> Export first if you may need them later.</p><button id="confirm-clear" class="danger-button" type="button">Remove all problems</button><button id="cancel-clear" class="quiet-button" type="button">Keep problems</button>` : `<button id="ask-clear" class="quiet-button" type="button">Clear saved problems…</button>`}</div>` : ""}
   </section>`;
 }
@@ -502,7 +548,7 @@ function bindSetup(): void {
     const frame = currentFrame(state.route);
     state.amount = state.operation === "add" ? (additionSuggestions(frame.left, frame.right, state.direction)[0] ?? 1) : (subtractionSuggestions(frame.left, frame.right)[0] ?? 1);
     state.error = ""; state.view = "work";
-    history.replaceState(null, "", "#route");
+    history.replaceState(null, "", "/practice");
     const persistence = safelySaveActive();
     render();
     document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
@@ -641,7 +687,7 @@ function bindWork(): void {
       if (state.route?.id !== completedRouteId) return;
       if (isCurrentView("history")) { await renderHistory(); return; }
       if (!isCurrentView("complete")) return;
-      history.replaceState(null, "", `#route-${route.id}`); render();
+      history.replaceState(null, "", "/practice"); render();
       document.querySelector<HTMLHeadingElement>("#page-title")?.focus();
     } catch (error) {
       if (state.route?.id !== completedRouteId || !isCurrentView("complete")) return;
@@ -651,7 +697,7 @@ function bindWork(): void {
   });
   document.querySelector("#new-route")?.addEventListener("click", async () => {
     if (route.frames.length > 1 && !window.confirm("Leave this unfinished problem? Its steps will be removed.")) return;
-    await clearActive().catch(() => undefined); state.route = null; state.view = "setup"; history.replaceState(null, "", "#learn"); render();
+    await clearActive().catch(() => undefined); state.route = null; state.view = "setup"; history.replaceState(null, "", "/practice"); render();
   });
 }
 
@@ -682,10 +728,10 @@ function bindCompletion(): void {
     try { await navigator.clipboard.writeText(summary); showToast("Steps copied."); }
     catch { showToast("Copy was blocked. Use Print discussion card instead."); }
   });
-  document.querySelector("#start-another")?.addEventListener("click", () => { stopReplay(); state.route = null; state.view = "setup"; state.error = ""; history.replaceState(null, "", "#learn"); render(); });
+  document.querySelector("#start-another")?.addEventListener("click", () => { stopReplay(); state.route = null; state.view = "setup"; state.error = ""; history.replaceState(null, "", "/practice"); render(); });
 }
 
-async function renderHistory(error = ""): Promise<void> {
+async function renderHistory(error = "", announce = false): Promise<void> {
   state.view = "history"; stopReplay();
   updateDemoBanner();
   app.innerHTML = `<section class="history-page" aria-labelledby="page-title"><div class="history-heading"><p class="eyebrow">Stored on this device</p><h1 id="page-title" tabindex="-1">Saved problems</h1></div><div class="empty-state" role="status"><span class="empty-rails" aria-hidden="true"></span><h2>Opening saved problems…</h2><p>Reading the finished steps stored in this browser.</p></div></section>`;
@@ -696,7 +742,8 @@ async function renderHistory(error = ""): Promise<void> {
   document.querySelectorAll<HTMLButtonElement>("[data-replay-id]").forEach((button) => button.addEventListener("click", () => {
     const attempt = attempts.find((item) => item.id === button.dataset.replayId);
     if (!attempt) return;
-    state.route = { ...structuredClone(attempt), completed: true }; state.view = "complete"; state.replayIndex = 0; history.replaceState(null, "", `#route-${attempt.id}`); render();
+    state.route = { ...structuredClone(attempt), completed: true }; state.view = "complete"; state.replayIndex = 0;
+    history.pushState(null, "", `/saved-problems/${encodeURIComponent(attempt.id)}`); render(); announceRouteChange();
   }));
   document.querySelector("#export-history")?.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify({ product: "arithmetic-steps", exportedAt: new Date().toISOString(), attempts }, null, 2)], { type: "application/json" });
@@ -725,6 +772,7 @@ async function renderHistory(error = ""): Promise<void> {
   document.querySelector("#ask-clear")?.addEventListener("click", () => { state.confirmingClear = true; void renderHistory(); });
   document.querySelector("#cancel-clear")?.addEventListener("click", () => { state.confirmingClear = false; void renderHistory(); });
   document.querySelector("#confirm-clear")?.addEventListener("click", async () => { await clearAttempts(); state.confirmingClear = false; showToast("All saved problems were removed."); await renderHistory(); });
+  if (announce) announceRouteChange();
 }
 
 function render(): void {
@@ -736,32 +784,60 @@ function render(): void {
   else bindCompletion();
 }
 
-window.addEventListener("hashchange", () => {
-  const hash = location.hash;
-  if (hash === "#history") { state.confirmingClear = false; void renderHistory(); }
-  else if (hash === "#learn" || hash === "") { stopReplay(); state.view = "setup"; state.route = null; state.error = ""; render(); }
-});
+async function renderSavedAttempt(id: string, announce = false): Promise<void> {
+  let attempt: Attempt | undefined;
+  try { attempt = (await listAttempts()).find((item) => item.id === id); }
+  catch { /* Render the useful recovery state below. */ }
+  if (!attempt) {
+    history.replaceState(null, "", "/saved-problems");
+    await renderHistory("That saved problem is not available in this browser.", announce);
+    return;
+  }
+  state.route = { ...structuredClone(attempt), completed: true };
+  state.view = "complete";
+  state.replayIndex = 0;
+  render();
+  if (announce) announceRouteChange();
+}
 
-window.addEventListener("popstate", () => {
-  const shouldUseDemo = locationIsDemo();
-  if (shouldUseDemo === state.isDemo) return;
-  if (shouldUseDemo) void enterDemo(false);
-  else void leaveDemo(false);
-});
+async function syncLocation(announce = false): Promise<void> {
+  const route = appRoute();
+  const shouldUseDemo = route === "demo";
+  if (shouldUseDemo !== state.isDemo) {
+    if (shouldUseDemo) { await enterDemo(false); if (announce) announceRouteChange(); }
+    else { await leaveDemo(false); if (announce) announceRouteChange(); }
+    return;
+  }
+  if (route === "saved") { state.confirmingClear = false; await renderHistory("", announce); return; }
+  if (route === "saved-detail") { await renderSavedAttempt(savedAttemptId() ?? "", announce); return; }
+  stopReplay();
+  state.view = "setup";
+  state.route = null;
+  state.error = "";
+  render();
+  if (announce) announceRouteChange();
+}
 
-// Header, footer, and legal-page links are regular links so they retain their
-// expected browser behavior. In demo mode, wait for its disposable database
-// to be removed before following an ordinary navigation away from /demo.
-// This covers the common home/privacy/footer exits that cannot be handled by
-// the app's History API callback alone.
+window.addEventListener("popstate", () => { void syncLocation(true); });
+
+// Product routes use History API navigation so title, focus, and the route
+// announcement stay in sync. In demo mode, wait for its disposable database
+// to be removed before following an ordinary document navigation away from
+// /demo, such as a legal or source link.
 document.addEventListener("click", (event) => {
-  if (!state.isDemo || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
   if (!target || target.target || target.hasAttribute("download")) return;
   const destination = new URL(target.href, location.href);
-  if (urlIsDemo(destination)) return;
-  event.preventDefault();
-  void navigateAwayFromDemo(destination);
+  const internalRoute = destination.origin === location.origin && ["/", "/practice", "/demo", "/saved-problems"].some((path) => destination.pathname === path || destination.pathname.startsWith(`${path}/`));
+  if (internalRoute && !destination.hash) {
+    event.preventDefault();
+    history.pushState(null, "", `${destination.pathname}${destination.search}`);
+    void syncLocation(true);
+    return;
+  }
+  if (!state.isDemo || urlIsDemo(destination)) return;
+  event.preventDefault(); void navigateAwayFromDemo(destination);
 });
 
 document.querySelector<HTMLButtonElement>("#reset-demo")?.addEventListener("click", () => { void resetDemo(); });
@@ -822,7 +898,8 @@ async function bootstrap(): Promise<void> {
   } catch {
     showToast("Local storage is unavailable, but you can still practice while this page is open.");
   }
-  if (location.hash === "#history") { await renderHistory(); void registerServiceWorker(); return; }
+  if (appRoute() === "saved") { await renderHistory(); void registerServiceWorker(); return; }
+  if (appRoute() === "saved-detail") { await renderSavedAttempt(savedAttemptId() ?? ""); void registerServiceWorker(); return; }
   try {
     const active = await loadActive();
     if (active && !active.completed) {
