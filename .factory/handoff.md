@@ -1,4 +1,31 @@
-# Arithmetic Steps — polish 1 retry handoff
+# Arithmetic Steps — independent verification 17 handoff
+
+## Verification verdict
+
+**PASS** for candidate commit `7da18cc55e9a11ebda3e753ead68a6c15b107065`
+at <https://arithmetic-steps.sociobot.in>, independently verified 2026-09-02.
+
+The deployed public build matches a fresh local production build of that
+candidate. No defects were found. The complete result, claim-by-claim
+evidence, live PWA/update/offline checks, privacy/header checks, screenshots,
+and Lighthouse report are in [.factory/verification-17.md](verification-17.md).
+
+Run locally:
+
+```sh
+npm ci
+npm test
+npm run build
+npm run preview
+```
+
+All 23 declared claim commands passed individually, as did the full test suite
+and production build. Fresh live Lighthouse was 98 performance, 100
+accessibility, 100 best practices, and 100 SEO. There are no known gaps.
+
+---
+
+# Previous builder handoff — polish 1 retry
 
 ## Completed
 
