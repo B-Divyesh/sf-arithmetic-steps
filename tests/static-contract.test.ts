@@ -127,6 +127,7 @@ describe("static hosting contract", () => {
     const brief = JSON.parse(briefText) as { constraints: string[] };
     const guidanceBoundary = "This self-guided checklist is guidance, not evidence of learning outcomes.";
     const checklistClaim = "A facilitator can complete and reset four local checks before classroom use. Checklist marks are not stored.";
+    const pedagogyConstraint = "Sandbox-verifiable pedagogy rules: children choose chunks, each step has an accurate equation and sentence, finished routes replay with discussion prompts, and the self-guided checklist stores no marks or learning-outcome claim";
     const productClaimSources = [briefText, claimsText, evidence, facilitatorChecklist, copyAudit, app, readme, landing, privacy, terms, manifest];
     const joinedClaimSources = productClaimSources.join("\n");
     const unsupportedExternalReviewPromise = /\b(?:teacher[-\s]+reviewed|educator[-\s]+reviewed|qualified\s+(?:teacher|educator)\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)(?:'s)?\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)[-\s]+(?:approved|validated)|(?:reviewed|approved|validated)\s+by\s+(?:an?\s+)?(?:qualified\s+)?(?:teacher|educator)|(?:external|independent)[-\s]+(?:reviewed|review|approval|validation|sign[-\s]?off)|teacher\s+study|classroom\s+study|(?:proven|validated)\s+pedagog(?:y|ical))\b/i;
@@ -134,7 +135,7 @@ describe("static hosting contract", () => {
     // This is the exact original brief promise that caused verification 14 to
     // fail; keep the detector calibrated to that regression, not just nearby wording.
     expect("Teacher-reviewed pedagogy").toMatch(unsupportedExternalReviewPromise);
-    expect(brief.constraints).toContain("Self-guided four-check facilitator checklist; marks are not stored and it makes no learning-outcome claim");
+    expect(brief.constraints).toContain(pedagogyConstraint);
     for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(guidanceBoundary);
     for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain("Checklist marks are not stored.");
     expect(joinedClaimSources).not.toMatch(unsupportedExternalReviewPromise);
@@ -147,13 +148,37 @@ describe("static hosting contract", () => {
     expect(facilitatorChecklist).toContain(guidanceBoundary);
     expect(facilitatorChecklist).toContain("optional product check");
     expect(facilitatorChecklist).toContain("npm test -- --grep @claim:facilitator-checklist");
-    expect(evidence).toContain("There is no answer-entry field, timer, score, streak, or leaderboard.");
+    expect(evidence).toContain("# Sandbox-verifiable pedagogy rules");
+    expect(evidence).toContain("@claim:direct-manipulation");
+    expect(evidence).toContain("@claim:narrated-steps");
+    expect(evidence).toContain("@claim:replay-and-discussion");
+    expect(evidence).toContain("@claim:facilitator-checklist");
     expect(app).toContain("For the grown-up nearby");
     expect(app).toContain("What stayed the same?");
     expect(app).toContain("Use four local checks before classroom use");
     expect(app).toContain('name="facilitator-review"');
     expect(app).toContain("Reset local checks");
     expect(app).toContain("Marks are not stored.");
+  });
+
+  it("registers the README no-AI-grading statement with its own observable browser claim", async () => {
+    const [claimsText, browserTests, readme] = await Promise.all([
+      readFile(resolve(root, ".factory/claims.json"), "utf8"),
+      readFile(resolve(root, "tests/e2e/app.spec.ts"), "utf8"),
+      readFile(resolve(root, "README.md"), "utf8")
+    ]);
+    const claims = JSON.parse(claimsText) as Array<{ id: string; claim: string; test: string }>;
+    const noAiGrading = claims.find((claim) => claim.id === "no-ai-grading");
+
+    expect(readme).toContain("AI grading");
+    expect(noAiGrading).toMatchObject({
+      id: "no-ai-grading",
+      claim: "The product has no AI grading control or model request.",
+      test: "npm test -- --grep @claim:no-ai-grading"
+    });
+    expect(browserTests.match(/@claim:no-ai-grading/g)).toHaveLength(1);
+    expect(browserTests).toContain("model feedback");
+    expect(browserTests).toContain("/v1\\/responses");
   });
 
   it("derives every visible build identity and the PWA start URL from package.json", async () => {

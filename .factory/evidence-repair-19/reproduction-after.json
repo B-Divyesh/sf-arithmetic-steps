@@ -1,0 +1,16 @@
+{
+  "finalNarration": "Take away 8 to land on a friendly ten. 42 − 8 = 34. Nothing is left to take away.",
+  "ledgerHasFinal": true,
+  "ledgerHasWrong": false,
+  "replay": "Take away 8 to land on a friendly ten. 42 − 8 = 34. Nothing is left to take away.",
+  "cardHasFinal": true,
+  "cardHasWrong": false,
+  "desktopAxe": 0,
+  "mobileAxe": 0,
+  "mobile": {
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "skipFocused": "Skip to main content"
+  },
+  "errors": []
+}

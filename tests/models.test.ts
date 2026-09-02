@@ -27,7 +27,8 @@ describe("problem validation", () => {
   it("keeps work within whole numbers to 100", () => {
     expect(validateProblem("add", 70, 31)).toMatch(/100 or less/);
     expect(validateProblem("add", 0, 0)).toMatch(/at least one/);
-    expect(validateProblem("subtract", 12, 20)).toMatch(/smaller/);
+    expect(validateProblem("subtract", 12, 20)).toMatch(/cannot be greater/);
+    expect(validateProblem("subtract", 100, 100)).toBeNull();
     expect(validateProblem("subtract", 20, 0)).toMatch(/something to take away/);
     expect(validateProblem("add", 38, 27)).toBeNull();
   });
@@ -69,9 +70,19 @@ describe("subtraction routes", () => {
     const route = createRoute("subtract", 52, 18);
     subtractChunk(route, 10, "split");
     expect(route.frames.at(-1)).toMatchObject({ left: 42, right: 8, equation: "42 − 8" });
-    subtractChunk(route, 8, "make-ten");
-    expect(route.frames.at(-1)).toMatchObject({ left: 34, right: 0 });
+    const finalChunk = subtractChunk(route, 8, "make-ten");
+    expect(finalChunk).toMatchObject({ left: 34, right: 0 });
+    expect(finalChunk.narration).toBe("Take away 8 to land on a friendly ten. 42 − 8 = 34. Nothing is left to take away.");
+    expect(finalChunk.narration).not.toContain("0 is still waiting");
     expect(finishRoute(route).equation).toBe("52 − 18 = 34");
+  });
+
+  it("uses the same final narration at the zero-result boundary", () => {
+    const route = createRoute("subtract", 100, 100);
+    const finalChunk = subtractChunk(route, 100, "own");
+    expect(finalChunk).toMatchObject({ left: 0, right: 0, equation: "0" });
+    expect(finalChunk.narration).toBe("Take away 100 to try my own step. 100 − 100 = 0. Nothing is left to take away.");
+    expect(finalChunk.narration).not.toContain("0 is still waiting");
   });
 
   it("offers a chunk that lands on a ten", () => {

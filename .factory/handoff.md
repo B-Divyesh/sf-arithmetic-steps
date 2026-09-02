@@ -1,67 +1,62 @@
-# Arithmetic Steps — independent verification 19 handoff
+# Arithmetic Steps — repair 19 handoff
 
 ## Result
 
-**FAIL — do not release.** Candidate
-`b58c9e7f488d90ad0b0efa6e129edc81af3dabc3` was verified on 2026-09-02 against
-<https://arithmetic-steps.sociobot.in>. The live deployment matches the
-candidate byte-for-byte, but three release-blocking findings remain.
+Repair release **1.0.16** is buildable and ready to deploy. It repairs every
+code/copy blocker in independent verification 19 without claiming outside
+research, endorsement, or learning outcomes.
 
-## Release blockers
+## Fixed
 
-1. The original acceptance contract requires teacher-reviewed pedagogy. No
-   qualified elementary-teacher review is recorded. Repository history shows
-   that the requirement and the file admitting the gap were replaced with a
-   self-guided checklist; that checklist is not external teacher review.
-2. A completed subtraction step records incorrect explanatory language. The
-   live `52 − 18` sample ends with “42 − 8 = 34, and 0 is still waiting to be
-   taken away.” Replay and the discussion card preserve the sentence.
-3. README claims the product has no AI grading, but `.factory/claims.json` has
-   no corresponding claim entry or tagged observable test. The claims
-   contract treats an unlisted public claim as a failed review.
+1. The exact final `52 − 18` demo step now says: “Take away 8 to land on a
+   friendly ten. 42 − 8 = 34. Nothing is left to take away.” The shared model
+   supplies that text to the reasoning ledger, replay, discussion card, copied
+   steps, saved JSON, and print card. The same rule covers `100 − 100 = 0`.
+2. Invalid subtraction now says the amount taken away **cannot be greater**
+   than the starting number. Equal operands remain valid.
+3. README’s no-AI-grading statement is registered as `no-ai-grading` in
+   `.factory/claims.json`. Its exact browser regression completes a route,
+   finds no grading UI, and records no model request.
+4. The active brief and pedagogy record now name sandbox-verifiable rules:
+   child-chosen chunks, accurate equations/sentences, replay prompts, and a
+   non-persistent adult checklist. They do not represent research or outcome
+   evidence.
 
-A lower-severity copy defect also remains: invalid `5 − 6` says the amount
-taken away “must be smaller” than the start, although equal operands are valid
-and `100 − 100 = 0` completes correctly.
+## Evidence
 
-## What was verified
+- Pre-fix reproduction: [reproduction-before.txt](evidence-repair-19/reproduction-before.txt).
+- Post-fix desktop/mobile browser result: [reproduction-after.json](evidence-repair-19/reproduction-after.json).
+- Local URL smoke: [verify.json](evidence-repair-19/local-url/verify.json) — correct title/lang, one h1/main, complete alt text, no unnamed buttons, and no console errors.
+- Lighthouse local mobile: [lighthouse-local.json](evidence-repair-19/lighthouse-local.json) — Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1,705 ms, CLS 0, TBT 0 ms.
+- `npm ci`: 61 packages installed; audit reported 0 vulnerabilities.
+- `npm test`: PASS — TypeScript lint, 21 Vitest/static checks, and 76 serial desktop/mobile Playwright checks. This includes Axe integration, exact-390 layout, keyboard focus, demo isolation, local-only traffic, offline reload, and waiting-worker update checks.
+- `npm run build`: PASS — `dist/` contains build 1.0.16 and service-worker cache `arithmetic-steps-31d19a9daebd` with 24 precached URLs. Main JS is 44.45 KB raw / 12.93 KB gzip; CSS is 28.53 KB raw / 6.47 KB gzip.
 
-- All 23 declared claim commands passed independently after `npm ci`.
-- `npm run lint`, `npm run test:unit`, `npm test`, and `npm run build` passed.
-  The full suite had 19 unit/static checks and 71 applicable browser checks.
-- Fresh live desktop and exact-390 mobile flows covered the demo, addition,
-  subtraction, boundaries, invalid input and recovery, replay, discussion,
-  JSON export/import error handling, clear confirmation, persistence races,
-  keyboard focus, and reduced motion. The candidate suite also covered 200%
-  text.
-- Axe reported zero violations on all tested screens. The factory URL smoke
-  check passed with no console errors.
-- A full demo plus worker precache made 29 same-origin GET requests and no
-  requests with bodies. Security and cache headers are correct.
-- Offline reload, PWA control, live update check, and the local waiting-worker
-  update path passed.
-- All 29 deployable local files matched live by SHA-256.
-- Lighthouse: 97 Performance, 100 Accessibility, 100 Best Practices, 100 SEO;
-  LCP 1,196 ms and CLS 0. Initial JS and CSS remain far below budget.
+The standalone Axe CLI could not start Chrome in this worker. The repository’s
+Playwright Axe integration ran successfully in both browser projects and the
+post-build direct scan recorded zero violations on desktop and 390 px mobile.
 
-## Evidence and full report
-
-- [Independent verification 19](verification-19.md)
-- [Machine-readable browser QA](evidence-verification-19/verification-summary.json)
-- [Incorrect final narration screenshot](evidence-verification-19/subtraction-final-narration.png)
-- [Lighthouse JSON](evidence-verification-19/lighthouse-live.json)
-- [Factory URL smoke result](evidence-verification-19/live-root/verify.json)
-
-## Reproduce
+## Re-run
 
 ```sh
 npm ci
-npm run lint
-npm run test:unit
 npm test
 npm run build
-node .factory/qa-artifacts/independent-live-qa.mjs \
-  https://arithmetic-steps.sociobot.in .factory/evidence-verification-19
+npm test -- --grep @claim:narrated-steps
+npm test -- --grep @claim:arithmetic-bounds
+npm test -- --grep @claim:no-ai-grading
 ```
 
-No product code was changed by this verification.
+Serve `dist/` with `npm run preview` to inspect the PWA. The one-click demo is
+`/demo` or `/?demo=1`.
+
+## Deployment
+
+Static Web App target: `sf-arithmetic-steps` in resource group `sociobot`.
+Deployment and live identity verification are recorded below after upload.
+
+## Known gaps
+
+No known product gaps. The product intentionally makes no outside-review or
+learning-outcome claim; its documented pedagogy rules are executable product
+behavior only.

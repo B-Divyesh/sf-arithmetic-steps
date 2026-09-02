@@ -289,7 +289,7 @@ test("supports a child-chosen multi-step subtraction route", async ({ page }) =>
   await expect(page.getByText("42 − 8", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "8", exact: true }).click();
   await page.getByRole("button", { name: /Take away the chunk/ }).click();
-  await expect(page.getByText(/Nothing is left to take away/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nothing is left to take away" })).toBeVisible();
   await page.getByRole("button", { name: "Finish the problem" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("The answer is 34.");
   await expect(page.getByRole("heading", { name: "52 − 18 = 34" })).toBeVisible();
@@ -393,7 +393,7 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(await readSetting(page, "arithmetic-steps", "active-route")).toBeUndefined();
 
   await page.getByRole("button", { name: /Take away the chunk/ }).click();
-  await expect(page.getByText(/Nothing is left to take away/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nothing is left to take away" })).toBeVisible();
   const changedDemoRoute = await readSetting(page, "demo:arithmetic-steps", "active-route") as { frames: Array<{ equation: string }> };
   expect(changedDemoRoute.frames.at(-1)).toMatchObject({ left: 34, right: 0, equation: "34" });
   await page.getByRole("button", { name: "Reset demo" }).click();
@@ -483,7 +483,7 @@ test("@claim:local-only keeps the complete cold-load and worker flow first-party
     await waitForControllingServiceWorker(isolatedPage);
     await isolatedPage.getByRole("button", { name: "Try it with sample data" }).click();
     await isolatedPage.getByRole("button", { name: /Take away the chunk/ }).click();
-    await expect(isolatedPage.getByText(/Nothing is left to take away/)).toBeVisible();
+    await expect(isolatedPage.getByRole("heading", { name: "Nothing is left to take away" })).toBeVisible();
     expect(requests.length).toBeGreaterThan(10);
     expect(requests.some((request) => request.path === "/sw.js")).toBe(true);
     expect(requests.some((request) => request.fromWorker)).toBe(true);
@@ -608,13 +608,24 @@ test("@claim:direct-manipulation drags one-counters and ten-frames for both oper
   await expect(page.locator(".route-ledger")).toContainText("Take away 10");
 });
 
-test("@claim:narrated-steps records a sentence for each chosen chunk", async ({ page }) => {
-  await page.getByRole("button", { name: "8 + 7" }).click();
+test("@claim:narrated-steps records accurate sentences for every chosen chunk, including the final subtraction", async ({ page }) => {
+  await page.getByRole("radio", { name: "Subtract" }).press("Space");
+  await page.getByRole("button", { name: "52 − 18" }).click();
   await page.getByRole("button", { name: /Start the problem/ }).click();
-  await page.getByRole("button", { name: "2", exact: true }).click();
-  await page.getByRole("button", { name: /Move the chunk/ }).click();
-  await expect(page.locator(".route-ledger")).toContainText("Move 2 from 7 to 8");
-  await expect(page.locator(".route-ledger")).toContainText("10 + 5");
+  await page.getByRole("button", { name: "10", exact: true }).click();
+  await page.getByRole("button", { name: /Take away the chunk/ }).click();
+  await page.getByRole("button", { name: "8", exact: true }).click();
+  await page.getByRole("button", { name: /Take away the chunk/ }).click();
+
+  const finalNarration = "Take away 8 to land on a friendly ten. 42 − 8 = 34. Nothing is left to take away.";
+  await expect(page.locator(".route-ledger")).toContainText(finalNarration);
+  await expect(page.locator(".route-ledger")).not.toContainText("0 is still waiting to be taken away");
+
+  await page.getByRole("button", { name: "Finish the problem" }).click();
+  await page.getByRole("button", { name: "Previous" }).click();
+  await expect(page.locator(".replay-narration")).toHaveText(finalNarration);
+  await expect(page.locator("#discussion-card")).toContainText(finalNarration);
+  await expect(page.locator("#discussion-card")).not.toContainText("0 is still waiting to be taken away");
 });
 
 test("@claim:replay-and-discussion replays a route and shows discussion prompts", async ({ page }) => {
@@ -649,7 +660,7 @@ test("@claim:arithmetic-bounds accepts only whole-number routes through 100", as
   await page.getByLabel("Start at").fill("5");
   await page.getByLabel("Take away").fill("6");
   await page.getByRole("button", { name: /Start the problem/ }).click();
-  await expect(page.getByText("The number being taken away must be smaller than the starting number.")).toBeVisible();
+  await expect(page.getByText("The number being taken away cannot be greater than the starting number.")).toBeVisible();
 
   await page.getByRole("radio", { name: "Add" }).focus();
   await page.getByRole("radio", { name: "Add" }).press("Space");
@@ -956,6 +967,35 @@ test("@claim:self-guided-checklist-guidance forbids unsupported external-review 
 test("@claim:no-game-mechanics has no timer, streak, leaderboard, or answer guesser", async ({ page }) => {
   await expect(page.locator('[data-timer], [data-streak], [data-leaderboard], input[placeholder*="answer" i]')).toHaveCount(0);
   await expect(page.getByText(/timer|streak|leaderboard|guess the answer/i)).toHaveCount(0);
+});
+
+test("@claim:no-ai-grading has no AI grading control or model request", async ({ browser, baseURL }) => {
+  if (!baseURL) throw new Error("The claim test needs its configured product URL.");
+  const context = await browser.newContext({ baseURL });
+  const page = await context.newPage();
+  const requests: Array<{ method: string; url: string }> = [];
+  context.on("request", (request) => requests.push({ method: request.method(), url: request.url() }));
+  failOnConsoleErrors(page);
+
+  try {
+    await page.goto("/");
+    await waitForStorageReady(page);
+    await page.getByRole("button", { name: "8 + 7" }).click();
+    await page.getByRole("button", { name: /Start the problem/ }).click();
+    await page.getByRole("button", { name: "2", exact: true }).click();
+    await page.getByRole("button", { name: /Move the chunk/ }).click();
+    await page.getByRole("button", { name: /Join the numbers and finish/ }).click();
+    await expect(page.getByRole("heading", { name: "The answer is 15." })).toBeVisible();
+    await expect(page.locator('[data-ai-grading], [data-model], [data-grade], button[aria-label*="grade" i], button[aria-label*="AI" i]')).toHaveCount(0);
+    await expect(page.getByText(/AI grading|model feedback|grade this answer/i)).toHaveCount(0);
+
+    const productOrigin = new URL(baseURL).origin;
+    expect(requests.length).toBeGreaterThan(0);
+    expect(requests.every((request) => request.method === "GET" && new URL(request.url).origin === productOrigin)).toBe(true);
+    expect(requests.some((request) => /(?:openai|azure|\/v1\/responses|\/models)/i.test(request.url))).toBe(false);
+  } finally {
+    await context.close();
+  }
 });
 
 test("@claim:mobile-controls fits the 390px viewport with 44px controls", async ({ page, isMobile }) => {

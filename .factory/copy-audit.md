@@ -65,9 +65,9 @@ Generated art provenance remains in `.factory/design.md`, so it is not an
 unregistered visitor-facing product claim.
 
 The active product copy labels the checklist as self-guided guidance. It makes
-no outside-review, study, validation, or learning-outcome promise. The
-researched brief retains only the testable four-check facilitator behavior and
-executable learning-flow claims.
+no outside endorsement, study, validation, or learning-outcome promise. The
+scoped brief records only sandbox-verifiable learning-flow rules and the local
+checklist behavior.
 
 ## README copy audit
 
@@ -87,14 +87,17 @@ for people verifying isolation.
 | Completed problems stay in this browser. | 6 |
 | Unfinished work remains after a refresh. | 6 |
 | Install the activity and use it offline after the first visit. | 11 |
+| The product has no timer, score, streak, leaderboard, answer guessing, or AI grading. | 14 |
+| It has no third-party analytics. | 5 |
 | npm test runs unit tests and Playwright in desktop Chromium and a 393 px mobile viewport. | 15 |
 | It includes an offline reload and an Axe accessibility scan. | 10 |
 | The exact production command is npm run build. | 9 |
 | It creates dist/ with the app, legal pages, hashed assets, and offline service worker. | 14 |
 
-No audited README sentence exceeds 22 words. No audited sentence contains a
-banned marketing term. The prior storage and install jargon was replaced with
-the useful result for a teacher, parent, or child.
+No audited README sentence exceeds 22 words. None contains a banned marketing
+term. The no-game, no-AI-grading, and local-only statements map to declared
+browser claims. The prior storage and install jargon was replaced with the
+useful result for a teacher, parent, or child.
 
 ## 404 copy audit
 

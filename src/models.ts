@@ -45,7 +45,7 @@ export function validateProblem(operation: Operation, first: number, second: num
   if (!integer(first) || !integer(second)) return "Use whole numbers from 0 to 100.";
   if (operation === "add" && first + second > 100) return "Choose numbers with a total of 100 or less.";
   if (operation === "add" && first + second === 0) return "Choose at least one counter so there is a problem to explore.";
-  if (operation === "subtract" && second > first) return "The number being taken away must be smaller than the starting number.";
+  if (operation === "subtract" && second > first) return "The number being taken away cannot be greater than the starting number.";
   if (operation === "subtract" && second === 0) return "Choose something to take away so there is a problem to explore.";
   return null;
 }
@@ -121,7 +121,9 @@ export function subtractChunk(route: ActiveRoute, amount: number, reason: MoveRe
     left,
     right,
     equation: right === 0 ? `${left}` : `${left} − ${right}`,
-    narration: `Take away ${amount} ${reasonWords(reason)}. ${before.left} − ${amount} = ${left}, and ${right} is still waiting to be taken away.`,
+    narration: right === 0
+      ? `Take away ${amount} ${reasonWords(reason)}. ${before.left} − ${amount} = ${left}. Nothing is left to take away.`
+      : `Take away ${amount} ${reasonWords(reason)}. ${before.left} − ${amount} = ${left}, and ${right} is still waiting to be taken away.`,
     kind: "move"
   };
   route.frames.push(frame);

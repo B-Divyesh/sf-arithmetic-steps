@@ -1,0 +1,11 @@
+Pre-fix browser reproduction — 2026-09-02 UTC
+
+Command:
+node --input-type=module -e '<Playwright opens http://127.0.0.1:4174/demo, takes away the final 8, and prints .route-ledger text>'
+
+Observed final ledger entry:
+
+Take away 8 to land on a friendly ten. 42 − 8 = 34, and 0 is still waiting to be taken away.
+
+This reproduces verifier finding P1 from verification-19 on the exact one-click
+52 − 18 sample before the model repair.

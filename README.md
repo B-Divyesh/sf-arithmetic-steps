@@ -36,7 +36,7 @@ demo. See
 - Install the activity and use it offline after the first visit.
 - Responsive 390 px layout, visible keyboard focus, reduced-motion behavior, and tested print styles
 
-The product intentionally has no timer, score, streak, leaderboard, answer guessing, AI grading, or third-party analytics.
+The product has no timer, score, streak, leaderboard, answer guessing, or AI grading. It has no third-party analytics.
 
 ## Run locally
 
