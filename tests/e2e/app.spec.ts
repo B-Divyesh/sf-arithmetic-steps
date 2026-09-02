@@ -9,6 +9,15 @@ const UNSUPPORTED_EXTERNAL_REVIEW_PROMISE = /\b(?:teacher[-\s]+reviewed|educator
 
 function failOnConsoleErrors(page: Page): void {
   page.on("console", (message) => {
+    // Chromium reports the deliberately requested HTTP 404 document as a
+    // console error. The exact unknown-route regression must assert that
+    // status, so permit only that browser diagnostic—not missing assets or
+    // console errors on any normal product route.
+    if (
+      message.type() === "error" &&
+      message.text() === "Failed to load resource: the server responded with a status of 404 (Not Found)" &&
+      new URL(page.url()).pathname === "/nothing-here"
+    ) return;
     if (message.type() === "error") throw new Error(`Browser console error: ${message.text()}`);
   });
 }
@@ -1002,20 +1011,41 @@ test("legal pages keep the same accessible shell", async ({ page }) => {
   }
 });
 
-test("404 page names the missing-page state in plain words", async ({ page }) => {
-  await page.goto("/404.html");
+test("returns the full shared 404 page for the exact unknown route", async ({ page }) => {
+  const response = await page.goto("/nothing-here");
+  expect(response?.status()).toBe(404);
   await expect(page).toHaveTitle("Page not found — Arithmetic Steps");
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", "The requested Arithmetic Steps page was not found. Return home to start an addition or subtraction problem.");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://arithmetic-steps.sociobot.in/404.html");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/assets/app-icon.svg");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/assets/icon-192.png");
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", "Page not found — Arithmetic Steps");
+  await expect(page.locator('meta[property="og:description"]')).toHaveCount(1);
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg");
+  await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute("content", "Page not found — Arithmetic Steps");
+  await expect(page.locator('meta[name="twitter:description"]')).toHaveCount(1);
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute("content", "https://arithmetic-steps.sociobot.in/assets/social-preview.jpg");
+  await expect(page.locator("header.site-header")).toHaveCount(1);
+  await expect(page.locator("main")).toHaveCount(1);
+  await expect(page.locator("footer.site-footer")).toHaveCount(1);
   await expect(page.locator("h1")).toHaveText("Page not found");
   await expect(page.getByRole("link", { name: "Return to Arithmetic Steps" })).toHaveAttribute("href", "/");
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy/");
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms/");
   const results = await new AxeBuilder({ page: page as never }).analyze();
   expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
+  await page.getByRole("link", { name: "Return to Arithmetic Steps" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Explore addition and subtraction steps");
 });
 
-test("uses one build identity on app, legal, and manifest routes", async ({ page, request }) => {
+test("uses one build identity on app, legal, 404, and manifest routes", async ({ page, request }) => {
   for (const path of ["/", "/privacy/", "/terms/"]) {
     await page.goto(path);
     await expect(page.locator("[data-build-version]")).toHaveText(`Build ${PRODUCT_VERSION}`);
   }
+  await page.goto("/nothing-here");
+  await expect(page.locator("[data-build-version]")).toHaveText(`Build ${PRODUCT_VERSION}`);
   const manifestResponse = await request.get("/manifest.webmanifest");
   expect(manifestResponse.ok()).toBe(true);
   const manifest = await manifestResponse.json() as { start_url: string };

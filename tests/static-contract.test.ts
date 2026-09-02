@@ -20,7 +20,7 @@ describe("static hosting contract", () => {
     expect(config.responseOverrides["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
   });
 
-  it("ships a styled standalone 404 document and CSP-compatible error styling", async () => {
+  it("ships a complete shared-shell 404 document and CSP-compatible error styling", async () => {
     const [notFound, offline] = await Promise.all([
       readFile(resolve(root, "public/404.html"), "utf8"),
       readFile(resolve(root, "public/offline.html"), "utf8")
@@ -30,6 +30,20 @@ describe("static hosting contract", () => {
     expect(notFound).not.toContain("This stop is not on the line");
     expect(notFound).toContain('href="/"');
     expect(notFound).toContain('href="/error.css"');
+    expect(notFound).toContain('name="description"');
+    expect(notFound).toContain('rel="canonical" href="https://arithmetic-steps.sociobot.in/404.html"');
+    expect(notFound).toContain('rel="apple-touch-icon" href="/assets/icon-192.png"');
+    expect(notFound).toContain('property="og:title" content="Page not found — Arithmetic Steps"');
+    expect(notFound).toContain('property="og:description"');
+    expect(notFound).toContain('property="og:image" content="https://arithmetic-steps.sociobot.in/assets/social-preview.jpg"');
+    expect(notFound).toContain('name="twitter:title" content="Page not found — Arithmetic Steps"');
+    expect(notFound).toContain('name="twitter:description"');
+    expect(notFound).toContain('name="twitter:image" content="https://arithmetic-steps.sociobot.in/assets/social-preview.jpg"');
+    expect(notFound).toContain('<header class="site-header">');
+    expect(notFound).toContain('<footer class="site-footer">');
+    expect(notFound).toContain('href="/privacy/"');
+    expect(notFound).toContain('href="/terms/"');
+    expect(notFound).toContain('data-build-version>Build __ARITHMETIC_STEPS_VERSION__');
     expect(offline).toContain('href="/error.css"');
     expect(offline).not.toContain("<style");
   });
@@ -143,7 +157,7 @@ describe("static hosting contract", () => {
   });
 
   it("derives every visible build identity and the PWA start URL from package.json", async () => {
-    const [packageText, manifestText, main, legal, landing, privacy, terms, viteConfig, versionWriter] = await Promise.all([
+    const [packageText, manifestText, main, legal, landing, privacy, terms, notFound, viteConfig, versionWriter] = await Promise.all([
       readFile(resolve(root, "package.json"), "utf8"),
       readFile(resolve(root, "public/manifest.webmanifest"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
@@ -151,6 +165,7 @@ describe("static hosting contract", () => {
       readFile(resolve(root, "index.html"), "utf8"),
       readFile(resolve(root, "privacy/index.html"), "utf8"),
       readFile(resolve(root, "terms/index.html"), "utf8"),
+      readFile(resolve(root, "public/404.html"), "utf8"),
       readFile(resolve(root, "vite.config.ts"), "utf8"),
       readFile(resolve(root, "scripts/sync-version.mjs"), "utf8")
     ]);
@@ -162,6 +177,8 @@ describe("static hosting contract", () => {
     // tracked source file (which fails in immutable build workspaces).
     expect(manifest.start_url).toBe("/?source=pwa");
     expect(versionWriter).toContain("../dist/manifest.webmanifest");
+    expect(versionWriter).toContain("../dist/404.html");
+    expect(versionWriter).toContain('replaceAll("__ARITHMETIC_STEPS_VERSION__", packageInfo.version)');
     expect(versionWriter).not.toContain("../public/manifest.webmanifest");
     expect(versionWriter).toContain("await chmod(manifestUrl, 0o644)");
     expect(packageInfo.scripts.build).toMatch(/^vite build && node scripts\/sync-version\.mjs/);
@@ -173,6 +190,7 @@ describe("static hosting contract", () => {
       expect(document).toContain("data-build-version");
       expect(document).not.toMatch(/Build 1\.0\./);
     }
+    expect(notFound).toContain("data-build-version>Build __ARITHMETIC_STEPS_VERSION__");
   });
 
   it("uses real product routes in install shortcuts", async () => {

@@ -60,9 +60,9 @@ No sentence exceeds 22 words. None contains a banned plain-words term.
 Public claims in the table each map to one exact tagged browser regression in
 `.factory/claims.json`; operational labels describe controls.
 
-The footer contains the factory attribution and build identifier only. Generated
-art provenance remains in `.factory/design.md`, so it is not an unregistered
-visitor-facing product claim.
+The landing footer contains the factory attribution and build identifier only.
+Generated art provenance remains in `.factory/design.md`, so it is not an
+unregistered visitor-facing product claim.
 
 The active product copy labels the checklist as self-guided guidance. It makes
 no outside-review, study, validation, or learning-outcome promise. The
@@ -95,6 +95,25 @@ for people verifying isolation.
 No audited README sentence exceeds 22 words. No audited sentence contains a
 banned marketing term. The prior storage and install jargon was replaced with
 the useful result for a teacher, parent, or child.
+
+## 404 copy audit
+
+The designed missing-page route uses the same plain vocabulary as the activity.
+It has one h1, a direct return action, and the shared legal footer.
+
+| Copy | Words | Claim / purpose |
+| --- | ---: | --- |
+| Skip to page message | 4 | Keyboard skip link |
+| Route not found | 3 | Missing-route label |
+| Page not found | 3 | Plain missing-page h1 |
+| That page does not exist. | 5 | Error explanation |
+| Return home to choose an addition or subtraction problem. | 9 | Next step |
+| Return to Arithmetic Steps | 4 | Return-home action |
+| Explore addition and subtraction steps with a child. | 8 | Product one-liner |
+| No accounts or child profiles. | 5 | `local-only`, `free-no-account` |
+
+No 404 sentence exceeds 22 words. The footer privacy and terms labels name
+their destination plainly.
 
 ## Catalog description
 
