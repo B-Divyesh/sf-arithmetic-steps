@@ -372,6 +372,22 @@ test("@claim:demo-sandbox opens an isolated sample route and can return to real 
   expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem("arithmetic-steps:qa-sentinel"))).toBe(projectSentinel);
   expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
+
+  // The catalog verifier may use the query entry point instead of /demo.
+  // It must open and reset the same isolated sample without touching real data.
+  await page.goto("/?demo=1");
+  await waitForStorageReady(page, "demo:arithmetic-steps");
+  await expect(page).toHaveURL(/\?demo=1$/);
+  await expect(page).toHaveTitle("Demo — Arithmetic Steps");
+  await expect(page.getByText("Demo — sample data, nothing is saved.", { exact: false })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("52 − 18");
+  await page.getByRole("button", { name: "Reset demo" }).click();
+  await expect(page.getByText("The 52 − 18 sample problem is ready again.")).toBeVisible();
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
+  await page.getByRole("button", { name: "Start for real" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  expect(await page.evaluate(() => localStorage.getItem("demo:arithmetic-steps:active-route"))).toBeNull();
+  expect(await readSetting(page, "arithmetic-steps", "real-sentinel")).toBe(projectSentinel);
 });
 
 test("@claim:offline-reload works offline after the first visit from the demo entry point", async ({ page, context }) => {

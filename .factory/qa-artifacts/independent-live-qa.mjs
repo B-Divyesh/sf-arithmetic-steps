@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 
 const base = (process.argv[2] ?? "https://arithmetic-steps.sociobot.in").replace(/\/$/, "");
 const evidenceDir = process.argv[3] ?? ".factory/qa-artifacts";
@@ -172,6 +172,7 @@ async function runMobile(browser) {
   await page.goto(`${base}/saved-problems`);
   const practiceLink = page.getByRole("link", { name: "Practice" });
   assert(await practiceLink.isVisible(), "mobile Saved problems does not expose Practice");
+  await page.screenshot({ path: artifact("mobile-saved-problems.png"), fullPage: true });
   await practiceLink.click();
   await page.waitForURL(url => url.pathname === "/practice");
   assert((await page.evaluate(() => document.activeElement?.id)) === "page-title", "mobile Practice navigation did not focus its heading");
@@ -242,10 +243,51 @@ async function runPwa(browser) {
   return { ...online, offline };
 }
 
+async function runCompletionNavigationRace(browser) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  await page.goto(base);
+  await page.locator("html[data-storage-ready='arithmetic-steps']").waitFor();
+  await page.getByRole("button", { name: "8 + 7" }).click();
+  await page.getByRole("button", { name: "Start the problem" }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: "Move the chunk" }).click();
+  await page.evaluate(async () => {
+    const database = await new Promise((resolve, reject) => {
+      const request = indexedDB.open("arithmetic-steps");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction("settings", "readwrite");
+    const store = transaction.objectStore("settings");
+    let hold = true;
+    const keepAlive = () => {
+      if (!hold) return;
+      const request = store.get("live-completion-write-hold");
+      request.onsuccess = keepAlive;
+    };
+    keepAlive();
+    window.releaseLiveCompletionWrite = () => {
+      hold = false;
+      try { transaction.commit(); } catch { /* already completed */ }
+      database.close();
+    };
+  });
+  await page.getByRole("button", { name: "Join the numbers and finish" }).click();
+  assert(await page.evaluate(() => Boolean(localStorage.getItem("arithmetic-steps:pending-attempts"))), "completed problem was not synchronously checkpointed");
+  await page.getByRole("link", { name: "Saved problems" }).click();
+  assert(new URL(page.url()).pathname === "/saved-problems", "completion race did not navigate to Saved problems");
+  await page.evaluate(() => window.releaseLiveCompletionWrite?.());
+  await page.getByRole("heading", { name: "Saved problems", exact: true }).waitFor();
+  await page.locator(".history-list").getByText("8 + 7 = 15", { exact: true }).waitFor();
+  await context.close();
+  return { checkpointedBeforeWrite: true, routeStayedOpen: true, completedProblemVisible: true };
+}
+
 async function runRoutes(browser) {
   const context = await browser.newContext();
   const page = await context.newPage();
-  const routes = ["/", "/practice", "/demo", "/saved-problems", "/privacy/", "/terms/", "/definitely-not-a-route"];
+  const routes = ["/", "/practice", "/demo", "/?demo=1", "/saved-problems", "/privacy/", "/terms/", "/definitely-not-a-route"];
   const results = [];
   for (const route of routes) {
     const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
@@ -276,6 +318,8 @@ try {
   evidence.checks.keyboardMotion = await runKeyboardAndMotion(browser);
   console.error("qa: pwa");
   evidence.checks.pwa = await runPwa(browser);
+  console.error("qa: completion-navigation-race");
+  evidence.checks.completionNavigationRace = await runCompletionNavigationRace(browser);
   console.error("qa: routes-links");
   evidence.checks.routes = await runRoutes(browser);
   evidence.verdict = "PASS";
@@ -286,5 +330,6 @@ try {
 } finally {
   await browser.close();
   evidence.finishedAt = new Date().toISOString();
+  await writeFile(artifact("verification-summary.json"), `${JSON.stringify(evidence, null, 2)}\n`);
   console.log(JSON.stringify(evidence, null, 2));
 }

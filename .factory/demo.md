@@ -2,8 +2,8 @@
 
 ## Entry point
 
-Open [`/demo`](https://arithmetic-steps.sociobot.in/demo), or press **Try it
-with sample data** on the landing page. The demo immediately opens a
+Open [`/?demo=1`](https://arithmetic-steps.sociobot.in/?demo=1), use `/demo`,
+or press **Try it with sample data** on the landing page. The demo immediately opens a
 part-complete `52 − 18` problem. It has already taken away 10, so the learner
 can see `42 − 8`, choose the last chunk, finish, and replay the steps.
 
@@ -23,5 +23,6 @@ and any ordinary navigation away from demo first delete both demo stores, then
 select the real stores. A real-app load also clears leftover demo data before
 it reads real problems. No demo action reads or writes the real namespaces.
 
-The offline claim is exercised from `/demo`, so the supplied sample remains
+The isolation claim exercises both `/?demo=1` and `/demo`. The offline claim
+is exercised from `/demo`, so the supplied sample remains
 available after the first online visit when the browser is offline.
