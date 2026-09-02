@@ -1,0 +1,56 @@
+{
+  "routes": {
+    "saved": {
+      "url": "https://arithmetic-steps.sociobot.in/saved-problems",
+      "title": "Saved problems — Arithmetic Steps",
+      "h1": "Saved problems",
+      "focusedId": "page-title",
+      "announcement": "Saved problems — Arithmetic Steps opened."
+    },
+    "practice": {
+      "url": "https://arithmetic-steps.sociobot.in/practice",
+      "title": "Practice arithmetic steps — Arithmetic Steps",
+      "focusedId": "page-title",
+      "announcement": "Practice arithmetic steps — Arithmetic Steps opened."
+    },
+    "back": {
+      "url": "https://arithmetic-steps.sociobot.in/saved-problems",
+      "title": "Saved problems — Arithmetic Steps",
+      "focusedId": "page-title",
+      "announcement": "Saved problems — Arithmetic Steps opened."
+    }
+  },
+  "demoQuery": {
+    "url": "https://arithmetic-steps.sociobot.in/?demo=1",
+    "title": "Demo — Arithmetic Steps",
+    "h1": "52 − 18",
+    "banner": true
+  },
+  "mobile": {
+    "words": [
+      {
+        "word": "Explore",
+        "lineCount": 1
+      },
+      {
+        "word": "addition",
+        "lineCount": 1
+      },
+      {
+        "word": "and",
+        "lineCount": 1
+      },
+      {
+        "word": "subtraction",
+        "lineCount": 1
+      },
+      {
+        "word": "steps",
+        "lineCount": 1
+      }
+    ],
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "footerHasRemovedClaim": false
+  }
+}

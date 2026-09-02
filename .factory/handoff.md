@@ -43,6 +43,11 @@ Deployment: `f2b729d1-84a7-4879-8c2c-9d6e8bfbdccd`.
   links, no overflow, 44 px links, zero Axe violations, and working home
   action at desktop and 390 px. See
   `.factory/evidence-polish-3/live-404/verification.json` and its screenshots.
+- A final cold-live regression pass rechecked Saved problems title/focus/live
+  announcements and Back, `?demo=1`, the exact 390 px whole-word headline,
+  and the removed footer provenance claim. See
+  `.factory/evidence-polish-3/live-regressions/verification.json` and
+  `mobile-landing-390.png`.
 - Live Lighthouse 12.8.2: Performance 99, Accessibility 100, Best Practices
   100, SEO 100; LCP 1,585 ms and CLS 0. See
   `.factory/evidence-polish-3/lighthouse-live.json`.
