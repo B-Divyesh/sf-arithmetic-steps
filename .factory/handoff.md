@@ -1,36 +1,42 @@
-# Arithmetic Steps — review 1 handoff
+# Arithmetic Steps — polish 1 handoff
 
-## Disposition
+## Completed
 
-**FAIL.** This reviewer changed no product code. The committed review is in
-`.factory/review-1.md`.
+Commit `4b5e2f8` repairs every finding in `.factory/review-1.md`.
 
-## What was verified
+- Saved problems now has a real `/saved-problems` URL and saved replays use
+  `/saved-problems/<id>`. `/practice` is the real setup/work URL.
+- Every product route sets a useful title, updates its canonical URL, focuses
+  the destination h1, and announces the new route. Back/forward works.
+- Static Web Apps rewrites and the sitemap include the new public routes.
+- README copy now meets the 22-word limit and explains storage/offline behavior
+  in plain words.
+- The first-screen demo, isolated `?demo=1`/`/demo` flow, reset, and
+  start-for-real behavior remain unchanged and claim-tested.
 
-- Cold live first-read at 390 px and desktop; the purpose, audience, and
-  one-click sample action are clear.
-- Live one-click demo, reset, start-for-real cleanup, isolated
-  `demo:arithmetic-steps` storage, and untouched real namespace.
-- Fresh live request log and offline reload: 34 same-origin GET requests only,
-  no browser errors, and the demo remained available offline after the worker
-  controlled the page.
-- Every one of the 22 literal commands in `.factory/claims.json` passed after
-  `npm ci`.
-- `npm test` passed: 67 tests passed and 3 intended viewport-specific tests
-  were skipped. `npm run build` passed and generated `dist/`.
-- Public routes, headers, metadata, 404, and crawled links were checked.
+The detailed finding map is in `.factory/polish-1.md`.
 
-## Remaining work
+## Verification
 
-1. **Blocking:** Replace `#history` / other navigable hash states with real
-   path routes. On saved-problems navigation, set **Saved problems — Arithmetic
-   Steps**, move focus to its h1, and announce the new page. Add a deep-link
-   and Back-button regression.
-2. Split the two README sentences over the 22-word copy limit.
-3. Replace `IndexedDB`, `PWA`, and `app-shell cache` product-list jargon with
-   plain user outcomes.
+- Clean clone `/tmp/arithmetic-steps-clean.v2XYjV`: `npm ci`, `npm test`, and
+  `npm run build` completed. The complete suite ran 17 unit and 72 browser
+  tests.
+- Each of the 22 exact claim commands in `.factory/claims.json` passed from
+  that clean clone; output is `/tmp/arithmetic-steps-clean-claims.log`.
+- Final build: main JS 43.39 kB raw / 12.70 kB gzip; CSS 28.22 kB raw /
+  6.43 kB gzip. `dist/` was produced.
+- Deployed successfully to production with deployment
+  `9883e23a-2d23-4116-af85-f724d9fb5efe`.
+- Cold live verification: `verify-url.sh` passed at
+  <https://arithmetic-steps.sociobot.in>. Its report is
+  `.factory/evidence-polish-1/root/verify.json`; it recorded no console/page
+  errors, `lang=en`, one h1, a main landmark, complete image alt text, and a
+  790 ms load.
+- Live Axe scans returned zero violations on `/`, `/demo`, and
+  `/saved-problems`. The live route/title/focus/back check passed, with a
+  mobile capture at `.factory/evidence-polish-1/live-saved-mobile.png`.
 
-## How to reproduce
+## Run locally
 
 ```sh
 npm ci
@@ -38,6 +44,6 @@ npm test
 npm run build
 ```
 
-For the blocking issue, open the live root, activate **Saved problems**, and
-inspect the URL, document title, and active element. The review contains the
-expected corrected behavior and test requirements.
+## Known gaps
+
+None.
