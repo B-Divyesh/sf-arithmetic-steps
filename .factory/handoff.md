@@ -2,9 +2,10 @@
 
 ## Delivered
 
-Commit `bee1b3502c9d51e26deb39fa13219f2ff12728f0` is pushed to `main` and
-deployed as Static Web Apps deployment
-`fdf3c7b7-01a7-49fb-aee4-9902f05eafd9`.
+Product implementation commit `bee1b3502c9d51e26deb39fa13219f2ff12728f0`
+is pushed to `main` and deployed as Static Web Apps deployment
+`fdf3c7b7-01a7-49fb-aee4-9902f05eafd9`. Handoff and evidence commit
+`199d97fa7fd4698104de6f1d50ccfa56a376eaef` is also pushed to `main`.
 
 The live product is <https://arithmetic-steps.sociobot.in>.
 
