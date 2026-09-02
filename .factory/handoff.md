@@ -15,6 +15,7 @@ the live app is Build 1.0.12.
 The release is nevertheless **not accepted**. The original researched brief
 requires teacher-reviewed pedagogy. This candidate supplies only a self-guided,
 explicitly non-review checklist and records no qualified teacher review. That
-is a P0 acceptance-contract failure. See `.factory/verification-15.md` for
-exact evidence and required resolution. No product code was modified during
-verification.
+is a P0 acceptance-contract failure. Altering the checked-in brief to remove
+that original requirement does not change this verification's acceptance
+contract. See `.factory/verification-15.md` for exact evidence and required
+resolution. No product code was modified during verification.
