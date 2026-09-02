@@ -1,1 +1,1 @@
-Move counters to explain addition and subtraction steps with a child.
+Move counters to explain addition and subtraction with a child.

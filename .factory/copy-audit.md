@@ -98,5 +98,5 @@ the useful result for a teacher, parent, or child.
 
 ## Catalog description
 
-**Move counters to explain addition and subtraction steps with a child.** —
-11 words, 69 characters, verb first, and no banned term.
+**Move counters to explain addition and subtraction with a child.** — 10
+words, 63 characters, verb first, and no banned term.

@@ -1,114 +1,50 @@
-# Arithmetic Steps — adversarial review 2 handoff
+# Arithmetic Steps — polish 2 handoff
 
-## Review result
+## Delivered
 
-Review 2 is **FAIL**. This worker made no product-code changes. The committed
-review is in `.factory/review-2.md`.
+Commit `bee1b3502c9d51e26deb39fa13219f2ff12728f0` is pushed to `main` and
+deployed as Static Web Apps deployment
+`fdf3c7b7-01a7-49fb-aee4-9902f05eafd9`.
 
-Open finding: at 390 px the first-screen h1 breaks **subtraction** as
-**SUBTRAC / TION**. This is blocking because it damages the essential mobile
-headline. The footer provenance sentence is also an unlisted public claim.
+The live product is <https://arithmetic-steps.sociobot.in>.
 
-## Verification performed
+- Removed the forced headline word break. At an exact 390 px width,
+  `subtraction` stays whole and the h1 has no horizontal overflow.
+- Removed the unregistered footer provenance claim. Generated-art provenance
+  remains recorded in `.factory/design.md` and the source sidecar.
+- Kept and reverified the prior real routing, focused route changes, isolated
+  `/demo` and `?demo=1` sample paths, privacy, persistence, and mobile-nav
+  repairs.
+- Updated the catalog sentence to: “Move counters to explain addition and
+  subtraction with a child.”
 
-- Fresh live mobile (390 × 844) and desktop (1280 × 900) browser checks.
-- Fresh live `/demo` check: demo banner, separate `demo:arithmetic-steps`
-  database, same-origin GET-only request log, and HTTP-200 offline reload.
-- Fresh live deep-link, title, focus, back-button, metadata, 404, and
-  header/footer-link checks.
-- Clean clone at `/tmp/arithmetic-steps-review-2.F15veU`: `npm ci`, all 23
-  literal claim commands from `.factory/claims.json`, `npm test`, and
-  `npm run build`.
+The full finding-to-change-to-evidence map is in `.factory/polish-2.md`.
 
-Run locally:
+## Exact verification evidence
 
-```sh
-npm ci
-npm test
-npm run build
-```
+- Clean clone `/tmp/arithmetic-steps-polish-2.MoYBKa` at `bee1b35`: `npm ci`
+  completed with 0 vulnerabilities. All 23 literal commands from
+  `.factory/claims.json` passed independently.
+- `npm test`: passed TypeScript lint, 19 Vitest/static tests, and 74
+  Playwright tests. The browser status is `passed` in
+  `test-results/.last-run.json`.
+- `npm run build`: passed and generated `dist/`. App JavaScript is 12.92 kB
+  gzip; CSS is 6.47 kB gzip.
+- Cold live `verify-url.sh`: passed in 842 ms; title, language, one h1, main,
+  alt text, labelled buttons, and console state are recorded in
+  `.factory/evidence-polish-2/live-root/verify.json`.
+- Live independent QA: PASS with zero Playwright Axe violations, same-origin
+  requests only, keyboard focus, reduced motion, PWA/offline reload, demo
+  isolation, all routes/titles/legal links, real 404, and persistence race
+  coverage. See `.factory/evidence-polish-2/live-qa/verification-summary.json`.
+- Live 390 px first screen: whole-word measurement and screenshot are
+  `.factory/evidence-polish-2/live-mobile/headline-390.json` and
+  `.factory/evidence-polish-2/live-mobile/first-screen-390.png`.
+- Live Lighthouse: 100 Performance, 100 Accessibility, 100 Best Practices,
+  100 SEO; LCP 1.136 s and CLS 0 in
+  `.factory/evidence-polish-2/lighthouse-live.json`.
 
-## Previous handoff
-
-## Verification verdict
-
-**PASS** for candidate commit `7da18cc55e9a11ebda3e753ead68a6c15b107065`
-at <https://arithmetic-steps.sociobot.in>, independently verified 2026-09-02.
-
-The deployed public build matches a fresh local production build of that
-candidate. No defects were found. The complete result, claim-by-claim
-evidence, live PWA/update/offline checks, privacy/header checks, screenshots,
-and Lighthouse report are in [.factory/verification-17.md](verification-17.md).
-
-Run locally:
-
-```sh
-npm ci
-npm test
-npm run build
-npm run preview
-```
-
-All 23 declared claim commands passed individually, as did the full test suite
-and production build. Fresh live Lighthouse was 98 performance, 100
-accessibility, 100 best practices, and 100 SEO. There are no known gaps.
-
----
-
-# Previous builder handoff — polish 1 retry
-
-## Completed
-
-Build 1.0.13 is live at <https://arithmetic-steps.sociobot.in>. Deployment
-`220c810f-576e-453c-9a60-048569cf504c` contains implementation commit
-`f2807f6`.
-
-- Completed problems are synchronously checkpointed before IndexedDB writes.
-  Immediate navigation now shows the saved route even when the durable write
-  finishes later.
-- Mobile Saved problems exposes Practice, Demo, and Saved problems as 44 px
-  navigation targets. Practice navigation updates the URL/title, focuses the
-  h1, and announces the route.
-- `/practice`, `/saved-problems`, and saved detail pages remain real routes.
-  The install manifest no longer contains old hash shortcuts.
-- Both `/demo` and `/?demo=1` open the isolated, resettable `52 − 18` sample.
-  Demo completion checkpoints use the demo namespace and are deleted on exit.
-- All three findings in `.factory/review-1.md` remain repaired. The README
-  stays within the plain-language sentence limit.
-- The catalog description is verb first and 69 characters.
-
-The exact finding-to-change map is in `.factory/polish-1.md`.
-
-## Verification
-
-From clean clone `/tmp/arithmetic-steps-polish-1-retry1.da0dUk`:
-
-- `npm ci` completed with 0 vulnerabilities.
-- `npm test` passed 18 unit/static and 69 browser tests. Three intended
-  viewport-specific cases were skipped.
-- All 23 literal claim commands passed individually.
-- `npm run build` produced `dist/` with 12.93 kB gzip JS and 6.47 kB gzip CSS.
-
-Independent local and cold-live checks covered first read, demo isolation,
-the delayed completion race, mobile navigation/focus, keyboard focus, 200%
-text, reduced motion, print, privacy requests, offline reload, titles, legal
-pages, links, and a real 404.
-
-- Live browser/Axe report:
-  `.factory/evidence-polish-1-retry1/live-qa/verification-summary.json`
-- Live mobile Saved problems screenshot:
-  `.factory/evidence-polish-1-retry1/live-qa/mobile-saved-problems.png`
-- Live baseline report:
-  `.factory/evidence-polish-1-retry1/live-root/verify.json`
-- Live Lighthouse:
-  `.factory/evidence-polish-1-retry1/lighthouse-live.json`
-
-Lighthouse scores were 100 for performance, accessibility, best practices,
-and SEO. LCP was 1.07 s, CLS was 0, and transfer size was 42.0 kB. Axe found
-zero violations on every tested product route. Every observed runtime request
-was same-origin.
-
-## Run and verify
+## Run locally
 
 ```sh
 npm ci
@@ -117,6 +53,6 @@ npm run build
 npm run preview
 ```
 
-## Known gaps and next steps
+## Known gaps
 
 None.

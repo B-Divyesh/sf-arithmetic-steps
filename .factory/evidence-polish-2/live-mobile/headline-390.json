@@ -1,0 +1,40 @@
+{
+  "status": 200,
+  "h1": "Explore addition and subtraction steps",
+  "clientWidth": 344,
+  "scrollWidth": 344,
+  "words": [
+    {
+      "word": "Explore",
+      "lines": [
+        243
+      ]
+    },
+    {
+      "word": "addition",
+      "lines": [
+        297
+      ]
+    },
+    {
+      "word": "and",
+      "lines": [
+        297
+      ]
+    },
+    {
+      "word": "subtraction",
+      "lines": [
+        352
+      ]
+    },
+    {
+      "word": "steps",
+      "lines": [
+        407
+      ]
+    }
+  ],
+  "footerHasRemovedClaim": false,
+  "allWordsWhole": true
+}
