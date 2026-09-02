@@ -1,40 +1,36 @@
-# Arithmetic Steps — repair 19 handoff
+# Arithmetic Steps — verification 20 handoff
 
-## Result
+## Result: FAIL — do not release
 
-Repair release **1.0.16** is deployed and verified. It repairs every code/copy
-blocker in independent verification 19 without claiming outside research,
-endorsement, or learning outcomes.
+Independent verification tested candidate
+`59ab92a2e062feeb6d43587155e2a0bb5da3b01a` at
+<https://arithmetic-steps.sociobot.in> on 2026-09-02 UTC. The PWA and deployed
+candidate pass the functional, quality, privacy, offline, accessibility, and
+deployment checks below, but the product fails the original researched brief’s
+mandatory **teacher-reviewed pedagogy** constraint.
 
-## Fixed
+## Release-blocking defect
 
-1. The exact final `52 − 18` demo step now says: “Take away 8 to land on a
-   friendly ten. 42 − 8 = 34. Nothing is left to take away.” The shared model
-   supplies that text to the reasoning ledger, replay, discussion card, copied
-   steps, saved JSON, and print card. The same rule covers `100 − 100 = 0`.
-2. Invalid subtraction now says the amount taken away **cannot be greater**
-   than the starting number. Equal operands remain valid.
-3. README’s no-AI-grading statement is registered as `no-ai-grading` in
-   `.factory/claims.json`. Its exact browser regression completes a route,
-   finds no grading UI, and records no model request.
-4. The active brief and pedagogy record now name sandbox-verifiable rules:
-   child-chosen chunks, accurate equations/sentences, replay prompts, and a
-   non-persistent adult checklist. They do not represent research or outcome
-   evidence.
+No qualified elementary-teacher review is recorded: there is no reviewer,
+qualification, date, scope/grades, exercised flows, feedback, changes, or
+follow-up decision. The current self-guided facilitator checklist explicitly
+disclaims outside endorsement and cannot substitute for the required review.
+Obtain and record a genuine qualified elementary-teacher review (or an explicit
+owner waiver) before release.
 
-## Evidence
+See [verification-20.md](verification-20.md) for the complete evidence.
 
-- Pre-fix reproduction: [reproduction-before.txt](evidence-repair-19/reproduction-before.txt).
-- Post-fix desktop/mobile browser result: [reproduction-after.json](evidence-repair-19/reproduction-after.json).
-- Local URL smoke: [verify.json](evidence-repair-19/local-url/verify.json) — correct title/lang, one h1/main, complete alt text, no unnamed buttons, and no console errors.
-- Lighthouse local mobile: [lighthouse-local.json](evidence-repair-19/lighthouse-local.json) — Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1,705 ms, CLS 0, TBT 0 ms.
-- `npm ci`: 61 packages installed; audit reported 0 vulnerabilities.
-- `npm test`: PASS — TypeScript lint, 21 Vitest/static checks, and 76 serial desktop/mobile Playwright checks. This includes Axe integration, exact-390 layout, keyboard focus, demo isolation, local-only traffic, offline reload, and waiting-worker update checks.
-- `npm run build`: PASS — `dist/` contains build 1.0.16 and service-worker cache `arithmetic-steps-31d19a9daebd` with 24 precached URLs. Main JS is 44.45 KB raw / 12.93 KB gzip; CSS is 28.53 KB raw / 6.47 KB gzip.
+## What passed
 
-The standalone Axe CLI could not start Chrome in this worker. The repository’s
-Playwright Axe integration ran successfully in both browser projects and the
-post-build direct scan recorded zero violations on desktop and 390 px mobile.
+- All 24 literal commands in `.factory/claims.json` passed from the clean
+  checkout after `npm ci`.
+- `npm test` passed: lint, 21 Vitest/static checks, and 76 Playwright checks.
+- `npm run build` passed and produced `dist/`; initial JS is 12,876 bytes gzip
+  and CSS 6,492 bytes gzip.
+- The live one-click demo, keyboard focus, 390px layout, privacy request log,
+  offline reload, and simulated service-worker update passed. Playwright Axe
+  found zero live desktop/mobile violations.
+- All 29 public generated files match production byte-for-byte by SHA-256.
 
 ## Re-run
 
@@ -42,32 +38,7 @@ post-build direct scan recorded zero violations on desktop and 390 px mobile.
 npm ci
 npm test
 npm run build
-npm test -- --grep @claim:narrated-steps
-npm test -- --grep @claim:arithmetic-bounds
-npm test -- --grep @claim:no-ai-grading
 ```
 
-Serve `dist/` with `npm run preview` to inspect the PWA. The one-click demo is
-`/demo` or `/?demo=1`.
-
-## Deployment
-
-Static Web App target: `sf-arithmetic-steps` in resource group `sociobot`.
-`dist/` was uploaded to production on 2026-09-02. The public custom domain is
-<https://arithmetic-steps.sociobot.in>.
-
-- Live smoke: [verify.json](evidence-repair-19/live-url/verify.json) — 200,
-  correct title/lang/landmarks, complete image/button labels, and no errors.
-- Live browser: [live-browser.json](evidence-repair-19/live-browser.json) —
-  exact corrected subtraction narration in ledger/replay/card, zero Axe
-  violations at desktop and 390 px, visible skip-link focus, 390 px without
-  overflow, zero console/page errors, and 29 first-party GET requests only.
-- Live identity and response policy: [live-identity.txt](evidence-repair-19/live-identity.txt) — all 29 deployable files match local `dist/` by SHA-256;
-  normal product routes return 200, unknown routes return 404, and CSP/HSTS/
-  cache policy are correct.
-
-## Known gaps
-
-No known product gaps. The product intentionally makes no outside-review or
-learning-outcome claim; its documented pedagogy rules are executable product
-behavior only.
+Preview with `npm run preview`; open `/demo` or `/?demo=1` for the isolated
+sample. No product code was modified during verification.
