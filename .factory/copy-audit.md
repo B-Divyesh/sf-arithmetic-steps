@@ -87,7 +87,7 @@ for people verifying isolation.
 | Completed problems stay in this browser. | 6 |
 | Unfinished work remains after a refresh. | 6 |
 | Install the activity and use it offline after the first visit. | 11 |
-| The product has no timer, score, streak, leaderboard, answer guessing, or AI grading. | 14 |
+| The product has no timer, score, streak, leaderboard, answer guessing, or AI grading. | 13 |
 | It has no third-party analytics. | 5 |
 | npm test runs unit tests and Playwright in desktop Chromium and a 393 px mobile viewport. | 15 |
 | It includes an offline reload and an Axe accessibility scan. | 10 |
