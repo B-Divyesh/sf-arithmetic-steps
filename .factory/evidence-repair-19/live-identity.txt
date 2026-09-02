@@ -1,0 +1,17 @@
+Live identity check — 2026-09-02 UTC
+
+Command compared SHA-256 for every file in local dist/ except deployment-only
+staticwebapp.config.json against https://arithmetic-steps.sociobot.in/<path>.
+
+checked=29 mismatches=0
+
+Live route status checks:
+200 /, /demo, /practice, /?demo=1, /saved-problems, /privacy/, /terms/
+404 /nothing-here
+
+Live response policy checks:
+- Root is HTTPS 200 with self-only CSP, frame-ancestors 'none', HSTS, DENY
+  frame options, nosniff, strict referrer policy, and restrictive permissions.
+- HTML cache policy: public, must-revalidate, max-age=30.
+- /sw.js cache policy: no-cache, no-store, must-revalidate.
+- Hashed main asset cache policy: public, max-age=31536000, immutable.

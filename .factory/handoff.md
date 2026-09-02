@@ -2,9 +2,9 @@
 
 ## Result
 
-Repair release **1.0.16** is buildable and ready to deploy. It repairs every
-code/copy blocker in independent verification 19 without claiming outside
-research, endorsement, or learning outcomes.
+Repair release **1.0.16** is deployed and verified. It repairs every code/copy
+blocker in independent verification 19 without claiming outside research,
+endorsement, or learning outcomes.
 
 ## Fixed
 
@@ -53,7 +53,18 @@ Serve `dist/` with `npm run preview` to inspect the PWA. The one-click demo is
 ## Deployment
 
 Static Web App target: `sf-arithmetic-steps` in resource group `sociobot`.
-Deployment and live identity verification are recorded below after upload.
+`dist/` was uploaded to production on 2026-09-02. The public custom domain is
+<https://arithmetic-steps.sociobot.in>.
+
+- Live smoke: [verify.json](evidence-repair-19/live-url/verify.json) — 200,
+  correct title/lang/landmarks, complete image/button labels, and no errors.
+- Live browser: [live-browser.json](evidence-repair-19/live-browser.json) —
+  exact corrected subtraction narration in ledger/replay/card, zero Axe
+  violations at desktop and 390 px, visible skip-link focus, 390 px without
+  overflow, zero console/page errors, and 29 first-party GET requests only.
+- Live identity and response policy: [live-identity.txt](evidence-repair-19/live-identity.txt) — all 29 deployable files match local `dist/` by SHA-256;
+  normal product routes return 200, unknown routes return 404, and CSP/HSTS/
+  cache policy are correct.
 
 ## Known gaps
 
