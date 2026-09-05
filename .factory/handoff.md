@@ -1,86 +1,50 @@
-# Arithmetic Steps — repair 20 handoff
+# Verify addition and subtraction reasoning — verification 21 handoff
 
 ## Result: FAIL — do not release
 
-The PWA is technically healthy, but the researched brief's mandatory
-**teacher-reviewed pedagogy** requirement remains incomplete. A qualified
-elementary-teacher review cannot be created by automated tests or this repair.
-The required review record is present and truthfully marked pending in
-[`pedagogy-review.md`](pedagogy-review.md).
+Independent verification found one release blocker and zero untested claims.
+The software passed every executed product check, but the researched brief's
+required qualified elementary-teacher review is still pending. No owner waiver
+is recorded.
 
-## Identity
+## Reviewed identity
 
 - Live implementation: `59ab92a2e062feeb6d43587155e2a0bb5da3b01a`
-  (build `1.0.16`).
-- Repair documentation and test-gate commit:
-  `03395c7afbb750b16ca621bc2e6b7efa9e3ffb10`.
-- The repair changes repository documentation and verification only. It does
-  not change shipped application assets, so no deployment was requested.
-  A fresh local `dist/` matches all public production files byte-for-byte.
+  (Build 1.0.16).
+- Documentation and test SHA at verification start:
+  `dc9759047c28966fe0ad3370e0c0c32d558c80b3`.
+- The later commits do not change shipped product assets. A fresh `dist/`
+  matched all 29 public production files byte-for-byte.
+- Live URL: <https://arithmetic-steps.sociobot.in>.
 
-## Repair made
+## Verification completed
 
-- Restored `Teacher-reviewed pedagogy` to the researched brief.
-- Restored a review record with the reviewer qualification, date, grade range,
-  exercised-flow, feedback, change, and disposition fields needed for a real
-  review.
-- Removed the prior verifier rule that rejected any mention of an external
-  teacher review. The local facilitator checklist remains a separate,
-  tested, non-persistent product check and does not claim a learning outcome.
-- Corrected the independent HTTPS QA script to expect the current accurate
-  subtraction recovery wording: the amount taken away cannot be greater than
-  the starting number.
-
-## Verification
-
-From the documented clean setup on 2026-09-05 UTC:
-
-```sh
-npm ci
-npm test
-npm run build
-```
-
-- `npm ci`: passed; npm reported 0 vulnerabilities.
-- `npm test`: passed; TypeScript, 21 Vitest/static checks, and 76 Playwright
+- `npm ci`: passed; 61 packages and 0 reported vulnerabilities.
+- Every one of the 24 literal commands in `.factory/claims.json`: passed.
+- `npm test`: passed in an uncontended run; 21 unit/static checks and 73
+  applicable Playwright checks passed, with 3 intentional viewport skips.
+- `npm run build`: passed and produced `dist/`.
+- Main JavaScript: 12.93 kB gzip. CSS: 6.47 kB gzip.
+- Fresh live desktop and exact-390 phone checks passed the first-read, sample,
+  isolation/reset, arithmetic, persistence, export/import, clear, print,
+  keyboard, focus, reduced-motion, 200% text, offline, update, route, legal,
+  link, and deliberate-404 paths.
+- Live Axe found zero violations on every checked page. The factory URL check
+  found no console errors and passed title, language, h1, main, alt, and button
   checks.
-- All 24 literal commands declared in `.factory/claims.json` passed
-  individually after `npm ci`.
-- `npm run build`: passed and produced `dist/`. Initial JavaScript is
-  12.93 kB gzip and CSS is 6.47 kB gzip.
-- Fresh HTTPS desktop and 390 px phone contexts passed the first-read check:
-  the job is exploring addition/subtraction steps, the audience is elementary
-  children with a teacher or parent, and the first action is **Try it with
-  sample data**.
-- The live sample opened in one click with its persistent demo label, reset,
-  and real-data exit. Normal, invalid, boundary, recovery, persistence,
-  export, offline reload, update, keyboard, reduced-motion, mobile, legal,
-  link, and 404 paths passed.
-- Live Playwright Axe found zero violations on landing, demo, completion,
-  history, legal routes, phone demo, and 404. `verify-url.sh` also passed:
-  HTTPS 200, title, `lang`, one h1, main landmark, image alt coverage, named
-  buttons, and no browser errors.
-- The standalone Axe CLI could not start ChromeDriver with this worker's
-  Playwright Chromium. The pinned Playwright Axe audit completed successfully
-  and is the accessibility evidence for this environment.
-- Fresh live traffic was same-origin only. The service worker controlled the
-  demo, reloaded it offline with HTTP 200, and the update path retained the
-  sample. HTTPS response policy and cache headers were present.
+- Lighthouse mobile scored 100 for Performance, Accessibility, Best Practices,
+  and SEO; LCP was 983 ms, TBT 0 ms, and CLS 0.
+- Fresh traffic was same-origin only. Security and cache headers passed.
 
-## Earlier finding disposition
-
-The prior software findings remain closed: real saved-problem routes and focus,
-headline wrapping, 404 shell, persistence race, blank input recovery,
-subtraction narration and boundary text, and the no-AI claim are covered by
-the current suite and live check. The sole open finding is the absent qualified
-elementary-teacher review.
+Detailed results and the earlier-finding disposition are in
+[`verification-21.md`](verification-21.md). Raw artifacts are in
+`evidence-verification-21/`.
 
 ## Required next step
 
-Have a qualified elementary teacher review addition and subtraction, direct
+Have a qualified elementary teacher exercise addition and subtraction, direct
 dragging, labelled keyboard controls, narration, replay, and the discussion
-card. Record their qualification, date, grades/ages, observations, required
-changes, changes made, and final decision in
-[`pedagogy-review.md`](pedagogy-review.md). Then rerun the checks above and
-independent live QA. An explicit owner waiver is the only alternative release
-path.
+card. Complete every field in `pedagogy-review.md`, including qualification,
+date, ages or grades, feedback, changes, and final decision. Apply any required
+changes and repeat independent QA. An explicit owner waiver is the only other
+release path.
