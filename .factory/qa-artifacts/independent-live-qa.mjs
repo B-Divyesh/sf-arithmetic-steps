@@ -89,7 +89,7 @@ async function runDesktop(browser) {
   await page.getByLabel("Start at").fill("5");
   await page.getByLabel("Take away").fill("6");
   await page.getByRole("button", { name: "Start the problem" }).click();
-  assert((await page.locator("#form-error").innerText()).includes("smaller than the starting number"), "invalid subtraction was accepted");
+  assert((await page.locator("#form-error").innerText()).includes("cannot be greater than the starting number"), "invalid subtraction was accepted");
 
   await page.getByRole("radio", { name: "Add" }).check({ force: true });
   await page.getByLabel("First number").fill("");

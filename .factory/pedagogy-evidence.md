@@ -3,6 +3,10 @@
 These are observable product rules, not evidence of learning outcomes or an
 outside endorsement.
 
+They do not satisfy the brief's required qualified elementary-teacher review.
+The pending release gate and the record a reviewer must complete are in
+[`pedagogy-review.md`](pedagogy-review.md).
+
 1. A child can choose each chunk. Direct moves and labelled keyboard controls
    both make the same change. See `@claim:direct-manipulation` and
    `@claim:keyboard-controls`.

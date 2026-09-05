@@ -83,6 +83,7 @@ No problem data is sent to a server. The Privacy page explains browser storage a
 - [.factory/design.md](.factory/design.md) records the art-deco transit-poster system and generated-art provenance.
 - [.factory/pedagogy-evidence.md](.factory/pedagogy-evidence.md) records the checklist boundary and observable guidance safeguards.
 - [.factory/facilitator-review.md](.factory/facilitator-review.md) documents the executable self-guided checklist.
+- [.factory/pedagogy-review.md](.factory/pedagogy-review.md) records the required qualified elementary-teacher review status.
 - [.factory/handoff.md](.factory/handoff.md) records final verification and known gaps.
 
 ## License

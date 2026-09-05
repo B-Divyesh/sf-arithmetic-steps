@@ -66,8 +66,8 @@ unregistered visitor-facing product claim.
 
 The active product copy labels the checklist as self-guided guidance. It makes
 no outside endorsement, study, validation, or learning-outcome promise. The
-scoped brief records only sandbox-verifiable learning-flow rules and the local
-checklist behavior.
+separate release record requires the qualified teacher review from the
+researched brief; it is not a public product claim.
 
 ## README copy audit
 
@@ -93,6 +93,7 @@ for people verifying isolation.
 | It includes an offline reload and an Axe accessibility scan. | 10 |
 | The exact production command is npm run build. | 9 |
 | It creates dist/ with the app, legal pages, hashed assets, and offline service worker. | 14 |
+| .factory/pedagogy-review.md records the required qualified elementary-teacher review status. | 8 |
 
 No audited README sentence exceeds 22 words. None contains a banned marketing
 term. The no-game, no-AI-grading, and local-only statements map to declared

@@ -4,6 +4,8 @@
 
 This is a local, repeatable product check for a facilitator or caregiver.
 This self-guided checklist is guidance, not evidence of learning outcomes.
+It does not replace the qualified elementary-teacher review required before
+classroom release. See [`pedagogy-review.md`](pedagogy-review.md).
 
 ## Run it in the product
 

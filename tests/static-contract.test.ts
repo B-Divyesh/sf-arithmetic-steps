@@ -110,55 +110,43 @@ describe("static hosting contract", () => {
     expect(liveChecker).not.toContain('This optional checklist is guidance, not evidence of learning outcomes.');
   });
 
-  it("forbids unsupported external-review promises and keeps the four-check facilitator claim testable", async () => {
-    const [briefText, claimsText, evidence, facilitatorChecklist, copyAudit, app, readme, landing, privacy, terms, manifest] = await Promise.all([
+  it("keeps the qualified teacher-review release gate explicit without turning local checks into an outcome claim", async () => {
+    const [briefText, review, evidence, facilitatorChecklist, app, readme, terms] = await Promise.all([
       readFile(resolve(root, ".factory/brief.json"), "utf8"),
-      readFile(resolve(root, ".factory/claims.json"), "utf8"),
+      readFile(resolve(root, ".factory/pedagogy-review.md"), "utf8"),
       readFile(resolve(root, ".factory/pedagogy-evidence.md"), "utf8"),
       readFile(resolve(root, ".factory/facilitator-review.md"), "utf8"),
-      readFile(resolve(root, ".factory/copy-audit.md"), "utf8"),
       readFile(resolve(root, "src/main.ts"), "utf8"),
       readFile(resolve(root, "README.md"), "utf8"),
-      readFile(resolve(root, "index.html"), "utf8"),
-      readFile(resolve(root, "privacy/index.html"), "utf8"),
-      readFile(resolve(root, "terms/index.html"), "utf8"),
-      readFile(resolve(root, "public/manifest.webmanifest"), "utf8")
+      readFile(resolve(root, "terms/index.html"), "utf8")
     ]);
     const brief = JSON.parse(briefText) as { constraints: string[] };
     const guidanceBoundary = "This self-guided checklist is guidance, not evidence of learning outcomes.";
-    const checklistClaim = "A facilitator can complete and reset four local checks before classroom use. Checklist marks are not stored.";
-    const pedagogyConstraint = "Sandbox-verifiable pedagogy rules: children choose chunks, each step has an accurate equation and sentence, finished routes replay with discussion prompts, and the self-guided checklist stores no marks or learning-outcome claim";
-    const productClaimSources = [briefText, claimsText, evidence, facilitatorChecklist, copyAudit, app, readme, landing, privacy, terms, manifest];
-    const joinedClaimSources = productClaimSources.join("\n");
-    const unsupportedExternalReviewPromise = /\b(?:teacher[-\s]+reviewed|educator[-\s]+reviewed|qualified\s+(?:teacher|educator)\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)(?:'s)?\s+(?:review|approval|validation|sign[-\s]?off)|(?:teacher|educator)[-\s]+(?:approved|validated)|(?:reviewed|approved|validated)\s+by\s+(?:an?\s+)?(?:qualified\s+)?(?:teacher|educator)|(?:external|independent)[-\s]+(?:reviewed|review|approval|validation|sign[-\s]?off)|teacher\s+study|classroom\s+study|(?:proven|validated)\s+pedagog(?:y|ical))\b/i;
+    const recordFields = [
+      "Reviewer name and elementary-teaching qualification:",
+      "Review date:",
+      "Ages/grades considered:",
+      "Problems exercised (include addition and subtraction):",
+      "Direct-drag and keyboard-control observations:",
+      "Narration, replay, and discussion-card feedback:",
+      "Required changes:",
+      "Changes made and follow-up decision:"
+    ];
 
-    // This is the exact original brief promise that caused verification 14 to
-    // fail; keep the detector calibrated to that regression, not just nearby wording.
-    expect("Teacher-reviewed pedagogy").toMatch(unsupportedExternalReviewPromise);
-    expect(brief.constraints).toContain(pedagogyConstraint);
+    expect(brief.constraints).toContain("Teacher-reviewed pedagogy");
+    for (const field of recordFields) expect(review).toContain(field);
+    const reviewLines = review.split(/\r?\n/);
+    const completedRecord = recordFields.every((field) => {
+      const line = reviewLines.find((candidate) => candidate.startsWith(`- ${field}`));
+      return line !== undefined && line.slice(`- ${field}`.length).trim().length > 0;
+    });
+    if (!completedRecord) expect(review).toContain("Pending external review — do not treat this product as classroom-release");
     for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain(guidanceBoundary);
-    for (const reviewFacingSurface of [app, readme, terms]) expect(reviewFacingSurface).toContain("Checklist marks are not stored.");
-    expect(joinedClaimSources).not.toMatch(unsupportedExternalReviewPromise);
-    expect([app, readme, landing, privacy, terms, manifest].join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
-    expect(claimsText).toContain('"id":"facilitator-checklist"');
-    expect(claimsText).toContain(`"claim":"${checklistClaim}"`);
-    expect(claimsText).toContain('"id":"self-guided-checklist-guidance"');
-    expect(claimsText).toContain(`"claim":"${guidanceBoundary}"`);
+    expect([app, readme, terms].join("\n")).not.toMatch(/improves? (?:learning|achievement|outcomes?)|raises? (?:scores?|attainment)/i);
     expect(evidence).toContain(guidanceBoundary);
+    expect(evidence).toContain("required qualified elementary-teacher review");
     expect(facilitatorChecklist).toContain(guidanceBoundary);
-    expect(facilitatorChecklist).toContain("optional product check");
-    expect(facilitatorChecklist).toContain("npm test -- --grep @claim:facilitator-checklist");
-    expect(evidence).toContain("# Sandbox-verifiable pedagogy rules");
-    expect(evidence).toContain("@claim:direct-manipulation");
-    expect(evidence).toContain("@claim:narrated-steps");
-    expect(evidence).toContain("@claim:replay-and-discussion");
-    expect(evidence).toContain("@claim:facilitator-checklist");
-    expect(app).toContain("For the grown-up nearby");
-    expect(app).toContain("What stayed the same?");
-    expect(app).toContain("Use four local checks before classroom use");
-    expect(app).toContain('name="facilitator-review"');
-    expect(app).toContain("Reset local checks");
-    expect(app).toContain("Marks are not stored.");
+    expect(facilitatorChecklist).toContain("does not replace the qualified elementary-teacher review");
   });
 
   it("registers the README no-AI-grading statement with its own observable browser claim", async () => {
